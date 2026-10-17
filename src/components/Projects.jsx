@@ -15,7 +15,7 @@ function FeaturedProject({ project, inView }) {
       <div
         className="rounded-3xl p-1 relative overflow-hidden group"
         style={{
-          background: `linear-gradient(135deg, ${project.color}30, transparent 40%, transparent 60%, ${project.color}15)`,
+          background: "linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 18%, transparent), transparent 40%, transparent 60%, color-mix(in srgb, var(--color-accent-hover) 10%, transparent))",
         }}
       >
         <div className="bg-[var(--bg-card)] rounded-[22px] overflow-hidden backdrop-blur-xl border border-[var(--border-subtle)] relative z-10">
@@ -32,15 +32,15 @@ function FeaturedProject({ project, inView }) {
               </div>
 
               {/* Tag */}
-              <div className="absolute top-6 left-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(10,10,10,0.6)] backdrop-blur-md border border-[var(--border-subtle)]">
+              <div className="absolute top-6 left-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[color-mix(in_srgb,var(--color-background)_80%,transparent)] backdrop-blur-md border border-[var(--border-subtle)]">
                 <span
                   className="w-2 h-2 rounded-full"
                   style={{
                     background: project.color,
-                    boxShadow: `0 0 8px ${project.color}`,
+                    boxShadow: "0 0 8px color-mix(in srgb, var(--color-accent) 55%, transparent)",
                   }}
                 />
-                <span className="text-xs font-semibold uppercase tracking-wider text-white">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--color-primary-text)]">
                   Featured Project
                 </span>
               </div>
@@ -71,7 +71,7 @@ function FeaturedProject({ project, inView }) {
                   href={project.live}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-blue-600 to-sky-500 text-white hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)] flex-1 sm:flex-none"
+                  className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] text-[var(--color-background)] hover:-translate-y-0.5 flex-1 sm:flex-none"
                   style={
                     project.gradient ? { background: project.gradient } : {}
                   }
@@ -202,13 +202,13 @@ export default function Projects() {
           transition={{ duration: 0.6 }}
           className="mb-16 lg:mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest mb-6">
             Work
           </div>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-2">
             Selected
             <br />
-            <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
               Projects.
             </span>
           </h2>
@@ -238,7 +238,7 @@ export default function Projects() {
           >
             <button
               onClick={() => setShowAll(!showAll)}
-              className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-blue-600/40 hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-[var(--color-accent)] hover:-translate-y-0.5"
             >
               {showAll ? "Show Less" : "View All Projects"}
             </button>

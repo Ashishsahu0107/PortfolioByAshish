@@ -21,7 +21,7 @@ export default function Testimonials() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest justify-center mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest justify-center mb-6">
             Testimonials
           </div>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-2">
@@ -39,7 +39,7 @@ export default function Testimonials() {
               className="p-8 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] relative"
             >
               <Quote
-                className="absolute top-6 right-6 text-blue-600/20"
+                className="absolute top-6 right-6 text-[color-mix(in_srgb,var(--color-accent)_20%,transparent)]"
                 size={40}
               />
 
