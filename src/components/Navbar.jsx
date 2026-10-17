@@ -58,9 +58,9 @@ export default function Navbar({ theme, toggleTheme }) {
         <div
           className={`mx-4 md:mx-6 mt-4 px-4 md:px-6 py-3 flex items-center justify-between rounded-2xl border transition-all duration-300 ${
             scrolled
-              ? "bg-[rgba(5,5,5,0.80)] backdrop-blur-2xl border-[var(--border-subtle)]"
+              ? "bg-[color-mix(in_srgb,var(--color-background)_80%,transparent)] backdrop-blur-2xl border-[var(--border-subtle)]"
               : "border-transparent"
-          } ${theme === "light" && scrolled ? "!bg-[rgba(250,250,250,0.85)]" : ""}`}
+          } ${theme === "light" && scrolled ? "!bg-[color-mix(in_srgb,var(--color-background)_85%,transparent)]" : ""}`}
         >
           {/* Logo */}
           <motion.a
@@ -72,13 +72,13 @@ export default function Navbar({ theme, toggleTheme }) {
             className="flex items-center gap-1.5 no-underline font-mono text-[1.05rem] font-bold text-[var(--text-primary)] tracking-tight"
             aria-label={`${developer.name} — Home`}
           >
-            <span className="text-blue-600">&lt;</span>
+            <span className="text-[var(--color-accent)]">&lt;</span>
             AS
-            <span className="text-blue-600">/&gt;</span>
+            <span className="text-[var(--color-accent)]">/&gt;</span>
             <motion.span
               animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
               transition={{ duration: 2, repeat: Infinity }}
-              className="w-1.5 h-1.5 rounded-full bg-blue-600 shadow-[0_0_8px_#2563eb] ml-0.5"
+              className="w-1.5 h-1.5 rounded-full bg-[var(--color-accent)] ml-0.5"
             />
           </motion.a>
 
@@ -106,7 +106,7 @@ export default function Navbar({ theme, toggleTheme }) {
                   {isActive && (
                     <motion.span
                       layoutId="nav-indicator"
-                      className="absolute bottom-[-2px] left-0 right-0 h-px bg-blue-600"
+                      className="absolute bottom-[-2px] left-0 right-0 h-px bg-[var(--color-accent)]"
                     />
                   )}
                 </a>
@@ -136,7 +136,7 @@ export default function Navbar({ theme, toggleTheme }) {
             <a
               href="#contact"
               onClick={(e) => scrollTo(e, "#contact")}
-              className="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-blue-600 to-sky-500 text-white hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
+              className="hidden md:inline-flex items-center justify-center gap-2 px-5 py-2 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] text-[var(--color-background)] hover:-translate-y-0.5"
             >
               Let's Talk
             </a>
@@ -159,7 +159,7 @@ export default function Navbar({ theme, toggleTheme }) {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
-            className={`fixed inset-0 z-[600] flex flex-col justify-center px-8 backdrop-blur-2xl ${theme === "light" ? "bg-[rgba(250,250,250,0.97)]" : "bg-[rgba(5,5,5,0.97)]"}`}
+            className="fixed inset-0 z-[600] flex flex-col justify-center px-8 backdrop-blur-2xl bg-[color-mix(in_srgb,var(--color-background)_97%,transparent)]"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}

@@ -2,7 +2,7 @@ export const skillCategories = [
   {
     id: "frontend",
     label: "Frontend",
-    color: "#2563EB",
+    color: "var(--color-accent)",
     skills: [
       {
         name: "React",
@@ -45,7 +45,7 @@ export const skillCategories = [
   {
     id: "backend",
     label: "Backend",
-    color: "#10B981",
+    color: "var(--color-accent)",
     skills: [
       {
         name: "Node.js",
@@ -82,7 +82,7 @@ export const skillCategories = [
   {
     id: "database",
     label: "Database",
-    color: "#F59E0B",
+    color: "var(--color-accent)",
     skills: [
       {
         name: "MongoDB",
@@ -101,7 +101,7 @@ export const skillCategories = [
   {
     id: "tools",
     label: "Tools",
-    color: "#8B5CF6",
+    color: "var(--color-accent)",
     skills: [
       {
         name: "Git",
@@ -132,7 +132,7 @@ export const skillCategories = [
   {
     id: "other",
     label: "Other",
-    color: "#EC4899",
+    color: "var(--color-accent)",
     skills: [
       {
         name: "Java",
@@ -169,12 +169,12 @@ export const skillCategories = [
 ];
 
 export const techStack = [
-  { name: "React", color: "#61DAFB", angle: 0 },
-  { name: "Node.js", color: "#68A063", angle: 45 },
-  { name: "MongoDB", color: "#47A248", angle: 90 },
-  { name: "JavaScript", color: "#F7DF1E", angle: 135 },
-  { name: "Express", color: "#ffffff", angle: 180 },
-  { name: "Tailwind", color: "#06B6D4", angle: 225 },
-  { name: "Git", color: "#F05032", angle: 270 },
-  { name: "Java", color: "#ED8B00", angle: 315 },
+  { name: "React", color: "var(--color-accent)", angle: 0 },
+  { name: "Node.js", color: "var(--color-accent)", angle: 45 },
+  { name: "MongoDB", color: "var(--color-accent)", angle: 90 },
+  { name: "JavaScript", color: "var(--color-accent)", angle: 135 },
+  { name: "Express", color: "var(--color-accent)", angle: 180 },
+  { name: "Tailwind", color: "var(--color-accent)", angle: 225 },
+  { name: "Git", color: "var(--color-accent)", angle: 270 },
+  { name: "Java", color: "var(--color-accent)", angle: 315 },
 ];

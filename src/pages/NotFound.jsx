@@ -9,7 +9,7 @@ export default function NotFound() {
         className="absolute inset-0 z-0 opacity-40 pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.15) 0%, transparent 60%)",
+            "radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--color-accent) 15%, transparent) 0%, transparent 60%)",
         }}
       />
 
@@ -19,7 +19,7 @@ export default function NotFound() {
         transition={{ duration: 0.6 }}
         className="relative z-10 text-center max-w-md"
       >
-        <div className="font-mono font-black text-[clamp(6rem,20vw,16rem)] leading-none tracking-tighter mb-4 bg-gradient-to-br from-blue-600/30 to-sky-400/15 bg-clip-text text-transparent select-none">
+        <div className="not-found-number font-mono font-black text-[clamp(6rem,20vw,16rem)] leading-none tracking-tighter mb-4 select-none">
           404
         </div>
 
@@ -34,7 +34,7 @@ export default function NotFound() {
 
         <Link
           to="/"
-          className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-blue-600 to-sky-500 text-white hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
+          className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-[var(--color-accent)] text-[var(--color-background)] hover:-translate-y-0.5"
         >
           <ArrowLeft size={16} /> Return Home
         </Link>
