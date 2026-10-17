@@ -22,7 +22,7 @@ function SkillCard({ skill, inView, index, categoryColor }) {
       <motion.div
         className="absolute inset-0 rounded-[inherit] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         style={{
-          background: `radial-gradient(circle at top left, ${categoryColor}08, transparent 60%)`,
+          background: `radial-gradient(circle at top left, color-mix(in srgb, ${categoryColor} 8%, transparent), transparent 60%)`,
         }}
       />
 
@@ -30,8 +30,8 @@ function SkillCard({ skill, inView, index, categoryColor }) {
       <div
         className="w-10 h-10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300"
         style={{
-          background: `${categoryColor}12`,
-          border: `1px solid ${categoryColor}20`,
+          background: `color-mix(in srgb, ${categoryColor} 12%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${categoryColor} 20%, transparent)`,
         }}
       >
         <span className="text-lg">{skill.icon}</span>
@@ -56,7 +56,7 @@ function SkillCard({ skill, inView, index, categoryColor }) {
             ease: [0.34, 1.56, 0.64, 1],
           }}
           style={{
-            background: `linear-gradient(90deg, ${categoryColor}, ${categoryColor}99)`,
+            background: `linear-gradient(90deg, ${categoryColor}, var(--color-accent-hover))`,
           }}
         />
       </div>
@@ -85,7 +85,7 @@ export default function Skills() {
         >
           {/* Label */}
           <motion.div variants={fadeUp(0)}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest mb-6">
               Skills
             </div>
           </motion.div>
@@ -98,7 +98,7 @@ export default function Skills() {
             <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight">
               My Technical
               <br />
-              <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
                 Expertise.
               </span>
             </h2>

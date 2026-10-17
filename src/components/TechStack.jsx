@@ -3,14 +3,14 @@ import { motion, useInView } from "framer-motion";
 import { techStack } from "../data/skills";
 
 const techDetails = {
-  React: { desc: "UI Library", color: "#61DAFB" },
-  "Node.js": { desc: "Runtime", color: "#68A063" },
-  MongoDB: { desc: "Database", color: "#47A248" },
-  JavaScript: { desc: "Language", color: "#F7DF1E" },
-  Express: { desc: "Framework", color: "#ffffff" },
-  Tailwind: { desc: "CSS", color: "#06B6D4" },
-  Git: { desc: "Version Control", color: "#F05032" },
-  Java: { desc: "Language", color: "#ED8B00" },
+  React: { desc: "UI Library", color: "var(--color-accent)" },
+  "Node.js": { desc: "Runtime", color: "var(--color-accent)" },
+  MongoDB: { desc: "Database", color: "var(--color-accent)" },
+  JavaScript: { desc: "Language", color: "var(--color-accent)" },
+  Express: { desc: "Framework", color: "var(--color-accent)" },
+  Tailwind: { desc: "CSS", color: "var(--color-accent)" },
+  Git: { desc: "Version Control", color: "var(--color-accent)" },
+  Java: { desc: "Language", color: "var(--color-accent)" },
 };
 
 export default function TechStack() {
@@ -29,7 +29,7 @@ export default function TechStack() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "radial-gradient(ellipse at center, rgba(37,99,235,0.05) 0%, transparent 65%)",
+            "radial-gradient(ellipse at center, color-mix(in srgb, var(--color-accent) 5%, transparent) 0%, transparent 65%)",
         }}
       />
 
@@ -41,7 +41,7 @@ export default function TechStack() {
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-16"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest justify-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest justify-center">
             Tech Stack
           </div>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-2">
@@ -72,7 +72,7 @@ export default function TechStack() {
                     repeat: Infinity,
                     ease: "linear",
                   }}
-                  className="rounded-full border-[1.5px] border-blue-500/30 border-dashed pointer-events-none"
+                  className="rounded-full border-[1.5px] border-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] border-dashed pointer-events-none"
                   style={{
                     width: r * 2,
                     height: r * 2,
@@ -89,16 +89,16 @@ export default function TechStack() {
             <motion.div
               animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-400 to-orange-600 blur-2xl"
+              className="absolute inset-0 rounded-full bg-[color-mix(in_srgb,var(--color-accent)_30%,transparent)] blur-2xl"
             />
             {/* Sun Core */}
             <motion.div
               initial={{ opacity: 0, scale: 0.5 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ duration: 1, type: "spring", bounce: 0.4 }}
-              className="absolute inset-0 rounded-full border-[1.5px] border-amber-400/80 bg-gradient-to-br from-amber-500/20 to-orange-600/20 backdrop-blur-md flex flex-col items-center justify-center shadow-[0_0_50px_rgba(245,158,11,0.6),inset_0_0_20px_rgba(251,191,36,0.4)]"
+              className="absolute inset-0 rounded-full border-[1.5px] border-[var(--color-accent)] bg-[color-mix(in_srgb,var(--color-accent)_16%,var(--color-card-surface))] backdrop-blur-md flex flex-col items-center justify-center"
             >
-              <span className="text-[0.7rem] font-black tracking-[0.1em] uppercase text-amber-200 leading-tight text-center drop-shadow-[0_0_8px_rgba(251,191,36,0.9)]">
+              <span className="text-[0.7rem] font-black tracking-[0.1em] uppercase text-[var(--color-primary-text)] leading-tight text-center">
                 FULL
                 <br />
                 STACK
@@ -124,7 +124,7 @@ export default function TechStack() {
 
             const details = techDetails[tech.name] || {
               desc: "",
-              color: tech.color || "#fff",
+              color: "var(--color-accent)",
             };
 
             return (
@@ -166,8 +166,8 @@ export default function TechStack() {
                         className="flex flex-col items-center gap-1 px-3 py-2.5 rounded-xl backdrop-blur-md min-w-[70px] text-center cursor-pointer transition-all duration-200"
                         style={{
                           background: "var(--bg-secondary)",
-                          border: `1px solid ${details.color}25`,
-                          boxShadow: `0 0 20px ${details.color}10`,
+                          border: "1px solid color-mix(in srgb, var(--color-accent) 25%, transparent)",
+                          boxShadow: "0 0 20px color-mix(in srgb, var(--color-accent) 10%, transparent)",
                         }}
                       >
                         <span
@@ -196,7 +196,7 @@ export default function TechStack() {
               <div
                 key={tech.name}
                 className="p-3 rounded-xl text-center bg-[var(--bg-card)] border"
-                style={{ borderColor: `${details.color}20` }}
+                style={{ borderColor: "color-mix(in srgb, var(--color-accent) 20%, transparent)" }}
               >
                 <div
                   className="text-[0.75rem] font-bold"

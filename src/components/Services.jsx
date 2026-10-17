@@ -23,7 +23,7 @@ export default function Services() {
       {/* ── Services ── */}
       <section
         aria-label="Services section"
-        className="py-24 lg:py-32 bg-white/[0.01]"
+        className="py-24 lg:py-32 bg-[color-mix(in_srgb,var(--color-background)_98%,var(--color-primary-text))]"
         ref={svcRef}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -33,13 +33,13 @@ export default function Services() {
             transition={{ duration: 0.7 }}
             className="mb-12"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest mb-6">
               Services
             </div>
             <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-3">
               What I Can
               <br />
-              <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
                 Build.
               </span>
             </h2>
@@ -60,7 +60,7 @@ export default function Services() {
                 whileHover={{ y: -6, borderColor: "var(--border-accent)" }}
               >
                 <div
-                  className="w-12 h-12 rounded-xl bg-blue-600/10 border border-blue-600/20 flex items-center justify-center text-blue-400 mb-6 group-hover:scale-105 transition-transform duration-300"
+                  className="w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] flex items-center justify-center text-[var(--color-accent)] mb-6 group-hover:scale-105 transition-transform duration-300"
                   aria-hidden="true"
                 >
                   {iconMap[service.icon]}
@@ -103,7 +103,7 @@ export default function Services() {
             transition={{ duration: 0.7 }}
             className="text-center mb-12"
           >
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest justify-center">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest justify-center">
               Process
             </div>
             <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-3">

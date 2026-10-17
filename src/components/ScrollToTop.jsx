@@ -18,9 +18,9 @@ export default function ScrollToTop() {
         width: "44px",
         height: "44px",
         borderRadius: "50%",
-        background: "rgba(37, 99, 235, 0.15)",
-        border: "1px solid rgba(37, 99, 235, 0.3)",
-        color: "#60a5fa",
+        background: "color-mix(in srgb, var(--color-accent) 15%, transparent)",
+        border: "1px solid var(--color-accent)",
+        color: "var(--color-accent)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -29,11 +29,11 @@ export default function ScrollToTop() {
         cursor: "none",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.background = "rgba(37, 99, 235, 0.25)";
+        e.currentTarget.style.background = "color-mix(in srgb, var(--color-accent) 25%, transparent)";
         e.currentTarget.style.transform = "translateY(-2px)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = "rgba(37, 99, 235, 0.15)";
+        e.currentTarget.style.background = "color-mix(in srgb, var(--color-accent) 15%, transparent)";
         e.currentTarget.style.transform = "none";
       }}
     >
