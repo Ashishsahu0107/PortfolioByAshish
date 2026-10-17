@@ -1,39 +1,39 @@
 @import "tailwindcss";
 
 :root {
-  /* Colors */
-  --bg-primary: #050505;
-  --bg-secondary: #080808;
-  --bg-tertiary: #0d0d0d;
-  --bg-card: rgba(255, 255, 255, 0.03);
-  --bg-card-hover: rgba(255, 255, 255, 0.06);
+  --color-background: #191A17;
+  --color-card-surface: #252620;
+  --color-secondary-surface: #303129;
+  --color-primary-text: #F0EEE6;
+  --color-secondary-text: #B6B5AA;
+  --color-accent: #B8C19A;
+  --color-accent-hover: #CDD4B5;
+  --color-borders: #3D3E35;
 
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.65);
-  --text-muted: rgba(255, 255, 255, 0.35);
-
-  --accent-blue: #2563eb;
-  --accent-cyan: #0ea5e9;
-
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.1);
-  --border-accent: rgba(37, 99, 235, 0.4);
+  --bg-primary: var(--color-background);
+  --bg-secondary: var(--color-secondary-surface);
+  --bg-tertiary: var(--color-card-surface);
+  --bg-card: var(--color-card-surface);
+  --bg-card-hover: var(--color-secondary-surface);
+  --text-primary: var(--color-primary-text);
+  --text-secondary: var(--color-secondary-text);
+  --text-muted: var(--color-secondary-text);
+  --accent-blue: var(--color-accent);
+  --accent-cyan: var(--color-accent);
+  --border-subtle: var(--color-borders);
+  --border-medium: var(--color-borders);
+  --border-accent: var(--color-accent);
 }
 
 .light {
-  --bg-primary: #fafafa;
-  --bg-secondary: #f3f4f6;
-  --bg-tertiary: #e5e7eb;
-  --bg-card: rgba(0, 0, 0, 0.03);
-  --bg-card-hover: rgba(0, 0, 0, 0.06);
-
-  --text-primary: #0a0a0a;
-  --text-secondary: rgba(10, 10, 10, 0.65);
-  --text-muted: rgba(10, 10, 10, 0.4);
-
-  --border-subtle: rgba(0, 0, 0, 0.06);
-  --border-medium: rgba(0, 0, 0, 0.12);
-  --border-accent: rgba(37, 99, 235, 0.3);
+  --color-background: #F6F4EE;
+  --color-card-surface: #FFFFFF;
+  --color-secondary-surface: #EAE7DD;
+  --color-primary-text: #24251F;
+  --color-secondary-text: #65665D;
+  --color-accent: #626B45;
+  --color-accent-hover: #4D5535;
+  --color-borders: #DCD8CC;
 }
 
 /* ─────────────────────────────────────────
@@ -45,6 +45,12 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  color-scheme: dark;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.light {
+  color-scheme: light;
 }
 
 body {
@@ -88,8 +94,8 @@ button {
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.3);
-  color: #ffffff;
+  background: var(--color-accent);
+  color: var(--color-background);
 }
 
 ::-webkit-scrollbar {
@@ -99,11 +105,11 @@ button {
   background: var(--bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(37, 99, 235, 0.4);
+  background: var(--color-accent);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(37, 99, 235, 0.6);
+  background: var(--color-accent-hover);
 }
 
 /* ─────────────────────────────────────────
@@ -113,7 +119,7 @@ button {
   position: fixed;
   width: 40px;
   height: 40px;
-  border: 1.5px solid rgba(37, 99, 235, 0.6);
+  border: 1.5px solid var(--color-accent);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
@@ -132,7 +138,7 @@ button {
   position: fixed;
   width: 6px;
   height: 6px;
-  background: #2563eb;
+  background: var(--color-accent);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9999;
@@ -145,15 +151,15 @@ button {
 .cursor-outer.cursor-hover {
   width: 60px;
   height: 60px;
-  background: rgba(37, 99, 235, 0.05);
-  border-color: rgba(37, 99, 235, 0.8);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  border-color: var(--color-accent-hover);
 }
 
 .cursor-outer.cursor-text {
   width: 80px;
   height: 80px;
-  background: rgba(37, 99, 235, 0.08);
-  border-color: rgba(37, 99, 235, 0.5);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border-color: var(--color-accent);
 }
 
 /* Custom hide-scrollbar class for horizontal scroll */

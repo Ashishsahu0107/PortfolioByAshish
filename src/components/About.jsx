@@ -60,7 +60,7 @@ export default function About() {
           animate={inView ? "visible" : "hidden"}
         >
           <motion.div variants={fadeSlide}>
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest mb-6">
               About Me
             </div>
           </motion.div>
@@ -72,7 +72,7 @@ export default function About() {
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mb-6">
                 I don't just write code.
                 <br />
-                <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
                   I build digital experiences.
                 </span>
               </h2>
@@ -89,7 +89,7 @@ export default function About() {
               </p>
 
               {/* Quote block */}
-              <div className="px-6 py-5 rounded-r-xl bg-blue-600/[0.06] border border-blue-600/15 border-l-[3px] border-l-blue-600">
+              <div className="px-6 py-5 rounded-r-xl bg-[color-mix(in_srgb,var(--color-accent)_6%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_15%,transparent)] border-l-[3px] border-l-[var(--color-accent)]">
                 <p className="font-mono text-sm text-[var(--text-secondary)] leading-[1.7]">
                   &ldquo;{developer.philosophy}&rdquo;
                 </p>
