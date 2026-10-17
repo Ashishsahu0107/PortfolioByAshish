@@ -11,31 +11,7 @@ export default function ScrollToTop() {
     <button
       onClick={scrollTop}
       aria-label="Scroll to top"
-      style={{
-        position: "fixed",
-        bottom: "2rem",
-        right: "2rem",
-        width: "44px",
-        height: "44px",
-        borderRadius: "50%",
-        background: "color-mix(in srgb, var(--color-accent) 15%, transparent)",
-        border: "1px solid var(--color-accent)",
-        color: "var(--color-accent)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 200,
-        transition: "all 0.2s ease",
-        cursor: "none",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.background = "color-mix(in srgb, var(--color-accent) 25%, transparent)";
-        e.currentTarget.style.transform = "translateY(-2px)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.background = "color-mix(in srgb, var(--color-accent) 15%, transparent)";
-        e.currentTarget.style.transform = "none";
-      }}
+      className="fixed bottom-8 right-8 z-[200] grid size-11 place-items-center rounded-full border border-action bg-action/15 text-action transition-[background-color,transform] hover:-translate-y-0.5 hover:bg-action/25"
     >
       <svg
         width="16"

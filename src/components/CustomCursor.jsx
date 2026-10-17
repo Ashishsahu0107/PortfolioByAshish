@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { gsap } from "gsap";
 import { useMediaQuery } from "../hooks/useMediaQuery";
 
 export default function CustomCursor() {
@@ -7,41 +8,23 @@ export default function CustomCursor() {
   const outerRef = useRef(null);
   const innerRef = useRef(null);
   const [cursorState, setCursorState] = useState("default");
-  const posRef = useRef({ x: 0, y: 0 });
-  const rafRef = useRef(null);
-  const outerPos = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
     if (!isDesktop || isTouch) return;
 
-    const handleMove = (e) => {
-      posRef.current = { x: e.clientX, y: e.clientY };
-      if (innerRef.current) {
-        innerRef.current.style.left = `${e.clientX}px`;
-        innerRef.current.style.top = `${e.clientY}px`;
-      }
-    };
-
-    const animate = () => {
-      const dx = posRef.current.x - outerPos.current.x;
-      const dy = posRef.current.y - outerPos.current.y;
-      outerPos.current.x += dx * 0.12;
-      outerPos.current.y += dy * 0.12;
-      if (outerRef.current) {
-        outerRef.current.style.left = `${outerPos.current.x}px`;
-        outerRef.current.style.top = `${outerPos.current.y}px`;
-      }
-      rafRef.current = requestAnimationFrame(animate);
+    const outerCursor = outerRef.current;
+    const innerCursor = innerRef.current;
+    const setOuterX = gsap.quickTo(outerCursor, "left", { duration: 0.18, ease: "power3.out" });
+    const setOuterY = gsap.quickTo(outerCursor, "top", { duration: 0.18, ease: "power3.out" });
+    const handleMove = (event) => {
+      gsap.set(innerCursor, { left: event.clientX, top: event.clientY });
+      setOuterX(event.clientX);
+      setOuterY(event.clientY);
     };
 
     const handleHoverIn = (e) => {
       const el = e.target;
-      if (
-        el.tagName === "BUTTON" ||
-        el.tagName === "A" ||
-        el.closest("button") ||
-        el.closest("a")
-      ) {
+      if (el.tagName === "BUTTON" || el.tagName === "A" || el.closest("button") || el.closest("a")) {
         setCursorState("hover");
       } else if (el.closest(".project-card")) {
         setCursorState("view");
@@ -55,13 +38,11 @@ export default function CustomCursor() {
     window.addEventListener("mousemove", handleMove, { passive: true });
     document.addEventListener("mouseover", handleHoverIn);
     document.addEventListener("mouseout", handleHoverOut);
-    rafRef.current = requestAnimationFrame(animate);
-
     return () => {
       window.removeEventListener("mousemove", handleMove);
       document.removeEventListener("mouseover", handleHoverIn);
       document.removeEventListener("mouseout", handleHoverOut);
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      gsap.killTweensOf([outerCursor, innerCursor]);
     };
   }, [isDesktop, isTouch]);
 
@@ -71,28 +52,16 @@ export default function CustomCursor() {
     <>
       <div
         ref={outerRef}
-        className={`cursor-outer ${cursorState === "hover" ? "cursor-hover" : ""} ${cursorState === "view" ? "cursor-text" : ""}`}
+        className={`pointer-events-none fixed left-0 top-0 z-[9999] grid size-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-action transition-[width,height,background-color,border-color] duration-200 ${cursorState === "hover" ? "size-[60px] bg-action/10" : ""} ${cursorState === "view" ? "size-20 bg-action/15" : ""}`}
         aria-hidden="true"
       >
         {cursorState === "view" && (
-          <span
-            style={{
-              fontSize: "9px",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              color: "var(--color-primary-text)",
-              position: "absolute",
-              inset: 0,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
+          <span className="font-mono text-[9px] font-bold tracking-[.08em] text-primary">
             VIEW
           </span>
         )}
       </div>
-      <div ref={innerRef} className="cursor-inner" aria-hidden="true" />
+      <div ref={innerRef} className="pointer-events-none fixed left-0 top-0 z-[9999] size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-action" aria-hidden="true" />
     </>
   );
 }

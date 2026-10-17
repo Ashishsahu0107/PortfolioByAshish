@@ -1,6 +1,6 @@
-import { useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { gsap } from "gsap";
 
 import Navbar from "./components/PortfolioNavbar";
 import CustomCursor from "./components/CustomCursor";
@@ -13,7 +13,7 @@ function ScrollProgress() {
   const progress = useScrollProgress();
   return (
     <div
-      className="page-progress"
+      className="fixed left-0 top-0 z-[1000] h-0.5 bg-action transition-[width] duration-75"
       style={{ width: `${progress}%` }}
       role="progressbar"
       aria-valuenow={Math.round(progress)}
@@ -26,21 +26,23 @@ function ScrollProgress() {
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const routeRef = useRef(null);
+
+  useLayoutEffect(() => {
+    const media = gsap.matchMedia();
+    media.add("(prefers-reduced-motion: no-preference)", () => {
+      gsap.fromTo(routeRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" });
+    });
+    return () => media.revert();
+  }, [location.pathname]);
+
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.35, ease: "easeInOut" }}
-      >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </motion.div>
-    </AnimatePresence>
+    <div ref={routeRef}>
+      <Routes location={location}>
+        <Route path="/" element={<Home />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </div>
   );
 }
 
@@ -76,12 +78,6 @@ export default function App() {
     <BrowserRouter>
       <CustomCursor />
       <ScrollProgress />
-
-      {/* BG dot grid */}
-      <div
-        className="bg-grid fixed inset-0 pointer-events-none z-0"
-        aria-hidden="true"
-      />
 
       {/* Skip to content */}
       <a
