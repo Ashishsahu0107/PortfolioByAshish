@@ -1656,6 +1656,7 @@ body button {
 }
 
 .hero .hero-content {
+    width: min(1600px, calc(100% - 80px));
     grid-template-columns: minmax(0, 1fr) minmax(260px, 1.05fr) minmax(220px, .88fr);
     grid-template-areas:
         "copy portrait stack"
@@ -1854,7 +1855,7 @@ body button {
 
 .hero-stack ul {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 10px;
 }
 
@@ -2061,6 +2062,7 @@ body button {
     }
 
     .hero .hero-content {
+        width: min(720px, calc(100% - 48px));
         grid-template-columns: minmax(0, 1fr) minmax(250px, .9fr);
         grid-template-areas:
             "copy portrait"
@@ -2093,6 +2095,7 @@ body button {
     }
 
     .hero .hero-content {
+        width: calc(100% - 40px);
         grid-template-columns: minmax(0, 1fr);
         grid-template-areas:
             "copy"

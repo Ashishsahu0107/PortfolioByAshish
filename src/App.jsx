@@ -1,10 +1,9 @@
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useState, useLayoutEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 import Navbar from "./components/PortfolioNavbar";
 import CustomCursor from "./components/CustomCursor";
-import PageLoader from "./components/PageLoader";
 import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -46,7 +45,6 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
   const [theme, setTheme] = useState(() => {
     try {
       const saved = localStorage.getItem("portfolio-theme");
@@ -74,21 +72,8 @@ export default function App() {
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
 
-  const handleLoadComplete = () => {
-    setLoading(false);
-    document.body.style.overflow = "";
-  };
-
-  useEffect(() => {
-    if (loading) document.body.style.overflow = "hidden";
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [loading]);
-
   return (
     <BrowserRouter>
-      {loading && <PageLoader onComplete={handleLoadComplete} />}
       <CustomCursor />
       <ScrollProgress />
 
