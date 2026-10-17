@@ -52,7 +52,7 @@ export default function PageLoader({ onComplete }) {
           style={{
             position: "fixed",
             inset: 0,
-            background: "#050505",
+            background: "var(--color-background)",
             zIndex: 9990,
             display: "flex",
             flexDirection: "column",
@@ -70,13 +70,13 @@ export default function PageLoader({ onComplete }) {
               fontFamily: "JetBrains Mono, monospace",
               fontSize: "clamp(1.75rem, 5vw, 2.5rem)",
               fontWeight: 700,
-              color: "#ffffff",
+              color: "var(--color-primary-text)",
               letterSpacing: "-0.025em",
             }}
           >
-            <span style={{ color: "#2563eb" }}>&lt;</span>
+            <span style={{ color: "var(--color-accent)" }}>&lt;</span>
             ASHISH
-            <span style={{ color: "#2563eb" }}>/&gt;</span>
+            <span style={{ color: "var(--color-accent)" }}>/&gt;</span>
           </motion.div>
 
           {/* Status */}
@@ -87,7 +87,7 @@ export default function PageLoader({ onComplete }) {
             style={{
               fontFamily: "JetBrains Mono, monospace",
               fontSize: "0.7rem",
-              color: "rgba(255,255,255,0.35)",
+              color: "var(--color-secondary-text)",
               letterSpacing: "0.15em",
               textTransform: "uppercase",
             }}
@@ -107,9 +107,9 @@ export default function PageLoader({ onComplete }) {
               gap: "0.5rem",
             }}
           >
-            <div className="w-48 sm:w-64 h-[2px] bg-white/10 relative overflow-hidden rounded-full mt-2">
+            <div className="w-48 sm:w-64 h-[2px] bg-[var(--color-borders)] relative overflow-hidden rounded-full mt-2">
               <div
-                className="absolute top-0 left-0 h-full bg-blue-500 shadow-[0_0_10px_#2563eb] transition-all duration-75 ease-linear"
+                className="loader-progress absolute top-0 left-0 h-full transition-all duration-75 ease-linear"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -117,7 +117,7 @@ export default function PageLoader({ onComplete }) {
               style={{
                 fontFamily: "JetBrains Mono, monospace",
                 fontSize: "0.7rem",
-                color: "rgba(255,255,255,0.3)",
+                color: "var(--color-secondary-text)",
               }}
             >
               {progress}%

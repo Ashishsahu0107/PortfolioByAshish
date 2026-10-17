@@ -75,13 +75,13 @@ export default function Hero() {
             {/* Badge */}
             <motion.div {...fadeUp(0.1)}>
               <div
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[0.75rem] font-semibold text-emerald-400 tracking-wider uppercase"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[0.75rem] font-semibold text-[var(--color-accent)] tracking-wider uppercase"
                 role="status"
                 aria-label="Available for work"
               >
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[var(--color-accent)]"></span>
                 </span>
                 Available for work
               </div>
@@ -95,7 +95,7 @@ export default function Hero() {
               <h1 className="text-[clamp(3.5rem,10vw,8.5rem)] font-black leading-[0.95] tracking-tight bg-gradient-to-br from-[var(--text-primary)] to-[var(--text-muted)] bg-clip-text text-transparent">
                 Ashish
                 <br />
-                <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
                   Sahu.
                 </span>
               </h1>
@@ -123,7 +123,7 @@ export default function Hero() {
             <motion.div {...fadeUp(0.7)} className="flex gap-4 flex-wrap">
               <motion.button
                 onClick={() => scrollTo("projects")}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-blue-600 to-sky-500 text-white hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] text-[var(--color-background)] hover:-translate-y-0.5"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.97 }}
                 aria-label="View my work"
@@ -139,7 +139,7 @@ export default function Hero() {
 
               <motion.button
                 onClick={() => scrollTo("contact")}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-blue-600/40 hover:-translate-y-0.5"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-[var(--color-accent)] hover:-translate-y-0.5"
                 whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.97 }}
                 aria-label="Let's connect"
@@ -175,7 +175,7 @@ export default function Hero() {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    whileHover={{ y: -2, borderColor: "rgba(37,99,235,0.4)" }}
+                    whileHover={{ y: -2, borderColor: "var(--color-accent)" }}
                     className="w-9 h-9 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors duration-200"
                   >
                     {icon}
@@ -204,7 +204,7 @@ export default function Hero() {
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full pointer-events-none transition-transform duration-[400ms] ease-out"
                 style={{
                   background:
-                    "radial-gradient(circle, rgba(37,99,235,0.15) 0%, rgba(14,165,233,0.08) 50%, transparent 70%)",
+                    "radial-gradient(circle, color-mix(in srgb, var(--color-accent) 15%, transparent) 0%, color-mix(in srgb, var(--color-accent-hover) 8%, transparent) 50%, transparent 70%)",
                   filter: "blur(40px)",
                   zIndex: 0,
                 }}
@@ -212,15 +212,15 @@ export default function Hero() {
 
               {/* Terminal */}
               <div
-                className="bg-[var(--bg-tertiary)] border border-[var(--border-medium)] rounded-2xl overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.15),0_0_40px_rgba(37,99,235,0.1)] relative z-10"
+                className="bg-[var(--bg-tertiary)] border border-[var(--border-medium)] rounded-2xl overflow-hidden relative z-10"
                 role="presentation"
                 aria-label="Developer terminal"
               >
                 {/* Header */}
                 <div className="flex items-center gap-2 px-4 py-3.5 bg-[var(--bg-card)] border-b border-[var(--border-subtle)]">
-                  <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-                  <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
-                  <div className="w-3 h-3 rounded-full bg-[#28c940]" />
+                  <div className="w-3 h-3 rounded-full bg-[var(--color-accent)] opacity-60" />
+                  <div className="w-3 h-3 rounded-full bg-[var(--color-accent)] opacity-80" />
+                  <div className="w-3 h-3 rounded-full bg-[var(--color-accent)]" />
                   <span className="ml-3 font-mono text-[0.7rem] text-[var(--text-muted)] tracking-[0.06em]">
                     terminal — zsh
                   </span>
@@ -238,7 +238,7 @@ export default function Hero() {
                     >
                       {line.type === "cmd" && (
                         <>
-                          <span className="text-blue-500 select-none">
+                          <span className="text-[var(--color-accent)] select-none">
                             {line.prompt} $
                           </span>
                           <span className="text-[var(--text-primary)]">
@@ -252,15 +252,15 @@ export default function Hero() {
                         </span>
                       )}
                       {line.type === "success" && (
-                        <span className="text-emerald-400 pl-4">
+                        <span className="text-[var(--color-accent)] pl-4">
                           {line.output}
                         </span>
                       )}
                       {line.type === "cursor" && (
                         <>
-                          <span className="text-blue-500 select-none">~ $</span>
+                          <span className="text-[var(--color-accent)] select-none">~ $</span>
                           <span
-                            className="inline-block w-2 h-[1em] bg-blue-500 animate-pulse ml-1 align-bottom"
+                            className="inline-block w-2 h-[1em] bg-[var(--color-accent)] animate-pulse ml-1 align-bottom"
                             aria-hidden="true"
                           />
                         </>
@@ -328,7 +328,7 @@ export default function Hero() {
           <motion.div
             animate={{ scaleY: [1, 0.3, 1], opacity: [1, 0, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
-            className="w-px h-10 bg-gradient-to-b from-blue-600/60 to-transparent"
+            className="w-px h-10 bg-gradient-to-b from-[color-mix(in_srgb,var(--color-accent)_60%,transparent)] to-transparent"
           />
         </motion.div>
       </div>
@@ -339,7 +339,7 @@ export default function Hero() {
         className="absolute top-[20%] -left-[10%] w-[40vw] h-[40vw] rounded-full pointer-events-none"
         style={{
           background:
-            "radial-gradient(circle, rgba(37,99,235,0.06) 0%, transparent 70%)",
+            "radial-gradient(circle, color-mix(in srgb, var(--color-accent) 6%, transparent) 0%, transparent 70%)",
         }}
       />
     </section>

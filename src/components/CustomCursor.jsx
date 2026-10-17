@@ -80,7 +80,7 @@ export default function CustomCursor() {
               fontSize: "9px",
               fontWeight: 700,
               letterSpacing: "0.08em",
-              color: "rgba(255,255,255,0.8)",
+              color: "var(--color-primary-text)",
               position: "absolute",
               inset: 0,
               display: "flex",

@@ -11,8 +11,8 @@ function ExperienceItem({ item, index, inView }) {
       className={`relative flex flex-col md:flex-row items-center justify-between w-full mb-12 lg:mb-24 ${isLeft ? "md:flex-row-reverse" : ""}`}
     >
       {/* Center dot (desktop) */}
-      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[var(--bg-primary)] border-4 border-blue-600 z-10 items-center justify-center shadow-[0_0_15px_rgba(37,99,235,0.4)]">
-        <Briefcase size={14} className="text-blue-500" />
+      <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-[var(--bg-primary)] border-4 border-[var(--color-accent)] z-10 items-center justify-center">
+        <Briefcase size={14} className="text-[var(--color-accent)]" />
       </div>
 
       {/* Spacer (desktop) */}
@@ -29,20 +29,20 @@ function ExperienceItem({ item, index, inView }) {
         }}
         className="w-full md:w-[45%]"
       >
-        <div className="p-8 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card-hover)] hover:border-blue-500/30 transition-all duration-300 relative group">
+        <div className="p-8 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-subtle)] hover:bg-[var(--bg-card-hover)] hover:border-[var(--color-accent)] transition-all duration-300 relative group">
           {/* Timeline connector (mobile) */}
-          <div className="md:hidden absolute -left-[25px] top-10 w-4 h-[2px] bg-blue-600" />
-          <div className="md:hidden absolute -left-[33px] top-8 w-4 h-4 rounded-full border-2 border-blue-600 bg-[var(--bg-primary)] z-10" />
+          <div className="md:hidden absolute -left-[25px] top-10 w-4 h-[2px] bg-[var(--color-accent)]" />
+          <div className="md:hidden absolute -left-[33px] top-8 w-4 h-4 rounded-full border-2 border-[var(--color-accent)] bg-[var(--bg-primary)] z-10" />
 
           {/* Type tag */}
-          <div className="absolute top-6 right-6 px-2.5 py-1 rounded-md text-[0.65rem] font-bold tracking-wider uppercase bg-blue-600/10 text-blue-400 border border-blue-600/20">
+          <div className="absolute top-6 right-6 px-2.5 py-1 rounded-md text-[0.65rem] font-bold tracking-wider uppercase bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] text-[var(--color-accent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)]">
             {item.type}
           </div>
 
           <h3 className="text-xl font-bold tracking-tight mb-1 text-[var(--text-primary)]">
             {item.title}
           </h3>
-          <div className="text-lg font-semibold bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent mb-5">
+          <div className="text-lg font-semibold bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent mb-5">
             {item.company}
           </div>
 
@@ -91,13 +91,13 @@ export default function Experience() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 lg:mb-24"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest justify-center mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest justify-center mb-6">
             Experience
           </div>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-2">
             Professional
             <br />
-            <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
               Journey.
             </span>
           </h2>

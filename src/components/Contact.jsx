@@ -68,13 +68,13 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16 lg:mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest justify-center mb-6">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest justify-center mb-6">
             Contact
           </div>
           <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-2">
             Let's build something
             <br />
-            <span className="bg-gradient-to-br from-blue-600 to-sky-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] bg-clip-text text-transparent">
               together.
             </span>
           </h2>
@@ -102,21 +102,21 @@ export default function Contact() {
                 href={`mailto:${developer.email}`}
                 className="flex items-start gap-4 group no-underline text-[var(--text-primary)]"
               >
-                <div className="w-12 h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-blue-500 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
+                <div className="w-12 h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--color-accent)] group-hover:bg-[var(--color-accent)] group-hover:text-[var(--color-background)] transition-colors duration-300">
                   <Mail size={20} />
                 </div>
                 <div>
                   <div className="text-xs uppercase tracking-wider text-[var(--text-muted)] font-semibold mb-1">
                     Email
                   </div>
-                  <div className="font-medium group-hover:text-blue-400 transition-colors">
+                  <div className="font-medium group-hover:text-[var(--color-accent)] transition-colors">
                     {developer.email}
                   </div>
                 </div>
               </a>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-blue-500">
+                <div className="w-12 h-12 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--color-accent)]">
                   <MapPin size={20} />
                 </div>
                 <div>
@@ -136,7 +136,7 @@ export default function Contact() {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="p-8 lg:p-10 rounded-3xl bg-[var(--bg-card)] border border-[var(--border-subtle)] relative overflow-hidden"
           >
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 to-sky-400" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-hover)]" />
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -154,7 +154,7 @@ export default function Contact() {
                     required
                     value={formState.name}
                     onChange={handleChange}
-                    className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                    className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all"
                     placeholder="John Doe"
                   />
                 </div>
@@ -172,7 +172,7 @@ export default function Contact() {
                     required
                     value={formState.email}
                     onChange={handleChange}
-                    className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                    className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all"
                     placeholder="john@example.com"
                   />
                 </div>
@@ -192,7 +192,7 @@ export default function Contact() {
                   rows={5}
                   value={formState.message}
                   onChange={handleChange}
-                  className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none"
+                  className="w-full bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-xl px-4 py-3.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all resize-none"
                   placeholder="Tell me about your project..."
                 />
               </div>
@@ -202,12 +202,12 @@ export default function Contact() {
                 disabled={status === "submitting" || status === "success"}
                 className={`inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer mt-2 w-full sm:w-auto self-start ${
                   status === "success"
-                    ? "bg-emerald-500 text-white"
-                    : "bg-gradient-to-br from-blue-600 to-sky-500 text-white hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgba(37,99,235,0.4)]"
+                    ? "bg-[var(--color-accent-hover)] text-[var(--color-background)]"
+                    : "bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-hover)] text-[var(--color-background)] hover:-translate-y-0.5"
                 }`}
               >
                 {status === "submitting" ? (
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="w-5 h-5 border-2 border-[color-mix(in_srgb,var(--color-primary-text)_30%,transparent)] border-t-[var(--color-primary-text)] rounded-full animate-spin" />
                 ) : status === "success" ? (
                   "Message Sent!"
                 ) : (

@@ -72,7 +72,7 @@ export default function GitHubActivity() {
         >
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-xs font-semibold uppercase tracking-widest mb-6">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full text-[var(--color-accent)] text-xs font-semibold uppercase tracking-widest mb-6">
                 Open Source
               </div>
               <h2 className="text-[clamp(2rem,4vw,3.5rem)] font-extrabold leading-[1.1] tracking-tight mt-3">
@@ -84,7 +84,7 @@ export default function GitHubActivity() {
               href={developer.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-blue-600/40 hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full font-semibold text-sm transition-all whitespace-nowrap cursor-pointer bg-transparent text-[var(--text-primary)] border border-[var(--border-medium)] hover:bg-[var(--bg-card)] hover:border-[var(--color-accent)] hover:-translate-y-0.5"
             >
               <GithubIcon size={18} /> View Profile
             </a>
@@ -133,17 +133,17 @@ export default function GitHubActivity() {
             {/* Heatmap (Real GitHub Chart) */}
             <div className="w-full overflow-x-auto pb-4 hide-scrollbar flex justify-center">
               {username && (
-                <div className="min-w-[750px] p-6 bg-[#0d1117] border border-[#30363d] rounded-xl inline-block text-white">
+                <div className="min-w-[750px] p-6 bg-[var(--color-background)] border border-[var(--color-borders)] rounded-xl inline-block text-[var(--color-primary-text)]">
                   <GitHubCalendar
                     username={username}
                     colorScheme="dark"
                     theme={{
                       dark: [
-                        "#161b22",
-                        "#0e4429",
-                        "#006d32",
-                        "#26a641",
-                        "#39d353",
+                        "var(--color-background)",
+                        "color-mix(in srgb, var(--color-accent) 25%, var(--color-background))",
+                        "color-mix(in srgb, var(--color-accent) 50%, var(--color-background))",
+                        "var(--color-accent)",
+                        "var(--color-accent-hover)",
                       ],
                     }}
                     blockSize={12}
@@ -153,7 +153,7 @@ export default function GitHubActivity() {
                       cloneElement(block, {
                         "data-tooltip-id": "github-tooltip",
                         "data-tooltip-content": `${activity.count} contributions on ${activity.date}`,
-                        className: "cursor-pointer hover:stroke-white/30",
+                        className: "cursor-pointer hover:stroke-[var(--color-accent)]",
                         key: activity.date,
                       })
                     }

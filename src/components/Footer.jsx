@@ -20,7 +20,7 @@ export default function Footer() {
       {/* Background glow */}
       <div
         className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-[300px] rounded-[100%] blur-[100px] pointer-events-none opacity-20"
-        style={{ background: "radial-gradient(circle, #2563eb, #0ea5e9)" }}
+        style={{ background: "radial-gradient(circle, color-mix(in srgb, var(--color-accent) 18%, transparent), color-mix(in srgb, var(--color-accent-hover) 8%, transparent))" }}
       />
 
       <div className="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
@@ -31,9 +31,9 @@ export default function Footer() {
               href="#home"
               className="inline-block no-underline font-mono text-[1.25rem] font-bold text-[var(--text-primary)] tracking-tight mb-5"
             >
-              <span className="text-blue-600">&lt;</span>
+              <span className="text-[var(--color-accent)]">&lt;</span>
               AS
-              <span className="text-blue-600">/&gt;</span>
+              <span className="text-[var(--color-accent)]">/&gt;</span>
             </a>
             <p className="text-[0.9rem] text-[var(--text-secondary)] leading-[1.7] max-w-md mb-6">
               A passionate Full Stack Developer focused on building scalable,
@@ -51,8 +51,8 @@ export default function Footer() {
                   aria-label={link.label}
                   whileHover={{
                     y: -3,
-                    borderColor: "rgba(37,99,235,0.4)",
-                    color: "#3b82f6",
+                    borderColor: "var(--color-accent)",
+                    color: "var(--color-accent)",
                   }}
                   className="w-10 h-10 rounded-full bg-[var(--bg-card)] border border-[var(--border-subtle)] flex items-center justify-center text-[var(--text-muted)] transition-colors duration-200"
                 >
@@ -72,7 +72,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <a
                     href={link.href}
-                    className="text-[0.85rem] text-[var(--text-muted)] hover:text-blue-500 transition-colors inline-block no-underline"
+                    className="text-[0.85rem] text-[var(--text-muted)] hover:text-[var(--color-accent)] transition-colors inline-block no-underline"
                   >
                     {link.label}
                   </a>
@@ -93,10 +93,10 @@ export default function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-2">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent)]"></span>
               </span>
-              <span className="text-[0.75rem] font-semibold text-emerald-500 uppercase tracking-wider">
+              <span className="text-[0.75rem] font-semibold text-[var(--color-accent)] uppercase tracking-wider">
                 Open to work
               </span>
             </div>
@@ -113,7 +113,7 @@ export default function Footer() {
             onClick={scrollToTop}
             whileHover={{ y: -2 }}
             whileTap={{ scale: 0.95 }}
-            className="flex items-center gap-2 text-[0.75rem] font-semibold uppercase tracking-wider text-[var(--text-muted)] hover:text-blue-500 transition-colors"
+            className="flex items-center gap-2 text-[0.75rem] font-semibold uppercase tracking-wider text-[var(--text-muted)] hover:text-[var(--color-accent)] transition-colors"
             aria-label="Scroll to top"
           >
             Back to top <ArrowUp size={14} />
