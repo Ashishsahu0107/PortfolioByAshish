@@ -9,10 +9,7 @@ import {
 } from "lucide-react";
 import { ResumeProvider, useResume } from "../resume-builder/context/ResumeContext";
 import { exportResumeToPdf } from "../resume-builder/utils/pdfExport";
-import TemplateModern from "../resume-builder/components/templates/TemplateModern";
-import TemplateClassicATS from "../resume-builder/components/templates/TemplateClassicATS";
-import TemplateExecutiveSidebar from "../resume-builder/components/templates/TemplateExecutiveSidebar";
-import TemplateEditorial from "../resume-builder/components/templates/TemplateEditorial";
+import { RESUME_TEMPLATES, renderResumeTemplate } from "../resume-builder/templatesRegistry";
 
 function ResumeViewContent() {
   const { resumeData, activeTemplate, setActiveTemplate, isExporting, setIsExporting } = useResume();
@@ -37,25 +34,10 @@ function ResumeViewContent() {
     window.print();
   };
 
-  const templates = [
-    { id: "modern", name: "Modern Blue" },
-    { id: "classic", name: "Classic ATS" },
-    { id: "executive", name: "Executive Sidebar" },
-    { id: "editorial", name: "Editorial Serif" },
-  ];
+  const templates = RESUME_TEMPLATES;
 
   const renderActiveTemplate = () => {
-    switch (activeTemplate) {
-      case "classic":
-        return <TemplateClassicATS data={resumeData} />;
-      case "executive":
-        return <TemplateExecutiveSidebar data={resumeData} />;
-      case "editorial":
-        return <TemplateEditorial data={resumeData} />;
-      case "modern":
-      default:
-        return <TemplateModern data={resumeData} />;
-    }
+    return renderResumeTemplate(activeTemplate, resumeData);
   };
 
   return (

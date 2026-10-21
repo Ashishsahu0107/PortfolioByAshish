@@ -11,12 +11,14 @@ import {
   sectionLede,
   sectionSurface,
 } from "./portfolioStyles";
+import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
 export default function PortfolioContact() {
   const sectionRef = useRef(null);
   const [state, setState] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
   useGsapReveal(sectionRef);
+  const { openResumeModal } = useResumeModal();
 
   const submit = async (event) => {
     event.preventDefault();
@@ -125,14 +127,14 @@ export default function PortfolioContact() {
 
             {/* Direct Resource Links (Resume, GitHub, LinkedIn) */}
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href={developer.resumeUrl}
-                download="Ashish_Sahu_Resume.pdf"
-                className="inline-flex items-center gap-2 rounded-sm border border-action bg-action/10 px-4 py-2 font-mono text-[11px] font-semibold text-action transition-all hover:bg-action hover:text-canvas"
+              <button
+                type="button"
+                onClick={() => openResumeModal("modern")}
+                className="inline-flex items-center gap-2 rounded-sm border border-action bg-action/10 px-4 py-2 font-mono text-[11px] font-semibold text-action transition-all hover:bg-action hover:text-canvas cursor-pointer"
               >
                 <Download size={14} />
-                <span>Download Resume (PDF)</span>
-              </a>
+                <span>Resume PDF (6 Templates)</span>
+              </button>
               <a
                 href={developer.github}
                 target="_blank"

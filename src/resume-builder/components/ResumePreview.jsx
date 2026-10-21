@@ -8,10 +8,7 @@ import {
 } from "lucide-react";
 import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
-import TemplateModern from "./templates/TemplateModern";
-import TemplateClassicATS from "./templates/TemplateClassicATS";
-import TemplateExecutiveSidebar from "./templates/TemplateExecutiveSidebar";
-import TemplateEditorial from "./templates/TemplateEditorial";
+import { renderResumeTemplate } from "../templatesRegistry";
 import { useNavigate } from "react-router-dom";
 
 export default function ResumePreview() {
@@ -56,17 +53,7 @@ export default function ResumePreview() {
   };
 
   const renderActiveTemplate = () => {
-    switch (activeTemplate) {
-      case "classic":
-        return <TemplateClassicATS data={resumeData} />;
-      case "executive":
-        return <TemplateExecutiveSidebar data={resumeData} />;
-      case "editorial":
-        return <TemplateEditorial data={resumeData} />;
-      case "modern":
-      default:
-        return <TemplateModern data={resumeData} />;
-    }
+    return renderResumeTemplate(activeTemplate, resumeData);
   };
 
   return (

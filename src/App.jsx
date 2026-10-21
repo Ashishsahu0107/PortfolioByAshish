@@ -9,7 +9,11 @@ import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
 import ResumeBuilderPage from "./pages/ResumeBuilderPage";
 import ResumeViewPage from "./pages/ResumeViewPage";
+import SecretLoginPage from "./pages/SecretLoginPage";
+import AdminDashboard from "./admin/AdminDashboard";
 import { useScrollProgress } from "./hooks/useScrollProgress";
+import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
+import { AuthProvider, ProtectedRoute } from "./auth/AuthContext";
 
 function ScrollProgress() {
   const progress = useScrollProgress();
@@ -36,7 +40,7 @@ function AnimatedRoutes() {
       gsap.fromTo(
         routeRef.current,
         { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+        { autoAlpha: 1, duration: 0.25, ease: "power2.out" },
       );
     });
     return () => media.revert();
@@ -48,6 +52,16 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/resume-builder" element={<ResumeBuilderPage />} />
         <Route path="/resume-builder/view" element={<ResumeViewPage />} />
+        <Route path="/login" element={<SecretLoginPage />} />
+        <Route path="/secret-login" element={<SecretLoginPage />} />
+        <Route
+          path="/admin/*"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
@@ -56,14 +70,18 @@ function AnimatedRoutes() {
 
 function AppContent({ theme, toggleTheme }) {
   const location = useLocation();
-  const isResumeApp = location.pathname.startsWith("/resume-builder");
+  const isStandalone =
+    location.pathname.startsWith("/resume-builder") ||
+    location.pathname.startsWith("/login") ||
+    location.pathname.startsWith("/secret-login") ||
+    location.pathname.startsWith("/admin");
 
   return (
     <>
       <CustomCursor />
-      {!isResumeApp && <ScrollProgress />}
+      {!isStandalone && <ScrollProgress />}
 
-      {!isResumeApp && (
+      {!isStandalone && (
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-4 focus:px-6 focus:py-3 focus:bg-[var(--color-accent)] focus:text-[var(--color-background)] focus:font-bold focus:rounded-b-lg focus:z-[9999]"
@@ -72,9 +90,9 @@ function AppContent({ theme, toggleTheme }) {
         </a>
       )}
 
-      {!isResumeApp && <Navbar theme={theme} toggleTheme={toggleTheme} />}
+      {!isStandalone && <Navbar theme={theme} toggleTheme={toggleTheme} />}
       <AnimatedRoutes />
-      {!isResumeApp && <ScrollToTop />}
+      {!isStandalone && <ScrollToTop />}
     </>
   );
 }
@@ -109,7 +127,11 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <AppContent theme={theme} toggleTheme={toggleTheme} />
+      <AuthProvider>
+        <ResumeModalProvider>
+          <AppContent theme={theme} toggleTheme={toggleTheme} />
+        </ResumeModalProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

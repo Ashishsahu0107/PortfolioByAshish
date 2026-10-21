@@ -15,6 +15,7 @@ import {
   sectionSurface,
   textLink,
 } from "./portfolioStyles";
+import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
 const iconMap = {
   Code2: Code2,
@@ -27,6 +28,7 @@ const iconMap = {
 export default function PortfolioAbout() {
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
+  const { openResumeModal } = useResumeModal();
 
   return (
     <section
@@ -78,14 +80,14 @@ export default function PortfolioAbout() {
                 <span>Inspect my GitHub commits</span>
                 <ArrowUpRight size={16} />
               </a>
-              <a
-                className={textLink}
-                href={developer.resumeUrl}
-                download="Ashish_Sahu_Resume.pdf"
+              <button
+                type="button"
+                className={`${textLink} cursor-pointer inline-flex items-center gap-1.5`}
+                onClick={() => openResumeModal("modern")}
               >
-                <span>Download detailed CV</span>
+                <span>Resume PDF (6 Templates)</span>
                 <ArrowUpRight size={16} />
-              </a>
+              </button>
             </div>
           </div>
 

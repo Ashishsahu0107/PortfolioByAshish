@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Download, Menu, Moon, Sparkles, Sun, X } from "lucide-react";
+import { Download, Menu, Moon, Sun, X } from "lucide-react";
 import { developer } from "../data/developer";
 import { contentWidth } from "./portfolioStyles";
+import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
 const links = [
   { label: "About", href: "#about" },
@@ -16,6 +16,7 @@ const links = [
 export default function PortfolioNavbar({ theme, toggleTheme }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { openResumeModal } = useResumeModal();
 
   useEffect(() => {
     const update = () => setScrolled(window.scrollY > 24);
@@ -60,29 +61,18 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
           ))}
         </div>
 
-        {/* Actions Group (Resume Builder + Resume CTA + Theme Toggle + Mobile Hamburger) */}
+        {/* Actions Group (Resume CTA + Theme Toggle + Mobile Hamburger) */}
         <div className="flex items-center gap-2.5 sm:gap-3">
-          {/* Resume Builder Link */}
-          <Link
-            to="/resume-builder"
-            className="inline-flex items-center gap-1.5 rounded-sm border border-action/40 bg-action/10 px-3 py-1.5 font-mono text-[10px] font-medium tracking-wider text-action transition-all hover:border-action hover:bg-action hover:text-canvas"
-            title="Interactive Full Stack Resume Builder"
-          >
-            <Sparkles size={12} />
-            <span className="hidden xs:inline">Resume Builder</span>
-            <span className="xs:hidden">Builder</span>
-          </Link>
-
-          {/* Resume CTA (FR-1.2: 1-click download) */}
-          <a
-            href={developer.resumeUrl}
-            download="Ashish_Sahu_Resume.pdf"
-            className="hidden items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1.5 font-mono text-[10px] font-medium tracking-wider text-secondary transition-all hover:border-action hover:text-action md:inline-flex"
-            title="Download PDF Resume"
+          {/* Resume PDF Template Selector Button */}
+          <button
+            type="button"
+            onClick={() => openResumeModal("modern")}
+            className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1.5 font-mono text-[10px] font-medium tracking-wider text-secondary transition-all hover:border-action hover:text-action cursor-pointer"
+            title="Open Resume PDF Template Selector"
           >
             <Download size={12} />
-            <span>PDF</span>
-          </a>
+            <span>Resume PDF</span>
+          </button>
 
           {/* Theme Toggle Button */}
           <button
@@ -122,24 +112,18 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
             </a>
           ))}
           <div className="mt-4 flex flex-col gap-2 pt-2">
-            <Link
-              to="/resume-builder"
-              className="inline-flex items-center justify-center gap-2 rounded-sm border border-action bg-action/15 px-4 py-2 font-mono text-[11px] font-semibold text-action no-underline"
-              onClick={() => setMenuOpen(false)}
-            >
-              <Sparkles size={14} />
-              <span>Full Stack Resume Builder</span>
-            </Link>
             <div className="flex items-center justify-between pt-1">
-              <a
-                href={developer.resumeUrl}
-                download="Ashish_Sahu_Resume.pdf"
-                className="inline-flex items-center gap-2 rounded-sm bg-action px-4 py-2 font-mono text-[11px] font-semibold text-canvas no-underline"
-                onClick={() => setMenuOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  openResumeModal("modern");
+                }}
+                className="inline-flex items-center gap-2 rounded-sm bg-action px-4 py-2 font-mono text-[11px] font-semibold text-canvas cursor-pointer"
               >
                 <Download size={14} />
-                <span>Download PDF</span>
-              </a>
+                <span>Resume PDF</span>
+              </button>
               <span className="font-mono text-[10px] text-secondary">
                 {developer.location}
               </span>

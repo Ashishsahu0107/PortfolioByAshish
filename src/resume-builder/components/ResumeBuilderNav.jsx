@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
+import { RESUME_TEMPLATES } from "../templatesRegistry";
 
 export default function ResumeBuilderNav() {
   const {
@@ -43,12 +44,7 @@ export default function ResumeBuilderNav() {
     }
   };
 
-  const templates = [
-    { id: "modern", name: "Modern Blue" },
-    { id: "classic", name: "Classic ATS" },
-    { id: "executive", name: "Executive Sidebar" },
-    { id: "editorial", name: "Editorial Serif" },
-  ];
+  const templates = RESUME_TEMPLATES;
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/95 px-4 py-2.5 backdrop-blur-md shadow-xs">

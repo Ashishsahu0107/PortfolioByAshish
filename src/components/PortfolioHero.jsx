@@ -14,12 +14,14 @@ import { developer } from "../data/developer";
 import { techStack } from "../data/skills";
 import { contentWidth, primaryButton, outlineButton } from "./portfolioStyles";
 import heroPortrait from "../assets/hero.png";
+import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PortfolioHero() {
   const heroRef = useRef(null);
   const [imageError, setImageError] = useState(false);
+  const { openResumeModal } = useResumeModal();
 
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
@@ -211,14 +213,14 @@ export default function PortfolioHero() {
               <span>View My Work</span>
               <ArrowDownRight size={16} />
             </a>
-            <a
-              className={outlineButton}
-              href={developer.resumeUrl}
-              download="Ashish_Sahu_Resume.pdf"
+            <button
+              type="button"
+              className={`${outlineButton} cursor-pointer`}
+              onClick={() => openResumeModal("modern")}
             >
               <Download size={15} />
-              <span>Download Resume</span>
-            </a>
+              <span>Resume PDF</span>
+            </button>
           </div>
 
           {/* Social Links Row */}

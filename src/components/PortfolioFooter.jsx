@@ -2,8 +2,10 @@ import { ArrowUp, Heart } from "lucide-react";
 import { developer } from "../data/developer";
 import { GithubIcon, LinkedinIcon, MailIcon } from "./icons";
 import { contentWidth } from "./portfolioStyles";
+import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
 export default function PortfolioFooter() {
+  const { openResumeModal } = useResumeModal();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -75,13 +77,13 @@ export default function PortfolioFooter() {
             <Heart size={11} className="inline text-action mx-0.5" /> in {developer.location}.
           </p>
           <div className="flex items-center gap-4 font-mono text-[10px]">
-            <a
-              href={developer.resumeUrl}
-              download="Ashish_Sahu_Resume.pdf"
-              className="text-secondary hover:text-action"
+            <button
+              type="button"
+              onClick={() => openResumeModal("modern")}
+              className="text-secondary hover:text-action cursor-pointer"
             >
               Resume PDF
-            </a>
+            </button>
             <span className="text-border">·</span>
             <a
               href={developer.github}

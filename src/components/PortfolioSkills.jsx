@@ -1,5 +1,30 @@
 import { useRef, useState } from "react";
-import { CheckCircle2, Info } from "lucide-react";
+import {
+  Code2,
+  FileCode,
+  Globe,
+  Palette,
+  Wind,
+  Route,
+  Server,
+  Zap,
+  Network,
+  ShieldCheck,
+  KeyRound,
+  Database,
+  TableProperties,
+  GitBranch,
+  Terminal,
+  Send,
+  Coffee,
+  Binary,
+  Radio,
+  Cloud,
+  Eye,
+  CheckCircle2,
+  Info,
+} from "lucide-react";
+import { GithubIcon } from "./icons";
 import { skillCategories } from "../data/skills";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
@@ -9,6 +34,43 @@ import {
   sectionSurface,
   sectionTitle,
 } from "./portfolioStyles";
+
+const ICON_MAP = {
+  Code2,
+  FileCode,
+  Globe,
+  Palette,
+  Wind,
+  Route,
+  Server,
+  Zap,
+  Network,
+  ShieldCheck,
+  KeyRound,
+  Database,
+  TableProperties,
+  GitBranch,
+  Github: GithubIcon,
+  Terminal,
+  Send,
+  Coffee,
+  Binary,
+  Radio,
+  Cloud,
+  Eye,
+};
+
+function SkillIcon({ iconKey }) {
+  const IconComponent = ICON_MAP[iconKey] || Code2;
+  return (
+    <span
+      className="flex items-center justify-center size-7 rounded-sm bg-surface text-action group-hover:bg-action group-hover:text-canvas transition-colors shrink-0"
+      aria-hidden="true"
+    >
+      <IconComponent size={15} />
+    </span>
+  );
+}
 
 export default function PortfolioSkills() {
   const [activeTab, setActiveTab] = useState("all");
@@ -107,9 +169,7 @@ export default function PortfolioSkills() {
                       <span className="font-mono text-sm font-semibold text-primary group-hover:text-action">
                         {skill.name}
                       </span>
-                      <span className="text-base" aria-hidden="true">
-                        {skill.icon}
-                      </span>
+                      <SkillIcon iconKey={skill.icon} />
                     </div>
                     <p className="mt-1 text-[11px] leading-relaxed text-secondary">
                       {skill.description}
