@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { Plus, Save, Pencil, Trash2, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Save, Pencil, Trash2, X, Loader2 } from "lucide-react";
 import {
   AdminSection, FormGroup, useToast, Toast, ConfirmModal, useModal,
   inputCls, textareaCls, selectCls, btnPrimary, btnSecondary, btnDanger,
   badgeBlue, badgeGreen, badgeOrange, badgePurple,
 } from "../adminUtils";
-import { experience as initialExperience } from "../../data/experience";
+import { experienceApi } from "../../services/api";
 
 const TYPE_OPTIONS = ["education", "project", "certification", "work"];
 
@@ -26,10 +26,17 @@ function ExperienceModal({ entry, onSave, onClose }) {
     ...entry,
     highlights: Array.isArray(entry.highlights) ? entry.highlights.join("\n") : "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChange = (e) => setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    onSave({ ...form, highlights: form.highlights.split("\n").map((h) => h.trim()).filter(Boolean) });
+    setIsSubmitting(true);
+    try {
+      await onSave({ ...form, highlights: form.highlights.split("\n").map((h) => h.trim()).filter(Boolean) });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,33 +67,33 @@ function ExperienceModal({ entry, onSave, onClose }) {
               </select>
             </FormGroup>
             <FormGroup label="Status">
-              <input className={inputCls} name="status" value={form.status} onChange={handleChange} placeholder="e.g. Active / Completed" />
+              <input className={inputCls} name="status" value={form.status || ""} onChange={handleChange} placeholder="e.g. Active / Completed" />
             </FormGroup>
             <FormGroup label="Title *" fullWidth>
-              <input className={inputCls} name="title" value={form.title} onChange={handleChange} required />
+              <input className={inputCls} name="title" value={form.title || ""} onChange={handleChange} required />
             </FormGroup>
             <FormGroup label="Organization">
-              <input className={inputCls} name="organization" value={form.organization} onChange={handleChange} />
+              <input className={inputCls} name="organization" value={form.organization || ""} onChange={handleChange} />
             </FormGroup>
             <FormGroup label="Location">
-              <input className={inputCls} name="location" value={form.location} onChange={handleChange} />
+              <input className={inputCls} name="location" value={form.location || ""} onChange={handleChange} />
             </FormGroup>
             <FormGroup label="Period" fullWidth>
-              <input className={inputCls} name="period" value={form.period} onChange={handleChange} placeholder="e.g. 2022 — 2026" />
+              <input className={inputCls} name="period" value={form.period || ""} onChange={handleChange} placeholder="e.g. 2022 — 2026" />
             </FormGroup>
             <FormGroup label="Description" fullWidth>
-              <textarea className={textareaCls} name="description" value={form.description} onChange={handleChange} rows={3} />
+              <textarea className={textareaCls} name="description" value={form.description || ""} onChange={handleChange} rows={3} />
             </FormGroup>
             <FormGroup label="Highlights (one per line)" fullWidth>
-              <textarea className={textareaCls} name="highlights" value={form.highlights} onChange={handleChange} rows={5}
+              <textarea className={textareaCls} name="highlights" value={form.highlights || ""} onChange={handleChange} rows={5}
                 placeholder={"Key achievement 1\nKey achievement 2"} />
             </FormGroup>
           </div>
           <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
-            <button type="button" className={btnSecondary} onClick={onClose}>Cancel</button>
-            <button type="submit" className={btnPrimary}>
-              <Save size={14} />
-              <span>Save</span>
+            <button type="button" className={btnSecondary} onClick={onClose} disabled={isSubmitting}>Cancel</button>
+            <button type="submit" className={btnPrimary} disabled={isSubmitting}>
+              {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+              <span>{isSubmitting ? "Saving…" : "Save Entry"}</span>
             </button>
           </div>
         </form>
@@ -96,30 +103,70 @@ function ExperienceModal({ entry, onSave, onClose }) {
 }
 
 export default function AdminExperience() {
-  const [entries, setEntries] = useState(initialExperience.map((e) => ({ ...e })));
+  const [entries, setEntries] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { toast, showToast } = useToast();
   const editModal = useModal();
   const deleteModal = useModal();
 
-  const handleSave = (entry) => {
-    if (!entry.id) {
-      setEntries((prev) => [...prev, { ...entry, id: "exp_" + Date.now() }]);
-      showToast("Entry added!", "success");
-    } else {
-      setEntries((prev) => prev.map((e) => (e.id === entry.id ? entry : e)));
-      showToast("Entry updated!", "success");
+  async function loadExperience() {
+    try {
+      const data = await experienceApi.getAll();
+      if (Array.isArray(data)) {
+        setEntries(data);
+      }
+    } catch (err) {
+      showToast("Error loading experience: " + (err.message || "Failed to fetch"), "error");
+    } finally {
+      setLoading(false);
     }
-    editModal.close();
+  }
+
+  useEffect(() => {
+    loadExperience();
+  }, []);
+
+  const handleSave = async (entry) => {
+    try {
+      if (!entry.id) {
+        const res = await experienceApi.create(entry);
+        showToast(`Entry "${res.data.title}" added to database!`, "success");
+      } else {
+        const res = await experienceApi.update(entry.id, entry);
+        showToast(`Entry "${res.data.title}" updated successfully!`, "success");
+      }
+      editModal.close();
+      await loadExperience();
+    } catch (err) {
+      showToast(err.message || "Failed to save experience entry", "error");
+    }
   };
 
-  const handleDelete = () => {
-    setEntries((prev) => prev.filter((e) => e.id !== deleteModal.modal?.id));
-    showToast("Entry deleted.", "info");
-    deleteModal.close();
+  const handleDelete = async () => {
+    if (!deleteModal.modal?.id) return;
+    try {
+      await experienceApi.delete(deleteModal.modal.id);
+      showToast("Entry removed successfully.", "info");
+      deleteModal.close();
+      await loadExperience();
+    } catch (err) {
+      showToast(err.message || "Failed to delete entry", "error");
+    }
   };
+
+  if (loading) {
+    return (
+      <AdminSection title="Experience" desc="Loading experience data from backend server...">
+        <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
+          <Loader2 size={20} className="animate-spin text-indigo-600" />
+          <span>Connecting to database...</span>
+        </div>
+      </AdminSection>
+    );
+  }
 
   return (
-    <AdminSection title="Experience" desc="Manage education, work, projects, and certifications.">
+    <AdminSection title="Experience" desc="Manage education, work, projects, and certifications with persistent storage.">
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <p className="m-0 text-sm text-gray-500">{entries.length} entr{entries.length !== 1 ? "ies" : "y"}</p>
         <button className={`${btnPrimary} !px-3 !py-1.5 !text-xs`} onClick={() => editModal.open({ ...EMPTY })}>

@@ -10,7 +10,8 @@ import {
   Pause,
   Sparkles,
 } from "lucide-react";
-import { projects } from "../data/projects";
+import { projects as fallbackProjects } from "../data/projects";
+import { projectsApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
   contentWidth,
@@ -23,40 +24,55 @@ import {
 const AUTO_SLIDE_INTERVAL = 3800; // 3.8 seconds auto slide
 
 export default function PortfolioProjects() {
+  const [projectList, setProjectList] = useState(fallbackProjects);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef(null);
 
   useGsapReveal(sectionRef);
 
-  const nextSlide = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % projects.length);
+  useEffect(() => {
+    async function loadLiveProjects() {
+      try {
+        const live = await projectsApi.getAll();
+        if (Array.isArray(live) && live.length > 0) {
+          setProjectList(live);
+        }
+      } catch (err) {
+        console.warn("Using fallback projects:", err.message);
+      }
+    }
+    loadLiveProjects();
   }, []);
 
+  const nextSlide = useCallback(() => {
+    setActiveIndex((prev) => (prev + 1) % projectList.length);
+  }, [projectList.length]);
+
   const prevSlide = useCallback(() => {
-    setActiveIndex((prev) => (prev - 1 + projects.length) % projects.length);
-  }, []);
+    setActiveIndex((prev) => (prev - 1 + projectList.length) % projectList.length);
+  }, [projectList.length]);
 
   // Auto-slide effect that pauses when isPaused is true
   useEffect(() => {
-    if (isPaused) return undefined;
+    if (isPaused || projectList.length <= 1) return undefined;
 
     const timer = setInterval(() => {
       nextSlide();
     }, AUTO_SLIDE_INTERVAL);
 
     return () => clearInterval(timer);
-  }, [isPaused, nextSlide]);
+  }, [isPaused, nextSlide, projectList.length]);
 
-  const activeProject = projects[activeIndex];
+  const activeProject = projectList[activeIndex] || projectList[0] || {};
 
   // Helper to calculate 3D Coverflow position for each card
   const getCardStyle = (index) => {
     let offset = index - activeIndex;
-    const half = projects.length / 2;
+    const half = projectList.length / 2;
 
-    if (offset > half) offset -= projects.length;
-    if (offset < -half) offset += projects.length;
+    if (offset > half) offset -= projectList.length;
+    if (offset < -half) offset += projectList.length;
 
     const isCenter = offset === 0;
     const absOffset = Math.abs(offset);
@@ -156,7 +172,7 @@ export default function PortfolioProjects() {
             <span className="font-mono text-[12px] font-semibold text-primary px-2">
               <span className="text-action">{String(activeIndex + 1).padStart(2, "0")}</span>
               <span className="text-secondary/60"> / </span>
-              <span className="text-secondary">{String(projects.length).padStart(2, "0")}</span>
+              <span className="text-secondary">{String(projectList.length).padStart(2, "0")}</span>
             </span>
             <button
               onClick={nextSlide}
@@ -181,7 +197,7 @@ export default function PortfolioProjects() {
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {projects.map((project, index) => {
+          {projectList.map((project, index) => {
             const isCenter = index === activeIndex;
             const cardStyle = getCardStyle(index);
 
@@ -300,7 +316,7 @@ export default function PortfolioProjects() {
 
         {/* Bottom Pagination Dots */}
         <div className="reveal mt-4 flex items-center justify-center gap-2">
-          {projects.map((proj, idx) => (
+          {projectList.map((proj, idx) => (
             <button
               key={proj.id}
               onClick={() => setActiveIndex(idx)}

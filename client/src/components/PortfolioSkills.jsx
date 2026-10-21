@@ -1,4 +1,5 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { skillsApi } from "../services/api";
 import {
   Code2,
   FileCode,
@@ -72,15 +73,31 @@ function SkillIcon({ iconKey }) {
   );
 }
 
+
 export default function PortfolioSkills() {
+  const [categories, setCategories] = useState(skillCategories);
   const [activeTab, setActiveTab] = useState("all");
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
 
+  useEffect(() => {
+    async function loadSkills() {
+      try {
+        const live = await skillsApi.get();
+        if (Array.isArray(live) && live.length > 0) {
+          setCategories(live);
+        }
+      } catch (err) {
+        console.warn("Using fallback skills:", err.message);
+      }
+    }
+    loadSkills();
+  }, []);
+
   const displayedCategories =
     activeTab === "all"
-      ? skillCategories
-      : skillCategories.filter((cat) => cat.id === activeTab);
+      ? categories
+      : categories.filter((cat) => cat.id === activeTab);
 
   return (
     <section

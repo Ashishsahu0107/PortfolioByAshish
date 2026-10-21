@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   ArrowUpRight,
   Code2,
@@ -7,7 +7,7 @@ import {
   Server,
   Terminal,
 } from "lucide-react";
-import { developer } from "../data/developer";
+import { developer as initialDeveloper } from "../data/developer";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
   contentWidth,
@@ -16,6 +16,7 @@ import {
   textLink,
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
+import { aboutApi } from "../services/api";
 
 const iconMap = {
   Code2: Code2,
@@ -26,9 +27,29 @@ const iconMap = {
 };
 
 export default function PortfolioAbout() {
+  const [aboutData, setAboutData] = useState(initialDeveloper);
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();
+
+  useEffect(() => {
+    async function loadAbout() {
+      try {
+        const live = await aboutApi.get();
+        if (live) {
+          setAboutData((prev) => ({
+            ...prev,
+            ...live,
+            focusAreas: live.focusAreas || prev.focusAreas,
+            stats: live.stats || prev.stats,
+          }));
+        }
+      } catch (err) {
+        console.warn("Using fallback about data:", err.message);
+      }
+    }
+    loadAbout();
+  }, []);
 
   return (
     <section
@@ -58,9 +79,9 @@ export default function PortfolioAbout() {
             </h2>
 
             <div className="space-y-4 text-[15px] leading-[1.9] text-secondary">
-              <p>{developer.bio}</p>
+              <p>{aboutData.bio}</p>
               <p className="text-[14px] text-primary font-medium">
-                {developer.philosophy}
+                {aboutData.philosophy}
               </p>
               <p>
                 From designing normalized database schemas in MongoDB to crafting
@@ -73,7 +94,7 @@ export default function PortfolioAbout() {
             <div className="mt-8 flex flex-wrap items-center gap-6">
               <a
                 className={textLink}
-                href={developer.github}
+                href={aboutData.github}
                 target="_blank"
                 rel="noreferrer"
               >
@@ -103,7 +124,7 @@ export default function PortfolioAbout() {
             </div>
 
             <div className="space-y-3.5">
-              {developer.focusAreas.map((area, index) => {
+              {(aboutData.focusAreas || []).map((area, index) => {
                 const IconComponent = iconMap[area.icon] || Code2;
                 return (
                   <div
@@ -135,11 +156,11 @@ export default function PortfolioAbout() {
 
         {/* Bottom Editorial Stats Bar */}
         <div className="reveal mt-16 grid grid-cols-2 border-y border-border sm:grid-cols-4">
-          {developer.stats.map((stat, index) => (
+          {(aboutData.stats || []).map((stat, index) => (
             <div
               key={stat.label}
               className={`flex flex-col justify-center gap-1.5 p-6 sm:p-7 ${
-                index !== developer.stats.length - 1
+                index !== (aboutData.stats || []).length - 1
                   ? "border-r border-border max-sm:odd:border-r max-sm:even:border-r-0"
                   : ""
               } ${index < 2 ? "max-sm:border-b max-sm:border-border" : ""}`}

@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Award, Briefcase, FolderOpen, GraduationCap } from "lucide-react";
-import { experience } from "../data/experience";
+import { experience as initialExperience } from "../data/experience";
+import { experienceApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
   contentWidth,
@@ -26,6 +27,11 @@ const typeConfig = {
     label: "Industry Experience",
     color: "text-amber-500 border-amber-500/30 bg-amber-500/10",
   },
+  work: {
+    icon: Briefcase,
+    label: "Work Experience",
+    color: "text-amber-500 border-amber-500/30 bg-amber-500/10",
+  },
   certification: {
     icon: Award,
     label: "Mastery & Cert",
@@ -34,8 +40,23 @@ const typeConfig = {
 };
 
 export default function PortfolioExperience() {
+  const [experienceList, setExperienceList] = useState(initialExperience);
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
+
+  useEffect(() => {
+    async function loadExperience() {
+      try {
+        const live = await experienceApi.getAll();
+        if (Array.isArray(live) && live.length > 0) {
+          setExperienceList(live);
+        }
+      } catch (err) {
+        console.warn("Using fallback experience:", err.message);
+      }
+    }
+    loadExperience();
+  }, []);
 
   return (
     <section
@@ -61,7 +82,7 @@ export default function PortfolioExperience() {
 
         {/* Chronological Resume Feed */}
         <div className="mt-12 space-y-6">
-          {experience.map((item) => {
+          {experienceList.map((item) => {
             const config = typeConfig[item.type] || typeConfig.education;
             const Icon = config.icon;
 

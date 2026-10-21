@@ -1,0 +1,66 @@
+[
+  {
+    "id": "subm_1792589527089_rib2h",
+    "createdAt": "2026-10-21T13:32:07.089Z",
+    "updatedAt": "2026-10-21T13:32:07.089Z",
+    "formId": "form_contact",
+    "formName": "General Contact Form",
+    "formSlug": "contact",
+    "ip": "::1",
+    "submittedAt": "2026-10-21T13:32:07.089Z",
+    "data": {
+      "name": "Test Inquirer",
+      "email": "inquirer@test.com",
+      "subject": "Automated API Test",
+      "message": "Hello from verification test suite!"
+    }
+  },
+  {
+    "id": "subm_1792590966311_avbxs",
+    "createdAt": "2026-10-21T13:56:06.311Z",
+    "updatedAt": "2026-10-21T13:56:06.311Z",
+    "formId": "form_contact",
+    "formName": "General Contact Form",
+    "formSlug": "contact",
+    "ip": "::1",
+    "submittedAt": "2026-10-21T13:56:06.311Z",
+    "data": {
+      "name": "Test Inquirer",
+      "email": "inquirer@test.com",
+      "subject": "Automated API Test",
+      "message": "Hello from verification test suite!"
+    }
+  },
+  {
+    "id": "subm_1792591538275_fthmd",
+    "createdAt": "2026-10-21T14:05:38.275Z",
+    "updatedAt": "2026-10-21T14:05:38.275Z",
+    "formId": "form_contact",
+    "formName": "General Contact Form",
+    "formSlug": "contact",
+    "ip": "::1",
+    "data": {
+      "name": "Test Inquirer",
+      "email": "inquirer@test.com",
+      "subject": "Automated API Test",
+      "message": "Hello from verification test suite!"
+    },
+    "submittedAt": "2026-10-21T14:05:38.275Z"
+  },
+  {
+    "id": "subm_1792592149407_k5a33",
+    "createdAt": "2026-10-21T14:15:49.407Z",
+    "updatedAt": "2026-10-21T14:15:49.407Z",
+    "formId": "form_contact",
+    "formName": "General Contact Form",
+    "formSlug": "contact",
+    "ip": "::1",
+    "data": {
+      "name": "Test Inquirer",
+      "email": "inquirer@test.com",
+      "subject": "Automated API Test",
+      "message": "Hello from verification test suite!"
+    },
+    "submittedAt": "2026-10-21T14:15:49.407Z"
+  }
+]

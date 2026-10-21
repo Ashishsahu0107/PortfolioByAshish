@@ -14,6 +14,8 @@ import {
   Globe,
   ChevronLeft,
   ChevronRight,
+  LayoutGrid,
+  FileSpreadsheet,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import AdminHome from "./sections/AdminHome";
@@ -24,14 +26,18 @@ import AdminExperience from "./sections/AdminExperience";
 import AdminContact from "./sections/AdminContact";
 import AdminSettings from "./sections/AdminSettings";
 import AdminOverview from "./sections/AdminOverview";
+import AdminSections from "./sections/AdminSections";
+import AdminFormBuilder from "./sections/AdminFormBuilder";
 
 const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { path: "/admin/home", label: "Home", icon: Home },
+  { path: "/admin/sections", label: "Manage Sections", icon: LayoutGrid },
   { path: "/admin/about", label: "About", icon: User },
   { path: "/admin/skills", label: "Skills", icon: Zap },
   { path: "/admin/projects", label: "Work / Projects", icon: FolderGit2 },
   { path: "/admin/experience", label: "Experience", icon: Briefcase },
+  { path: "/admin/forms", label: "Form Builder", icon: FileSpreadsheet },
   { path: "/admin/contact", label: "Contact", icon: Mail },
   { path: "/admin/settings", label: "Settings", icon: Settings },
 ];
@@ -209,10 +215,12 @@ export default function AdminDashboard() {
           <Routes>
             <Route index element={<AdminOverview />} />
             <Route path="home" element={<AdminHome />} />
+            <Route path="sections" element={<AdminSections />} />
             <Route path="about" element={<AdminAbout />} />
             <Route path="skills" element={<AdminSkills />} />
             <Route path="projects" element={<AdminProjects />} />
             <Route path="experience" element={<AdminExperience />} />
+            <Route path="forms" element={<AdminFormBuilder />} />
             <Route path="contact" element={<AdminContact />} />
             <Route path="settings" element={<AdminSettings />} />
           </Routes>

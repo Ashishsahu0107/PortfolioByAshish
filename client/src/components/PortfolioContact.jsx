@@ -1,7 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ArrowUpRight, Download, Mail, MapPin, Send } from "lucide-react";
 import emailjs from "@emailjs/browser";
-import { developer } from "../data/developer";
 import { GithubIcon, LinkedinIcon } from "./icons";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
@@ -12,13 +11,41 @@ import {
   sectionSurface,
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
+import { contactApi } from "../services/api";
+
+const DEFAULT_DEV = {
+  email: "ashishsahu01072005@gmail.com",
+  github: "https://github.com/Ashishsahu0107",
+  linkedin: "https://linkedin.com/in/ashishsahu0107",
+  location: "India",
+  statusPhrase: "Available for opportunities",
+  availableForWork: true,
+  emailjsServiceId: "service_mshfzaf",
+  emailjsTemplateId: "template_0rruyps",
+  emailjsPublicKey: "3JGbJNsXsGW1gQJGu",
+};
 
 export default function PortfolioContact() {
   const sectionRef = useRef(null);
+  const [contactData, setContactData] = useState(DEFAULT_DEV);
   const [state, setState] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();
+
+  useEffect(() => {
+    async function loadContact() {
+      try {
+        const data = await contactApi.getInfo();
+        if (data) {
+          setContactData((prev) => ({ ...prev, ...data }));
+        }
+      } catch (err) {
+        console.warn("Using fallback contact info:", err.message);
+      }
+    }
+    loadContact();
+  }, []);
 
   const submit = async (event) => {
     event.preventDefault();
@@ -29,7 +56,6 @@ export default function PortfolioContact() {
     const subject = formData.get("subject")?.toString().trim();
     const message = formData.get("message")?.toString().trim();
 
-    // Client-side validation per PRD Section 5.4
     if (!name || name.length < 2) {
       setErrorMessage("Please enter your name (at least 2 characters).");
       setState("error");
@@ -45,20 +71,9 @@ export default function PortfolioContact() {
       setState("error");
       return;
     }
-    if (!message || message.length < 15) {
-      setErrorMessage("Message must be at least 15 characters.");
+    if (!message || message.length < 10) {
+      setErrorMessage("Message must be at least 10 characters.");
       setState("error");
-      return;
-    }
-
-    const { emailjsServiceId, emailjsTemplateId, emailjsPublicKey } = developer;
-
-    if (!emailjsServiceId || !emailjsTemplateId || !emailjsPublicKey) {
-      // Graceful fallback to mailto link
-      window.location.href = `mailto:${developer.email}?subject=${encodeURIComponent(
-        subject
-      )}&body=${encodeURIComponent(`From: ${name} (${email})\n\n${message}`)}`;
-      setState("unconfigured");
       return;
     }
 
@@ -66,19 +81,22 @@ export default function PortfolioContact() {
     setErrorMessage("");
 
     try {
-      await emailjs.sendForm(
-        emailjsServiceId,
-        emailjsTemplateId,
-        form,
-        emailjsPublicKey
-      );
+      // 1. Save directly into backend persistent database
+      await contactApi.sendMessage({ name, email, subject, message });
+
+      // 2. Dispatch via EmailJS if configured
+      const { emailjsServiceId, emailjsTemplateId, emailjsPublicKey } = contactData;
+      if (emailjsServiceId && emailjsTemplateId && emailjsPublicKey) {
+        emailjs.sendForm(emailjsServiceId, emailjsTemplateId, form, emailjsPublicKey).catch(() => {
+          // Soft failure for EmailJS; the backend message is already saved!
+        });
+      }
+
       form.reset();
       setState("sent");
-    } catch {
+    } catch (err) {
       setState("error");
-      setErrorMessage(
-        "Could not send automatically. Please reach out directly via email."
-      );
+      setErrorMessage(err.message || "Could not send message. Please reach out directly via email.");
     }
   };
 
@@ -112,17 +130,17 @@ export default function PortfolioContact() {
             {/* Direct Email Link */}
             <a
               className="mt-8 inline-flex max-w-full items-center gap-2.5 border-b border-action pb-2 font-mono text-[14px] text-primary no-underline transition-colors hover:text-action max-sm:text-[13px]"
-              href={`mailto:${developer.email}`}
+              href={`mailto:${contactData.email}`}
             >
               <Mail size={16} className="text-action shrink-0" />
-              <span>{developer.email}</span>
+              <span>{contactData.email}</span>
               <ArrowUpRight className="shrink-0 text-action" size={16} />
             </a>
 
             {/* Location & Status Info */}
             <p className="mt-5 flex items-center gap-2 font-mono text-[11px] text-secondary">
               <MapPin className="text-action" size={15} />
-              <span>{developer.location} · Available worldwide (Remote & On-site)</span>
+              <span>{contactData.location} · Available worldwide (Remote & On-site)</span>
             </p>
 
             {/* Direct Resource Links (Resume, GitHub, LinkedIn) */}
@@ -136,7 +154,7 @@ export default function PortfolioContact() {
                 <span>Resume PDF (6 Templates)</span>
               </button>
               <a
-                href={developer.github}
+                href={contactData.github}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex size-9 items-center justify-center rounded-sm border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action"
@@ -145,7 +163,7 @@ export default function PortfolioContact() {
                 <GithubIcon size={16} />
               </a>
               <a
-                href={developer.linkedin}
+                href={contactData.linkedin}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex size-9 items-center justify-center rounded-sm border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action"
@@ -167,7 +185,7 @@ export default function PortfolioContact() {
                   Message Sent Successfully
                 </h3>
                 <p className="mt-2 text-sm text-secondary">
-                  Thank you for reaching out. I usually respond within 24 hours.
+                  Thank you for reaching out. I have received your message and will respond shortly.
                 </p>
                 <button
                   type="button"
@@ -254,30 +272,16 @@ export default function PortfolioContact() {
                   type="submit"
                   disabled={state === "sending"}
                 >
-                  <span>{state === "sending" ? "Sending Payload..." : "Send Message"}</span>
+                  <span>{state === "sending" ? "Submitting Message..." : "Send Message"}</span>
                   <Send size={15} />
                 </button>
-
-                {state === "unconfigured" && (
-                  <p
-                    className="mt-3 text-[11px] leading-relaxed text-secondary"
-                    role="status"
-                  >
-                    Opened your email client directly. If it didn&apos;t open, email me at{" "}
-                    <a className="text-action underline" href={`mailto:${developer.email}`}>
-                      {developer.email}
-                    </a>
-                    .
-                  </p>
-                )}
 
                 {state === "error" && (
                   <p
                     className="mt-3 text-[11px] leading-relaxed text-red-400"
                     role="alert"
                   >
-                    {errorMessage ||
-                      "Something went wrong. Please email me directly."}
+                    {errorMessage || "Something went wrong. Please email me directly."}
                   </p>
                 )}
               </form>

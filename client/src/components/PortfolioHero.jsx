@@ -10,18 +10,33 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubIcon, LinkedinIcon, MailIcon } from "./icons";
-import { developer } from "../data/developer";
+import { developer as initialDeveloper } from "../data/developer";
 import { techStack } from "../data/skills";
 import { contentWidth, primaryButton, outlineButton } from "./portfolioStyles";
 import heroPortrait from "../assets/hero.png";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
+import { developerApi } from "../services/api";
+import { useEffect } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PortfolioHero() {
+  const [developer, setDeveloper] = useState(initialDeveloper);
   const heroRef = useRef(null);
   const [imageError, setImageError] = useState(false);
   const { openResumeModal } = useResumeModal();
+
+  useEffect(() => {
+    async function loadDeveloper() {
+      try {
+        const live = await developerApi.get();
+        if (live) setDeveloper((prev) => ({ ...prev, ...live }));
+      } catch {
+        // Fallback loaded
+      }
+    }
+    loadDeveloper();
+  }, []);
 
   useLayoutEffect(() => {
     const media = gsap.matchMedia();

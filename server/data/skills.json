@@ -1,0 +1,169 @@
+[
+  {
+    "id": "frontend",
+    "label": "Frontend",
+    "color": "var(--color-accent)",
+    "skills": [
+      {
+        "name": "React",
+        "description": "Component-based UI library",
+        "level": 90,
+        "icon": "Code2"
+      },
+      {
+        "name": "JavaScript",
+        "description": "Core language for the web",
+        "level": 88,
+        "icon": "FileCode"
+      },
+      {
+        "name": "HTML5",
+        "description": "Semantic web structure",
+        "level": 95,
+        "icon": "Globe"
+      },
+      {
+        "name": "CSS3",
+        "description": "Styling & animations",
+        "level": 90,
+        "icon": "Palette"
+      },
+      {
+        "name": "Tailwind CSS",
+        "description": "Utility-first CSS framework",
+        "level": 88,
+        "icon": "Wind"
+      },
+      {
+        "name": "React Router",
+        "description": "Client-side routing",
+        "level": 85,
+        "icon": "Route"
+      }
+    ]
+  },
+  {
+    "id": "backend",
+    "label": "Backend",
+    "color": "var(--color-accent)",
+    "skills": [
+      {
+        "name": "Node.js",
+        "description": "JavaScript runtime",
+        "level": 85,
+        "icon": "Server"
+      },
+      {
+        "name": "Express.js",
+        "description": "Fast, minimal web framework",
+        "level": 85,
+        "icon": "Zap"
+      },
+      {
+        "name": "REST APIs",
+        "description": "API design & development",
+        "level": 88,
+        "icon": "Network"
+      },
+      {
+        "name": "Authentication",
+        "description": "Secure user auth systems",
+        "level": 82,
+        "icon": "ShieldCheck"
+      },
+      {
+        "name": "JWT",
+        "description": "Token-based auth",
+        "level": 80,
+        "icon": "KeyRound"
+      }
+    ]
+  },
+  {
+    "id": "database",
+    "label": "Database",
+    "color": "var(--color-accent)",
+    "skills": [
+      {
+        "name": "MongoDB",
+        "description": "NoSQL document database",
+        "level": 85,
+        "icon": "Database"
+      },
+      {
+        "name": "MySQL",
+        "description": "Relational database",
+        "level": 75,
+        "icon": "TableProperties"
+      }
+    ]
+  },
+  {
+    "id": "tools",
+    "label": "Tools",
+    "color": "var(--color-accent)",
+    "skills": [
+      {
+        "name": "Git",
+        "description": "Version control",
+        "level": 88,
+        "icon": "GitBranch"
+      },
+      {
+        "name": "GitHub",
+        "description": "Code hosting & collaboration",
+        "level": 88,
+        "icon": "Github"
+      },
+      {
+        "name": "VS Code",
+        "description": "Primary code editor",
+        "level": 95,
+        "icon": "Terminal"
+      },
+      {
+        "name": "Postman",
+        "description": "API testing",
+        "level": 85,
+        "icon": "Send"
+      }
+    ]
+  },
+  {
+    "id": "other",
+    "label": "Other",
+    "color": "var(--color-accent)",
+    "skills": [
+      {
+        "name": "Java",
+        "description": "Object-oriented programming",
+        "level": 78,
+        "icon": "Coffee"
+      },
+      {
+        "name": "DSA",
+        "description": "Data structures & algorithms",
+        "level": 75,
+        "icon": "Binary"
+      },
+      {
+        "name": "IoT",
+        "description": "Internet of Things",
+        "level": 70,
+        "icon": "Radio"
+      },
+      {
+        "name": "Cloud Computing",
+        "description": "Cloud infrastructure basics",
+        "level": 68,
+        "icon": "Cloud"
+      },
+      {
+        "name": "Computer Vision",
+        "description": "Image processing & ML",
+        "level": 65,
+        "icon": "Eye"
+      }
+    ]
+  }
+]

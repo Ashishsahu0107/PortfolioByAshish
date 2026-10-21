@@ -1,25 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { Navigate, useLocation } from "react-router-dom";
+import { authApi } from "../services/api";
 
 const AUTH_STORAGE_KEY = "portfolio_admin_session_v1";
 
 const AuthContext = createContext(null);
-
-// Default Admin credentials for portfolio management
-const VALID_ACCOUNTS = [
-  {
-    email: "admin@ashish.dev",
-    password: "AdminPassword123!",
-    name: "Ashish Sahu",
-    role: "Lead Full Stack Developer & Owner",
-  },
-  {
-    email: "ashishsahu01072005@gmail.com",
-    password: "ashish2026",
-    name: "Ashish Sahu",
-    role: "Portfolio Administrator",
-  },
-];
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
@@ -35,45 +20,61 @@ export function AuthProvider({ children }) {
 
   const isAuthenticated = Boolean(user && user.token);
 
+  // Validate session on app launch
+  useEffect(() => {
+    if (user?.token) {
+      authApi.me().catch(() => {
+        // Token expired or invalid
+        logout();
+      });
+    }
+  }, []);
+
   const login = async (email, password, rememberMe = true) => {
     setIsLoading(true);
     setError("");
 
-    // Simulate realistic async verification
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    try {
+      const response = await authApi.login(email, password);
 
-    const cleanEmail = (email || "").trim().toLowerCase();
-    const matchedAccount = VALID_ACCOUNTS.find(
-      (acc) => acc.email.toLowerCase() === cleanEmail && acc.password === password
-    );
+      if (response.success && response.token) {
+        const sessionPayload = {
+          ...response.user,
+          token: response.token,
+        };
 
-    if (matchedAccount) {
-      const sessionPayload = {
-        email: matchedAccount.email,
-        name: matchedAccount.name,
-        role: matchedAccount.role,
-        token: "jwt_admin_" + Math.random().toString(36).substring(2) + Date.now().toString(36),
-        loginTime: new Date().toISOString(),
-        expiresIn: "24h",
-      };
+        setUser(sessionPayload);
+        setIsLoading(false);
 
-      setUser(sessionPayload);
+        try {
+          if (rememberMe) {
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
+          } else {
+            sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
+          }
+        } catch {}
+
+        return { success: true };
+      } else {
+        throw new Error(response.message || "Authentication failed.");
+      }
+    } catch (err) {
       setIsLoading(false);
-
-      try {
-        if (rememberMe) {
-          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
-        } else {
-          sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
-        }
-      } catch {}
-
-      return { success: true };
-    } else {
-      setIsLoading(false);
-      const errMsg = "Invalid email or password. Use demo credentials or verify your entry.";
+      const errMsg = err.message || "Invalid credentials. Please verify your email and password.";
       setError(errMsg);
       return { success: false, error: errMsg };
+    }
+  };
+
+  const changePassword = async (currentPassword, newPassword) => {
+    setIsLoading(true);
+    try {
+      const res = await authApi.changePassword(currentPassword, newPassword);
+      setIsLoading(false);
+      return res;
+    } catch (err) {
+      setIsLoading(false);
+      throw err;
     }
   };
 
@@ -96,7 +97,11 @@ export function AuthProvider({ children }) {
         setError,
         login,
         logout,
-        demoCredentials: VALID_ACCOUNTS[0],
+        changePassword,
+        demoCredentials: {
+          email: "admin@ashish.dev",
+          password: "AdminPassword123!",
+        },
       }}
     >
       {children}

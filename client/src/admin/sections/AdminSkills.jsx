@@ -1,34 +1,52 @@
-import { useState } from "react";
-import { Plus, Trash2, Save, Loader2, Code2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Trash2, Save, Loader2 } from "lucide-react";
 import {
   AdminSection, AdminCard, FormGroup, useToast, Toast, ConfirmModal, useModal,
   inputCls, btnPrimary, btnSecondary, btnDanger, btnSuccess,
 } from "../adminUtils";
-import { skillCategories } from "../../data/skills";
+import { skillsApi } from "../../services/api";
 
 function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
 export default function AdminSkills() {
-  const [categories, setCategories] = useState(deepClone(skillCategories));
-  const [activeTab, setActiveTab] = useState(skillCategories[0]?.id || "");
+  const [categories, setCategories] = useState([]);
+  const [activeTab, setActiveTab] = useState("");
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const { toast, showToast } = useToast();
   const deleteModal = useModal();
 
+  useEffect(() => {
+    async function loadSkills() {
+      try {
+        const data = await skillsApi.get();
+        if (Array.isArray(data) && data.length > 0) {
+          setCategories(deepClone(data));
+          setActiveTab(data[0].id);
+        }
+      } catch (err) {
+        showToast("Error loading skills: " + (err.message || "Failed to fetch"), "error");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSkills();
+  }, []);
+
   const activeCategory = categories.find((c) => c.id === activeTab);
 
   const addCategory = () => {
-    const id = "category_" + Date.now();
-    setCategories((prev) => [
-      ...prev,
-      { id, label: "New Category", color: "var(--color-accent)", skills: [] },
-    ]);
+    const id = "cat_" + Date.now().toString(36);
+    const newCat = { id, label: "New Category", color: "var(--color-accent)", skills: [] };
+    setCategories((prev) => [...prev, newCat]);
     setActiveTab(id);
   };
+
   const updateCategoryLabel = (id, label) =>
     setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, label } : c)));
+
   const removeCategory = (id) => {
     setCategories((prev) => prev.filter((c) => c.id !== id));
     if (activeTab === id) setActiveTab(categories.find((c) => c.id !== id)?.id || "");
@@ -48,14 +66,16 @@ export default function AdminSkills() {
           : c
       )
     );
+
   const addSkill = () =>
     setCategories((prev) =>
       prev.map((c) =>
         c.id === activeTab
-          ? { ...c, skills: [...c.skills, { name: "", description: "", level: 75, icon: "Code2" }] }
+          ? { ...c, skills: [...(c.skills || []), { name: "", description: "", level: 75, icon: "Code2" }] }
           : c
       )
     );
+
   const confirmDeleteSkill = (idx) => deleteModal.open({ idx });
   const deleteSkill = () => {
     const idx = deleteModal.modal?.idx;
@@ -71,10 +91,26 @@ export default function AdminSkills() {
 
   const handleSave = async () => {
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSaving(false);
-    showToast("Skills saved successfully!", "success");
+    try {
+      await skillsApi.update(categories);
+      showToast("All skills saved successfully to database!", "success");
+    } catch (err) {
+      showToast(err.message || "Failed to save skills", "error");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <AdminSection title="Skills" desc="Loading skills data from backend server...">
+        <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
+          <Loader2 size={20} className="animate-spin text-indigo-600" />
+          <span>Connecting to database...</span>
+        </div>
+      </AdminSection>
+    );
+  }
 
   return (
     <AdminSection title="Skills" desc="Manage skill categories and individual proficiency levels.">
@@ -104,7 +140,7 @@ export default function AdminSkills() {
           </button>
         </div>
 
-        {activeCategory && (
+        {activeCategory ? (
           <>
             {/* Category name + remove */}
             <div className="flex items-end gap-3 mb-5">
@@ -127,7 +163,7 @@ export default function AdminSkills() {
 
             {/* Skills */}
             <div className="flex flex-col gap-3">
-              {activeCategory.skills.map((skill, idx) => (
+              {(activeCategory.skills || []).map((skill, idx) => (
                 <div key={idx} className="flex gap-3 p-3.5 bg-gray-50 border border-gray-200 rounded-xl hover:border-indigo-200 transition-colors">
                   <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <FormGroup label="Skill Name">
@@ -187,6 +223,8 @@ export default function AdminSkills() {
               <span>Add Skill</span>
             </button>
           </>
+        ) : (
+          <p className="text-sm text-gray-500 py-4">No categories created yet. Click "New Category" above.</p>
         )}
       </AdminCard>
 
@@ -195,7 +233,7 @@ export default function AdminSkills() {
           {saving ? (
             <>
               <Loader2 size={14} className="animate-spin" />
-              <span>Saving…</span>
+              <span>Saving to Database…</span>
             </>
           ) : (
             <>
