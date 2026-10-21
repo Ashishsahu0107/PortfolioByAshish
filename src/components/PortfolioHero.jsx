@@ -1,147 +1,400 @@
-import { useLayoutEffect, useRef } from "react";
-import { ArrowDown, ArrowDownRight, ArrowUpRight, Flag, GraduationCap } from "lucide-react";
+import { useLayoutEffect, useRef, useState } from "react";
+import {
+  ArrowDown,
+  ArrowDownRight,
+  Download,
+  Flag,
+  GraduationCap,
+  Sparkles,
+} from "lucide-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { GithubIcon, LinkedinIcon } from "./icons";
+import { GithubIcon, LinkedinIcon, MailIcon } from "./icons";
 import { developer } from "../data/developer";
 import { techStack } from "../data/skills";
-import { contentWidth, primaryButton, textLink } from "./portfolioStyles";
+import { contentWidth, primaryButton, outlineButton } from "./portfolioStyles";
 import heroPortrait from "../assets/hero.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PortfolioHero() {
   const heroRef = useRef(null);
+  const [imageError, setImageError] = useState(false);
 
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
       const context = gsap.context(() => {
-        const intro = gsap.timeline();
+        const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+
         intro
-          .to(".hero-portrait-image", {
-            opacity: 0.62,
-            duration: 0.14,
-            repeat: 13,
-            yoyo: true,
-            ease: "steps(1)",
-          })
           .fromTo(
-            ".hero-title",
-            { autoAlpha: 0, x: -80 },
-            { autoAlpha: 1, x: 0, duration: 0.85, ease: "power3.out" },
-            2
+            ".hero-status-pill",
+            { autoAlpha: 0, y: -16 },
+            { autoAlpha: 1, y: 0, duration: 0.6 }
           )
           .fromTo(
-            ".hero-stack",
-            { autoAlpha: 0, x: 70 },
-            { autoAlpha: 1, x: 0, duration: 0.8, ease: "power3.out" },
-            3.1
+            ".hero-title-first",
+            { autoAlpha: 0, x: -40 },
+            { autoAlpha: 1, x: 0, duration: 0.7 },
+            "-=0.4"
           )
           .fromTo(
-            ".hero-copy-detail",
-            { autoAlpha: 0, y: 18 },
-            { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.09, ease: "power2.out" },
-            4.1
+            ".hero-title-last",
+            { autoAlpha: 0, x: 40 },
+            { autoAlpha: 1, x: 0, duration: 0.7 },
+            "-=0.5"
           )
           .fromTo(
-            ".hero-course-card",
-            { autoAlpha: 0, y: 22 },
-            { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" },
-            4.7
+            ".hero-role-bar",
+            { autoAlpha: 0, y: 15 },
+            { autoAlpha: 1, y: 0, duration: 0.5 },
+            "-=0.4"
+          )
+          .fromTo(
+            ".hero-bio-copy",
+            { autoAlpha: 0, y: 15 },
+            { autoAlpha: 1, y: 0, duration: 0.5 },
+            "-=0.3"
           )
           .fromTo(
             ".hero-actions",
-            { autoAlpha: 0, y: 16 },
-            { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out" },
-            5.3
+            { autoAlpha: 0, y: 15 },
+            { autoAlpha: 1, y: 0, duration: 0.5 },
+            "-=0.3"
           )
           .fromTo(
-            ".hero-metrics, .hero-socials, .hero-scroll",
-            { autoAlpha: 0, y: 14 },
-            { autoAlpha: 1, y: 0, duration: 0.55, stagger: 0.1, ease: "power2.out" },
-            5.9
+            ".hero-profile-container",
+            { autoAlpha: 0, scale: 0.92 },
+            { autoAlpha: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" },
+            "-=0.6"
+          )
+          .fromTo(
+            ".hero-floating-code",
+            { autoAlpha: 0, y: 25, rotate: 2 },
+            { autoAlpha: 1, y: 0, rotate: 0, duration: 0.6 },
+            "-=0.4"
+          )
+          .fromTo(
+            ".hero-stack-item",
+            { autoAlpha: 0, y: 12 },
+            { autoAlpha: 1, y: 0, stagger: 0.05, duration: 0.4 },
+            "-=0.4"
+          )
+          .fromTo(
+            ".hero-metrics-bar",
+            { autoAlpha: 0, y: 20 },
+            { autoAlpha: 1, y: 0, duration: 0.6 },
+            "-=0.3"
           );
+
+        // Ambient continuous orbital breathing
         gsap.to(".hero-portrait-orbit", {
-          scale: 1.035,
-          opacity: 0.75,
-          duration: 1.6,
+          scale: 1.04,
+          opacity: 0.85,
+          duration: 2.2,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
         });
-        gsap.to(".hero-scroll svg", {
-          y: 3,
-          duration: 0.75,
+
+        // Continuous subtle float for developer code card
+        gsap.to(".hero-floating-code", {
+          y: -8,
+          duration: 3,
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
         });
-        gsap.to(".hero-portrait-frame", {
-          yPercent: -3,
+
+        // Scroll prompt arrow bounce
+        gsap.to(".hero-scroll-icon", {
+          y: 4,
+          duration: 0.8,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+
+        // Subtle parallax on scroll
+        gsap.to(".hero-profile-container", {
+          yPercent: -6,
           ease: "none",
           scrollTrigger: {
             trigger: heroRef.current,
             start: "top top",
             end: "bottom top",
-            scrub: 0.6,
+            scrub: 0.5,
           },
         });
       }, heroRef);
+
       return () => context.revert();
     });
+
     return () => media.revert();
   }, []);
 
   return (
-    <section className="relative flex min-h-svh flex-col overflow-hidden bg-canvas pb-7 pt-[94px] text-primary max-sm:pt-[91px]" id="home" ref={heroRef} aria-labelledby="hero-title">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_49%_46%,color-mix(in_srgb,var(--color-accent)_9%,transparent),transparent_34%)]" aria-hidden="true" />
-      <div className={`${contentWidth} relative z-10 grid flex-1 grid-cols-[minmax(0,1fr)_minmax(260px,1.05fr)_minmax(220px,.88fr)] grid-rows-[1fr_auto] items-center gap-x-[clamp(22px,3vw,42px)] gap-y-7 py-[22px] pb-[15px] max-[1120px]:grid-cols-1 max-[1120px]:gap-7 max-[620px]:gap-[25px] max-[620px]:pt-[13px]`}>
-        <div className="relative z-[2] max-w-[390px] max-[1120px]:max-w-[720px]">
-          <p className="hero-copy-detail m-0 flex items-center gap-3 font-mono text-[11px] font-medium tracking-[.08em] text-secondary"><span className="size-[7px] shrink-0 rounded-full bg-action" />Hello, I'm</p>
-          <h1 className="hero-title mb-3 mt-[22px] font-display text-[clamp(56px,6.5vw,88px)] font-semibold uppercase leading-[.94] text-primary max-[620px]:mb-[9px] max-[620px]:mt-[14px] max-[620px]:text-[clamp(53px,14vw,76px)]" id="hero-title">{developer.firstName}<br /><span className="text-action">{developer.lastName}</span></h1>
-          <p className="hero-role hero-copy-detail mb-[13px] mt-0 font-mono text-[11px] font-bold tracking-[.18em] text-primary">FULL STACK <span className="text-action">DEVELOPER</span></p>
-          <p className="hero-copy-detail m-0 max-w-[390px] text-[13px] leading-[1.7] text-secondary max-[620px]:max-w-full">I build modern, scalable web applications with clean code and thoughtful design. Turning ideas into digital products that feel effortless.</p>
-          <div className="hero-actions mt-[23px] flex flex-wrap items-center gap-[14px]">
-            <a className={primaryButton} href="#projects">View my work <ArrowDownRight size={17} /></a>
-            <a className={`${textLink} min-h-10 rounded-full border border-action px-4 transition-transform hover:-translate-y-0.5 hover:bg-action-hover hover:text-canvas`} href="#contact">Contact me <ArrowUpRight size={16} /></a>
+    <section
+      className="relative flex min-h-svh flex-col justify-between overflow-hidden bg-canvas pb-6 pt-[92px] text-primary"
+      id="home"
+      ref={heroRef}
+      aria-labelledby="hero-title"
+    >
+      {/* Engineering Blueprint Background Grid & Ambient Glows */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.035] dark:opacity-[0.06]"
+        style={{
+          backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -left-48 top-20 -z-10 size-[420px] rounded-full bg-action/10 blur-[110px]"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -right-32 bottom-20 -z-10 size-[380px] rounded-full bg-action/8 blur-[90px]"
+        aria-hidden="true"
+      />
+
+      {/* Main Hero Container */}
+      <div
+        className={`${contentWidth} relative z-10 grid flex-1 grid-cols-1 items-center gap-10 py-6 lg:grid-cols-[1.1fr_0.95fr] lg:gap-14 xl:grid-cols-[1.15fr_0.95fr]`}
+      >
+        {/* Left Column: Editorial Identity & Story */}
+        <div className="flex flex-col justify-center">
+          {/* Status Pill */}
+          <div className="hero-status-pill mb-4 flex items-center gap-2">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3 py-1 font-mono text-[10px] font-medium tracking-wide text-secondary shadow-xs">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              {developer.statusPhrase}
+            </span>
+            <span className="font-mono text-[10px] text-secondary">
+              · Batch {developer.graduatingYear}
+            </span>
+          </div>
+
+          {/* Split Editorial Typography */}
+          <h1
+            className="mb-3 font-serif text-[clamp(52px,7.5vw,94px)] font-bold tracking-tight text-primary leading-[0.94]"
+            id="hero-title"
+          >
+            <span className="hero-title-first block">{developer.firstName}</span>
+            <span className="hero-title-last block italic font-normal text-action">
+              {developer.lastName}
+            </span>
+          </h1>
+
+          {/* Monospaced Subheading Bar */}
+          <div className="hero-role-bar mb-4 flex items-center gap-3 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase text-primary">
+            <span>FULL STACK DEVELOPER</span>
+            <span className="h-px w-12 bg-action/60" />
+            <span className="text-[10px] text-secondary">CSE 2026</span>
+          </div>
+
+          {/* Punchy Bio Description */}
+          <p className="hero-bio-copy mb-6 max-w-[500px] text-[15px] leading-[1.8] text-secondary max-sm:text-[14px]">
+            Engineering modern web platforms combining scalable backends with
+            refined editorial aesthetics. Focused on React, Next.js, Node.js, and
+            clean algorithmic architecture.
+          </p>
+
+          {/* Dual Action CTAs (View Work + 1-Click Download Resume) */}
+          <div className="hero-actions mb-8 flex flex-wrap items-center gap-3.5">
+            <a className={primaryButton} href="#projects">
+              <span>View My Work</span>
+              <ArrowDownRight size={16} />
+            </a>
+            <a
+              className={outlineButton}
+              href={developer.resumeUrl}
+              download="Ashish_Sahu_Resume.pdf"
+            >
+              <Download size={15} />
+              <span>Download Resume</span>
+            </a>
+          </div>
+
+          {/* Social Links Row */}
+          <div className="flex items-center gap-4 text-secondary">
+            <span className="font-mono text-[9px] uppercase tracking-wider text-secondary/80">
+              Connect:
+            </span>
+            <a
+              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+              href={developer.github}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Ashish Sahu GitHub"
+            >
+              <GithubIcon size={15} />
+            </a>
+            <a
+              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+              href={developer.linkedin}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Ashish Sahu LinkedIn"
+            >
+              <LinkedinIcon size={15} />
+            </a>
+            <a
+              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+              href={`mailto:${developer.email}`}
+              aria-label="Email Ashish Sahu"
+            >
+              <MailIcon size={15} />
+            </a>
+            <span className="ml-2 font-mono text-[10px] text-secondary/70">
+              {developer.locationShort}
+            </span>
           </div>
         </div>
-        <figure className="hero-profile relative isolate m-0 w-full max-w-[390px] justify-self-center max-[1120px]:w-full max-[1120px]:max-w-[360px] max-[620px]:w-[min(68vw,270px)]">
-          <div className="hero-portrait-orbit pointer-events-none absolute -inset-[2%] -z-10 rounded-full border border-action shadow-[0_0_22px_color-mix(in_srgb,var(--color-accent)_58%,transparent),0_0_82px_color-mix(in_srgb,var(--color-accent)_24%,transparent)]" aria-hidden="true" />
-          <div className="hero-portrait-frame relative aspect-square w-full overflow-hidden rounded-full border border-action bg-surface shadow-[0_0_0_8px_color-mix(in_srgb,var(--color-accent)_7%,transparent)]">
-            <img
-              className="hero-portrait-image block size-full object-cover object-[center_34%]"
-              src={heroPortrait}
-              alt="Ashish Sahu"
-              width="640"
-              height="640"
-              fetchPriority="high"
+
+        {/* Right Column: Visual Composition with Cutout Portrait & Code Card */}
+        <div className="relative flex flex-col items-center justify-center lg:items-end">
+          {/* Main Portrait Frame with Orbital Ring */}
+          <div className="hero-profile-container relative w-full max-w-[370px] aspect-square">
+            {/* Orbital Halo */}
+            <div
+              className="hero-portrait-orbit pointer-events-none absolute -inset-3 -z-10 rounded-full border border-action/40 shadow-[0_0_35px_color-mix(in_srgb,var(--color-accent)_25%,transparent)]"
+              aria-hidden="true"
             />
-            <span className="absolute right-[18px] top-[15px] border border-border bg-canvas/80 px-2 py-1.5 font-mono text-[9px] text-primary">AS / 01</span>
+
+            {/* Inner Frame with Image or Monogram Fallback */}
+            <div className="relative size-full overflow-hidden rounded-full border-2 border-action/60 bg-surface shadow-2xl">
+              {!imageError ? (
+                <img
+                  className="size-full object-cover object-[center_30%]"
+                  src={heroPortrait}
+                  alt="Ashish Sahu - Full Stack Developer"
+                  width="640"
+                  height="640"
+                  fetchPriority="high"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                <div className="grid size-full place-items-center bg-surface-alt font-serif text-6xl font-bold text-action">
+                  AS
+                </div>
+              )}
+
+              {/* Monogram Coordinate Pill */}
+              <span className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-border/80 bg-canvas/85 px-3 py-1 font-mono text-[9px] font-medium tracking-widest text-primary backdrop-blur-xs">
+                AS // 2026
+              </span>
+            </div>
+
+            {/* Floating Handwritten Annotation Note */}
+            <div className="absolute -top-4 -right-2 z-20 flex items-center gap-1.5 rounded-md border border-border bg-surface/95 px-3 py-1.5 font-handwriting text-[15px] font-semibold text-action shadow-lg backdrop-blur-xs max-sm:text-[13px]">
+              <Sparkles size={14} className="text-action" />
+              <span>Turning Ideas into Products</span>
+            </div>
+
+            {/* Floating Syntax Highlighted Code Card (`developer.ts`) */}
+            <div className="hero-floating-code absolute -bottom-6 -left-6 z-20 w-[230px] rounded-lg border border-border bg-canvas/95 p-3.5 shadow-xl backdrop-blur-md max-sm:w-[200px] max-sm:-left-2">
+              <div className="mb-2 flex items-center gap-1.5 border-b border-border/60 pb-1.5">
+                <span className="size-2 rounded-full bg-red-500/70" />
+                <span className="size-2 rounded-full bg-yellow-500/70" />
+                <span className="size-2 rounded-full bg-green-500/70" />
+                <span className="ml-auto font-mono text-[8px] text-secondary">
+                  developer.ts
+                </span>
+              </div>
+              <pre className="font-mono text-[9px] leading-relaxed text-secondary overflow-hidden">
+                <code>
+                  <span className="text-action font-semibold">const</span> engineer = {"{\n"}
+                  {"  "}name: <span className="text-primary font-medium">&quot;Ashish&quot;</span>,{"\n"}
+                  {"  "}stack: [<span className="text-action">&quot;MERN&quot;</span>, <span className="text-action">&quot;Next&quot;</span>],{"\n"}
+                  {"  "}ready: <span className="text-emerald-500">true</span>{"\n"}
+                  {"}"};
+                </code>
+              </pre>
+            </div>
           </div>
-          <span className="absolute -right-[7%] bottom-[17%] inline-flex items-center gap-2 border border-border bg-surface px-[13px] py-[11px] text-[10px] text-primary shadow-lg max-[620px]:-right-[20%] max-[620px]:px-[9px] max-[620px]:py-2 max-[620px]:text-[8px]"><span className="size-1.5 shrink-0 rounded-full bg-action" />Available for opportunities</span>
-          <figcaption className="flex flex-col items-center justify-center gap-1 pt-[15px] text-center font-mono text-[8px] tracking-[.13em] text-primary">{developer.name}<span className="text-[7px] text-secondary">BUILDING IDEAS INTO REAL PRODUCTS</span></figcaption>
-        </figure>
-        <aside className="hero-stack min-w-0 self-center max-[1120px]:w-full" aria-label="Technology stack">
-          <div className="mb-[18px] flex items-center justify-between gap-2 font-sans text-[10px] font-semibold tracking-[.13em] text-primary"><span>Tech stack</span><a className="inline-flex items-center gap-1 font-mono text-[8px] tracking-normal text-secondary no-underline hover:text-action-hover" href="#skills">Explore my skills <ArrowUpRight size={12} /></a></div>
-          <ul className="m-0 grid list-none grid-cols-4 gap-[10px] max-[1120px]:grid-cols-4 max-sm:gap-[7px]">
-            {techStack.map((technology) => <li className="flex min-h-[83px] min-w-0 flex-col items-center justify-center gap-[7px] border border-border bg-surface px-[5px] py-2 text-center font-sans text-[8px] text-secondary transition-[transform,border-color,color] duration-200 hover:-translate-y-[3px] hover:border-action hover:text-primary max-[1120px]:min-h-[72px] max-sm:min-h-[65px] max-sm:gap-[5px] max-sm:px-[3px] max-sm:py-[7px] max-sm:text-[7px]" key={technology.name}><span className="grid size-[30px] place-items-center rounded-lg border border-action/50 font-display text-[11px] font-bold text-action-hover max-sm:size-[26px] max-sm:text-[10px]" aria-hidden="true">{technology.name === "JavaScript" ? "JS" : technology.name.slice(0, 1)}</span><span>{technology.name}</span></li>)}
-          </ul>
-          <p className="mt-[13px] font-mono text-[7px] leading-[1.7] tracking-[.06em] text-secondary">DESIGN · BUILD · DEPLOY</p>
-        </aside>
-        <div className="col-span-full grid grid-cols-[minmax(210px,.8fr)_minmax(0,1.5fr)] items-center gap-[clamp(18px,4vw,55px)] mt-[3px] max-[1120px]:grid-cols-[minmax(160px,.7fr)_minmax(0,1.3fr)] max-sm:grid-cols-1 max-sm:gap-[15px]">
-          <div className="hero-metrics grid grid-cols-3">
-            {developer.stats.slice(0, 3).map((stat, index) => <div className={`flex min-w-0 flex-col gap-1 border-r border-border px-3 py-[5px] first:pl-0 last:border-r-0 ${index === 2 ? "max-sm:border-r-0" : ""}`} key={stat.label}><strong className="font-display text-2xl font-semibold text-action">{stat.value}</strong><span className="text-[8px] leading-[1.4] text-secondary">{stat.label}</span></div>)}
-          </div>
-          <div className="hero-course-card grid min-w-0 grid-cols-[minmax(0,1fr)_minmax(35px,.55fr)_minmax(0,1fr)] items-center gap-3 rounded-xl border border-border bg-surface px-[18px] py-[15px] max-sm:gap-[7px] max-sm:px-[10px] max-sm:py-3">
-            <div className="flex min-w-0 items-center gap-[10px] max-sm:gap-[6px]"><span className="grid size-[34px] shrink-0 place-items-center rounded-full bg-action/10 text-action max-sm:size-7"><GraduationCap size={19} /></span><div className="flex min-w-0 flex-col gap-0.5"><strong className="font-display text-[19px] font-semibold text-action-hover max-sm:text-[17px]">2022</strong><span className="text-[9px] text-primary max-sm:text-[7px]">Course started</span><small className="text-[8px] text-secondary max-sm:text-[7px]">B.Tech · Computer Science</small></div></div>
-            <span className="relative h-px bg-border before:absolute before:left-0 before:top-1/2 before:size-1.5 before:-translate-y-1/2 before:rounded-full before:bg-action after:absolute after:right-0 after:top-1/2 after:size-1.5 after:-translate-y-1/2 after:rounded-full after:bg-action"><i className="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-action shadow-[0_0_10px_var(--color-accent)]" /></span>
-            <div className="flex min-w-0 items-center gap-[10px] max-sm:gap-[6px]"><span className="grid size-[34px] shrink-0 place-items-center rounded-full bg-action/10 text-action max-sm:size-7"><Flag size={17} /></span><div className="flex min-w-0 flex-col gap-0.5"><strong className="font-display text-[19px] font-semibold text-action-hover max-sm:text-[17px]">2026</strong><span className="text-[9px] text-primary max-sm:text-[7px]">Course completion</span><small className="text-[8px] text-secondary max-sm:text-[7px]">Ready for what&apos;s next</small></div></div>
+
+          {/* Quick Tech Stack Row */}
+          <div className="mt-8 flex w-full max-w-[390px] flex-col gap-2">
+            <div className="flex items-center justify-between font-mono text-[9px] uppercase tracking-wider text-secondary">
+              <span>Core Stack</span>
+              <a
+                href="#skills"
+                className="text-action underline-offset-2 hover:underline"
+              >
+                All Skills →
+              </a>
+            </div>
+            <div className="grid grid-cols-4 gap-2">
+              {techStack.slice(0, 4).map((tech) => (
+                <div
+                  key={tech.name}
+                  className="hero-stack-item flex flex-col items-center justify-center rounded-sm border border-border bg-surface py-2 text-center transition-colors hover:border-action"
+                >
+                  <span className="font-mono text-[10px] font-semibold text-primary">
+                    {tech.name}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
-      <div className={`${contentWidth} flex items-center justify-between border-t border-border pt-[14px]`}><div className="hero-socials m-0 flex items-center gap-[15px]" aria-label="Social links"><span className="mr-1 font-mono text-[8px] uppercase text-secondary">Find me on</span><a className="inline-flex text-secondary transition-colors hover:text-action" href={developer.github} target="_blank" rel="noreferrer" aria-label="GitHub"><GithubIcon size={17} /></a><a className="inline-flex text-secondary transition-colors hover:text-action" href={developer.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn"><LinkedinIcon size={17} /></a></div><a className="hero-scroll inline-flex items-center gap-[7px] font-mono text-[8px] uppercase text-secondary no-underline" href="#about"><ArrowDown className="text-action" size={14} /><span>Scroll down</span></a><span className="font-mono text-[8px] text-secondary max-sm:hidden">© {new Date().getFullYear()} · {developer.location}</span></div>
+
+      {/* Hero Bottom Bar: Key Metrics & Academic Milestones */}
+      <div className="hero-metrics-bar border-t border-border bg-surface-alt/40 pt-4 pb-2 mt-4">
+        <div
+          className={`${contentWidth} flex flex-wrap items-center justify-between gap-6`}
+        >
+          {/* Key Metrics Counters */}
+          <div className="flex flex-wrap items-center gap-6 sm:gap-10">
+            {developer.stats.map((stat, i) => (
+              <div
+                key={stat.label}
+                className={`flex items-baseline gap-2 ${
+                  i !== developer.stats.length - 1
+                    ? "sm:border-r sm:border-border sm:pr-8"
+                    : ""
+                }`}
+              >
+                <span className="font-serif text-2xl font-bold text-action sm:text-3xl">
+                  {stat.value}
+                </span>
+                <span className="font-mono text-[9px] uppercase tracking-wide text-secondary">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {/* Graduation Milestone Timeline Chip */}
+          <div className="flex items-center gap-3 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-[10px] text-secondary">
+            <GraduationCap size={15} className="text-action" />
+            <span>
+              <strong className="text-primary font-semibold">2022</strong> B.Tech Start
+            </span>
+            <span className="h-2 w-px bg-border" />
+            <Flag size={14} className="text-action" />
+            <span>
+              <strong className="text-primary font-semibold">2026</strong> Graduation Ready
+            </span>
+          </div>
+
+          {/* Smooth Scroll Down Indicator */}
+          <a
+            href="#about"
+            className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-wider text-secondary no-underline transition-colors hover:text-action"
+          >
+            <ArrowDown size={13} className="hero-scroll-icon text-action" />
+            <span>Scroll Down</span>
+          </a>
+        </div>
+      </div>
     </section>
   );
 }

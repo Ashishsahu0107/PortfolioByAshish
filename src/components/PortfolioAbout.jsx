@@ -1,28 +1,155 @@
 import { useRef } from "react";
-import { ArrowUpRight } from "lucide-react";
+import {
+  ArrowUpRight,
+  Code2,
+  Cpu,
+  Database,
+  Server,
+  Terminal,
+} from "lucide-react";
 import { developer } from "../data/developer";
 import { useGsapReveal } from "../hooks/useGsapReveal";
-import { contentWidth, eyebrow, sectionSurface, textLink } from "./portfolioStyles";
+import {
+  contentWidth,
+  eyebrow,
+  sectionSurface,
+  textLink,
+} from "./portfolioStyles";
+
+const iconMap = {
+  Code2: Code2,
+  Server: Server,
+  Database: Database,
+  Cpu: Cpu,
+  Terminal: Terminal,
+};
 
 export default function PortfolioAbout() {
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
 
   return (
-    <section className={`${sectionSurface} bg-canvas`} id="about" ref={sectionRef} aria-labelledby="about-title">
+    <section
+      className={`${sectionSurface} bg-canvas`}
+      id="about"
+      ref={sectionRef}
+      aria-labelledby="about-title"
+    >
       <div className={contentWidth}>
-        <div className="reveal mb-[35px]"><p className={eyebrow}><span className="text-action">01</span> A little about me</p></div>
-        <div className="grid items-start gap-[12%] lg:grid-cols-[1.25fr_.75fr] max-lg:grid-cols-1 max-lg:gap-[30px]">
-          <h2 className="reveal m-0 max-w-[670px] font-display text-[clamp(38px,5.1vw,68px)] font-medium leading-[1.08] text-primary" id="about-title">Good software should feel <span className="text-action">inevitable.</span></h2>
-          <div className="reveal pt-1 text-[15px] leading-[1.9] text-secondary max-lg:max-w-[540px] max-[620px]:text-[14px]">
-            <p className="mb-[18px]">{developer.bio}</p>
-            <p className="mb-[18px] text-[14px] text-primary">I care about the details users notice, and the engineering they never have to.</p>
-            <a className={`${textLink} mt-[13px]`} href={developer.github} target="_blank" rel="noreferrer">More about my work <ArrowUpRight size={16} /></a>
+        {/* Section Eyebrow */}
+        <div className="reveal mb-8">
+          <p className={eyebrow}>
+            <span className="text-action">01</span> A Little About Me
+          </p>
+        </div>
+
+        {/* Asymmetric 2-Column Grid (Story Narrative vs Focus Areas) */}
+        <div className="grid grid-cols-1 items-start gap-12 lg:grid-cols-12 lg:gap-14">
+          {/* Left Column (7 cols): Editorial Headline & Narrative */}
+          <div className="reveal lg:col-span-7">
+            <h2
+              className="mb-6 font-serif text-[clamp(36px,4.5vw,60px)] font-bold leading-[1.08] text-primary"
+              id="about-title"
+            >
+              Good software should feel{" "}
+              <span className="italic font-normal text-action">inevitable.</span>
+            </h2>
+
+            <div className="space-y-4 text-[15px] leading-[1.9] text-secondary">
+              <p>{developer.bio}</p>
+              <p className="text-[14px] text-primary font-medium">
+                {developer.philosophy}
+              </p>
+              <p>
+                From designing normalized database schemas in MongoDB to crafting
+                fluid, accessible user interfaces in React, I approach every
+                project with an engineer’s eye for structural integrity and a
+                designer’s reverence for typography, balance, and motion.
+              </p>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <a
+                className={textLink}
+                href={developer.github}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Inspect my GitHub commits</span>
+                <ArrowUpRight size={16} />
+              </a>
+              <a
+                className={textLink}
+                href={developer.resumeUrl}
+                download="Ashish_Sahu_Resume.pdf"
+              >
+                <span>Download detailed CV</span>
+                <ArrowUpRight size={16} />
+              </a>
+            </div>
+          </div>
+
+          {/* Right Column (5 cols): 5 Core Engineering Focus Areas */}
+          <div className="reveal lg:col-span-5 flex flex-col gap-3 rounded-lg border border-border bg-surface p-6 shadow-xs">
+            <div className="mb-2 flex items-center justify-between border-b border-border pb-3">
+              <span className="font-mono text-[10px] uppercase tracking-wider text-secondary">
+                Core Competencies
+              </span>
+              <span className="font-mono text-[9px] text-action">
+                Full Stack Scope
+              </span>
+            </div>
+
+            <div className="space-y-3.5">
+              {developer.focusAreas.map((area, index) => {
+                const IconComponent = iconMap[area.icon] || Code2;
+                return (
+                  <div
+                    key={area.title}
+                    className="group flex items-start gap-3.5 rounded-sm p-2 transition-colors hover:bg-surface-alt"
+                  >
+                    <span className="grid size-8 shrink-0 place-items-center rounded-sm border border-border bg-canvas text-action transition-colors group-hover:border-action">
+                      <IconComponent size={16} />
+                    </span>
+                    <div className="flex flex-col">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[9px] text-secondary/60">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <strong className="text-[13px] font-semibold text-primary">
+                          {area.title}
+                        </strong>
+                      </div>
+                      <p className="mt-0.5 text-[11px] leading-relaxed text-secondary">
+                        {area.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-        <div className="reveal mt-[84px] grid grid-cols-4 border-y border-border max-[900px]:mt-[55px] max-[620px]:mt-[42px] max-[620px]:grid-cols-2">
-          {developer.stats.slice(0, 3).map((stat, index) => <div className={`flex min-h-[104px] flex-col justify-center gap-2 border-r border-border px-6 py-3 max-[900px]:px-4 max-[620px]:min-h-[84px] max-[620px]:border-b max-[620px]:px-[13px] ${index === 1 ? "max-[620px]:border-r-0" : ""} ${index === 2 ? "max-[620px]:border-b-0" : ""} ${index === 0 ? "pl-0 max-[620px]:pl-[13px]" : ""}`} key={stat.label}><strong className="font-display text-[25px] font-medium leading-none text-primary max-[620px]:text-[21px]">{stat.value}</strong><span className="font-mono text-[9px] uppercase text-secondary max-[620px]:text-[8px]">{stat.label}</span></div>)}
-          <div className="flex min-h-[104px] flex-col justify-center gap-2 px-6 py-3 max-[900px]:px-4 max-[620px]:min-h-[84px] max-[620px]:border-b-0 max-[620px]:px-[13px]"><strong className="font-display text-[25px] font-medium leading-none text-primary max-[620px]:text-[21px]">{developer.location}</strong><span className="font-mono text-[9px] uppercase text-secondary max-[620px]:text-[8px]">Based · Available worldwide</span></div>
+
+        {/* Bottom Editorial Stats Bar */}
+        <div className="reveal mt-16 grid grid-cols-2 border-y border-border sm:grid-cols-4">
+          {developer.stats.map((stat, index) => (
+            <div
+              key={stat.label}
+              className={`flex flex-col justify-center gap-1.5 p-6 sm:p-7 ${
+                index !== developer.stats.length - 1
+                  ? "border-r border-border max-sm:odd:border-r max-sm:even:border-r-0"
+                  : ""
+              } ${index < 2 ? "max-sm:border-b max-sm:border-border" : ""}`}
+            >
+              <strong className="font-serif text-3xl font-bold text-action sm:text-4xl">
+                {stat.value}
+              </strong>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-secondary">
+                {stat.label}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     </section>
