@@ -1,0 +1,150 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Length 2932 >>
+stream
+BT
+/F1 20 Tf
+50 740 Td
+(ASHISH SAHU) Tj
+0 0 Td
+/F1 11 Tf
+50 716 Td
+(Full Stack Developer | B.Tech Computer Science & Engineering \(Class of 2026\)) Tj
+0 0 Td
+/F2 9 Tf
+50 700 Td
+(India | ashishsahu01072005@gmail.com | github.com/Ashishsahu0107 | linkedin.com/in/ashishsahu0107) Tj
+0 0 Td
+/F1 12 Tf
+50 674 Td
+(EDUCATION) Tj
+0 0 Td
+/F1 10 Tf
+50 660 Td
+(Bachelor of Technology in Computer Science & Engineering \(2022 - 2026\)) Tj
+0 0 Td
+/F2 8.5 Tf
+60 648 Td
+(- Core Studies: Data Structures & Algorithms \(Java\), DBMS, OS, Computer Networks, Software Engineering) Tj
+0 0 Td
+/F2 8.5 Tf
+60 637 Td
+(- Focus on full-stack web architectures, algorithmic problem solving, and modern cloud deployment) Tj
+0 0 Td
+/F1 12 Tf
+50 620 Td
+(TECHNICAL SKILLS) Tj
+0 0 Td
+/F2 8.5 Tf
+60 606 Td
+(- Languages: JavaScript \(ES6+\), Java, SQL, HTML5, CSS3) Tj
+0 0 Td
+/F2 8.5 Tf
+60 595 Td
+(- Frontend: React 19, Next.js, Tailwind CSS, GSAP, Responsive Design, WCAG Accessibility) Tj
+0 0 Td
+/F2 8.5 Tf
+60 584 Td
+(- Backend: Node.js, Express.js, RESTful API Design, JWT Authentication, Middleware) Tj
+0 0 Td
+/F2 8.5 Tf
+60 573 Td
+(- Databases & Tools: MongoDB, MongoDB Atlas, MySQL, Git, GitHub, Postman, Vite, VS Code) Tj
+0 0 Td
+/F1 12 Tf
+50 556 Td
+(FEATURED PROJECTS) Tj
+0 0 Td
+/F1 10 Tf
+50 542 Td
+(1. Learning Management System \(LMS\) - MERN Stack) Tj
+0 0 Td
+/F2 8.5 Tf
+60 530 Td
+(- Institutional platform with RBAC \(Admin, Instructor, Student\), quizzes with auto-grading, and attendance.) Tj
+0 0 Td
+/F2 8.5 Tf
+60 519 Td
+(- Engineered with React, Node.js, Express, MongoDB, and Tailwind CSS. Achieved sub-2s response times.) Tj
+0 0 Td
+/F1 10 Tf
+50 508 Td
+(2. Developer Portfolio 2.0 - React 19 & GSAP) Tj
+0 0 Td
+/F2 8.5 Tf
+60 496 Td
+(- Editorial magazine-grade developer showcase pairing Playfair Display typography with GPU animations.) Tj
+0 0 Td
+/F2 8.5 Tf
+60 485 Td
+(- Targeting 95+ Google Lighthouse scores, JSON-LD Person schema, and WCAG AA contrast compliance.) Tj
+0 0 Td
+/F1 10 Tf
+50 474 Td
+(3. E-Commerce Storefront Platform - Full Stack) Tj
+0 0 Td
+/F2 8.5 Tf
+60 462 Td
+(- Full-featured online commerce platform with product filtering, persistent cart, and order management.) Tj
+0 0 Td
+/F2 8.5 Tf
+60 451 Td
+(- Built with React, Express REST APIs, MongoDB indexing, and secure transaction handling.) Tj
+0 0 Td
+/F1 10 Tf
+50 440 Td
+(4. Collaborative Real-Time Kanban Hub) Tj
+0 0 Td
+/F2 8.5 Tf
+60 428 Td
+(- Agile team project board with drag-and-drop task workflow columns, priorities, and deadlines.) Tj
+0 0 Td
+/F2 8.5 Tf
+60 417 Td
+(- Built with React, Express, MongoDB, and clean event synchronization.) Tj
+0 0 Td
+/F1 12 Tf
+50 400 Td
+(TECHNICAL ACHIEVEMENTS & MILESTONES) Tj
+0 0 Td
+/F2 8.5 Tf
+60 386 Td
+(- Solved 200+ Data Structures & Algorithms problems in Java across competitive programming platforms.) Tj
+0 0 Td
+/F2 8.5 Tf
+60 375 Td
+(- Active open-source contributor with 20+ public repositories and clean Git commit discipline.) Tj
+0 0 Td
+ET
+
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000000326 00000 n 
+0000000396 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+3380
+%%EOF
