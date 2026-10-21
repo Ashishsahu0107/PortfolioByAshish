@@ -1,14 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --color-background: #191A17;
-  --color-card-surface: #252620;
-  --color-secondary-surface: #303129;
-  --color-primary-text: #F0EEE6;
-  --color-secondary-text: #B6B5AA;
-  --color-accent: #B8C19A;
-  --color-accent-hover: #CDD4B5;
-  --color-borders: #3D3E35;
+  --color-background: #161715;
+  --color-card-surface: #21231F;
+  --color-secondary-surface: #2B2D27;
+  --color-primary-text: #F7F6F2;
+  --color-secondary-text: #A5A499;
+  --color-accent: #A1B49C;
+  --color-accent-hover: #C5D7BF;
+  --color-borders: #353830;
+  --color-forest: #24483A;
+  --color-olive: #8A9B87;
+  --color-beige: #E8E2D5;
+  --color-charcoal: #171717;
 
   --bg-primary: var(--color-background);
   --bg-secondary: var(--color-secondary-surface);
@@ -26,14 +30,18 @@
 }
 
 .light {
-  --color-background: #F6F4EE;
+  --color-background: #F7F6F2;
   --color-card-surface: #FFFFFF;
-  --color-secondary-surface: #EAE7DD;
-  --color-primary-text: #24251F;
-  --color-secondary-text: #65665D;
-  --color-accent: #626B45;
-  --color-accent-hover: #4D5535;
-  --color-borders: #DCD8CC;
+  --color-secondary-surface: #EFECE4;
+  --color-primary-text: #171717;
+  --color-secondary-text: #596150;
+  --color-accent: #24483A;
+  --color-accent-hover: #173327;
+  --color-borders: #E2DDD1;
+  --color-forest: #24483A;
+  --color-olive: #68745D;
+  --color-beige: #E8E2D5;
+  --color-charcoal: #171717;
 }
 
 @theme inline {
@@ -45,9 +53,15 @@
   --color-border: var(--color-borders);
   --color-action: var(--color-accent);
   --color-action-hover: var(--color-accent-hover);
-  --font-sans: "DM Sans", sans-serif;
-  --font-display: "Space Grotesk", sans-serif;
-  --font-mono: "DM Mono", monospace;
+  --color-forest: var(--color-forest);
+  --color-olive: var(--color-olive);
+  --color-beige: var(--color-beige);
+  --color-charcoal: var(--color-charcoal);
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-display: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-handwriting: "Caveat", cursive;
 }
 
 /* ─────────────────────────────────────────

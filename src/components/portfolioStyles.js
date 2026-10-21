@@ -14,7 +14,10 @@ export const sectionLede =
   "m-0 max-w-[420px] text-[14px] leading-[1.8] text-secondary";
 
 export const textLink =
-  "inline-flex items-center gap-[9px] text-[13px] text-primary no-underline transition-[color,gap] duration-200 hover:gap-[13px] hover:text-action";
+  "inline-flex items-center gap-[9px] text-[13px] text-primary no-underline transition-[color,gap] duration-200 hover:gap-[13px] hover:text-action cursor-pointer";
 
 export const primaryButton =
-  "inline-flex min-h-[45px] items-center justify-center gap-3 rounded-sm bg-action px-4 text-[12px] font-semibold text-canvas no-underline transition-[transform,background-color,color] duration-200 hover:-translate-y-0.5 hover:bg-action-hover";
+  "inline-flex min-h-[45px] items-center justify-center gap-2.5 rounded-sm bg-action px-5 text-[12px] font-semibold text-canvas no-underline transition-[transform,background-color,color,box-shadow] duration-200 hover:-translate-y-0.5 hover:bg-action-hover hover:shadow-md cursor-pointer";
+
+export const outlineButton =
+  "inline-flex min-h-[45px] items-center justify-center gap-2.5 rounded-sm border border-action px-5 text-[12px] font-medium text-primary no-underline transition-[transform,background-color,color] duration-200 hover:-translate-y-0.5 hover:bg-action hover:text-canvas cursor-pointer";
