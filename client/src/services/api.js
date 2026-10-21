@@ -1,4 +1,8 @@
-const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.PROD
+    ? "https://portfoliobyashish.onrender.com/api"
+    : "http://localhost:5000/api");
 const AUTH_STORAGE_KEY = "portfolio_admin_session_v1";
 
 /**
