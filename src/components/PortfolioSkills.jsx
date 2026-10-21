@@ -1,27 +1,139 @@
 import { useRef, useState } from "react";
+import { CheckCircle2, Info } from "lucide-react";
 import { skillCategories } from "../data/skills";
 import { useGsapReveal } from "../hooks/useGsapReveal";
-import { contentWidth, eyebrow, sectionLede, sectionSurface, sectionTitle } from "./portfolioStyles";
+import {
+  contentWidth,
+  eyebrow,
+  sectionLede,
+  sectionSurface,
+  sectionTitle,
+} from "./portfolioStyles";
 
 export default function PortfolioSkills() {
-  const [activeTab, setActiveTab] = useState("frontend");
+  const [activeTab, setActiveTab] = useState("all");
   const sectionRef = useRef(null);
-  useGsapReveal(sectionRef, ".skills-heading, .skills-controls, .skills-list .skill-row");
-  const activeCategory = skillCategories.find((category) => category.id === activeTab);
+  useGsapReveal(sectionRef);
+
+  const displayedCategories =
+    activeTab === "all"
+      ? skillCategories
+      : skillCategories.filter((cat) => cat.id === activeTab);
 
   return (
-    <section className={`${sectionSurface} bg-surface-alt`} id="skills" ref={sectionRef} aria-labelledby="skills-title">
+    <section
+      className={`${sectionSurface} bg-surface-alt/40`}
+      id="skills"
+      ref={sectionRef}
+      aria-labelledby="skills-title"
+    >
       <div className={contentWidth}>
-        <div className="skills-heading reveal max-w-[630px]"><p className={eyebrow}><span className="text-action">02</span> Tools of the trade</p><h2 className={sectionTitle} id="skills-title">A considered <span className="text-action">toolkit.</span></h2><p className={sectionLede}>The right tools for building reliable, useful things.</p></div>
-        <div className="skills-controls reveal mb-[17px] mt-[42px] flex flex-wrap gap-[7px] max-[620px]:mt-[30px] max-[620px]:gap-[6px]" role="tablist" aria-label="Skill categories">
-          {skillCategories.map((category) => <button className={`min-h-9 rounded-sm border px-[14px] font-mono text-[10px] text-secondary transition-colors duration-200 max-[620px]:min-h-[33px] max-[620px]:px-[10px] max-[620px]:text-[9px] ${activeTab === category.id ? "border-action bg-action/10 text-action-hover" : "border-border bg-transparent hover:border-action hover:bg-action/10 hover:text-action-hover"}`} key={category.id} role="tab" id={`tab-${category.id}`} aria-selected={activeTab === category.id} aria-controls="skills-panel" onClick={() => setActiveTab(category.id)}>{category.label}</button>)}
+        {/* Section Heading */}
+        <div className="reveal max-w-[650px]">
+          <p className={eyebrow}>
+            <span className="text-action">02</span> Tools of the Trade
+          </p>
+          <h2 className={sectionTitle} id="skills-title">
+            A considered <span className="italic font-normal text-action">toolkit.</span>
+          </h2>
+          <p className={sectionLede}>
+            Every technology in my workflow is chosen for reliability, developer ergonomics,
+            and end-user performance.
+          </p>
         </div>
-        <div className="skills-list border-t border-border" id="skills-panel" role="tabpanel" aria-labelledby={`tab-${activeTab}`} key={activeTab}>
-          {activeCategory?.skills.map((skill, index) => (
-            <div className="skill-row reveal grid min-h-[70px] grid-cols-[50px_minmax(160px,1fr)_minmax(100px,.62fr)_38px] items-center gap-[17px] border-b border-border max-[620px]:min-h-[65px] max-[620px]:grid-cols-[25px_minmax(0,1fr)_38px] max-[620px]:gap-[9px]" key={skill.name}>
-              <span className="font-mono text-[10px] text-secondary/80">{String(index + 1).padStart(2, "0")}</span><div className="flex items-baseline gap-[13px] max-[620px]:flex-col max-[620px]:gap-1"><strong className="text-[13px] font-medium text-primary max-[620px]:text-[12px]">{skill.name}</strong><span className="text-[11px] text-secondary max-[620px]:text-[9px]">{skill.description}</span></div><div className="h-0.5 bg-border max-[620px]:hidden" role="meter" aria-label={`${skill.name} proficiency`} aria-valuenow={skill.level} aria-valuemin={0} aria-valuemax={100}><span className="block h-full bg-action" style={{ width: `${skill.level}%` }} /></div><span className="text-right font-mono text-[10px] text-secondary">{String(skill.level).padStart(2, "0")}</span>
+
+        {/* Category Filter Tabs */}
+        <div
+          className="reveal mb-8 mt-10 flex flex-wrap gap-2"
+          role="tablist"
+          aria-label="Skill categories"
+        >
+          <button
+            className={`min-h-9 rounded-sm border px-3.5 font-mono text-[11px] font-medium transition-all cursor-pointer ${
+              activeTab === "all"
+                ? "border-action bg-action text-canvas"
+                : "border-border bg-surface text-secondary hover:border-action hover:text-primary"
+            }`}
+            onClick={() => setActiveTab("all")}
+            role="tab"
+            aria-selected={activeTab === "all"}
+          >
+            All Disciplines
+          </button>
+          {skillCategories.map((category) => (
+            <button
+              key={category.id}
+              className={`min-h-9 rounded-sm border px-3.5 font-mono text-[11px] font-medium transition-all cursor-pointer ${
+                activeTab === category.id
+                  ? "border-action bg-action text-canvas"
+                  : "border-border bg-surface text-secondary hover:border-action hover:text-primary"
+              }`}
+              onClick={() => setActiveTab(category.id)}
+              role="tab"
+              id={`tab-${category.id}`}
+              aria-selected={activeTab === category.id}
+            >
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Categorized Skills Grid */}
+        <div className="space-y-8">
+          {displayedCategories.map((category) => (
+            <div
+              key={category.id}
+              className="reveal rounded-lg border border-border bg-surface p-6 shadow-xs"
+            >
+              <div className="mb-4 flex items-center justify-between border-b border-border/80 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="size-2 rounded-full bg-action" />
+                  <h3 className="font-serif text-lg font-semibold text-primary">
+                    {category.label}
+                  </h3>
+                </div>
+                <span className="font-mono text-[10px] uppercase text-secondary">
+                  {category.skills.length} Technologies
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {category.skills.map((skill) => (
+                  <div
+                    key={skill.name}
+                    className="group flex flex-col justify-between rounded-sm border border-border/70 bg-canvas/60 p-3.5 transition-all hover:-translate-y-0.5 hover:border-action hover:bg-canvas"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="font-mono text-sm font-semibold text-primary group-hover:text-action">
+                        {skill.name}
+                      </span>
+                      <span className="text-base" aria-hidden="true">
+                        {skill.icon}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-[11px] leading-relaxed text-secondary">
+                      {skill.description}
+                    </p>
+                    <div className="mt-3 flex items-center justify-between border-t border-border/40 pt-2 font-mono text-[9px] text-secondary">
+                      <span className="flex items-center gap-1 text-action">
+                        <CheckCircle2 size={11} />
+                        <span>Proficient</span>
+                      </span>
+                      <span>Level {skill.level}%</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
+        </div>
+
+        {/* PRD Section 3.4 Integrity Notice */}
+        <div className="reveal mt-8 flex items-center gap-3 rounded-md border border-border/70 bg-surface px-4 py-3 text-[11px] text-secondary">
+          <Info size={16} className="shrink-0 text-action" />
+          <span>
+            <strong>Integrity Notice:</strong> Skill percentages represent comparative self-assessment and practical project depth rather than absolute mastery. Always growing, always learning.
+          </span>
         </div>
       </div>
     </section>

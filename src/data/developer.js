@@ -3,23 +3,54 @@ export const developer = {
   firstName: "Ashish",
   lastName: "Sahu",
   role: "Full Stack Developer",
-  tagline: "I build scalable, modern digital experiences.",
-  bio: `I'm a passionate Full Stack Developer specializing in the MERN stack. 
-I craft performant, accessible web applications that solve real-world problems. 
-My approach blends clean engineering with thoughtful design — because great software 
-should be both technically sound and delightful to use.`,
+  tagline: "Editorial craft meets engineering precision.",
+  graduatingYear: "2026",
+  courseStarted: "2022",
+  degree: "B.Tech in Computer Science and Engineering",
   location: "India",
+  locationShort: "India",
   email: "ashishsahu01072005@gmail.com",
   emailjsServiceId: import.meta.env.VITE_EMAILJS_SERVICE_ID || "",
   emailjsTemplateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "",
   emailjsPublicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "",
   github: "https://github.com/Ashishsahu0107",
   linkedin: "https://linkedin.com/in/ashishsahu0107",
+  resumeUrl: "/resume/ashish-sahu-resume.pdf",
   availableForWork: true,
+  statusPhrase: "Available for opportunities",
+  bio: `I am a Computer Science and Engineering undergraduate (Class of 2026) and passionate Full Stack Developer specializing in the MERN stack. I build robust, scalable web applications that combine high-performance backends with refined editorial user interfaces. With a strong foundation in Data Structures and Algorithms in Java, my focus is crafting software that is both architecturally sound and delightful to use.`,
+  philosophy: "I care about the details users notice, and the engineering they never have to.",
+  focusAreas: [
+    {
+      title: "Frontend Development",
+      description: "Modern component architecture with React, Next.js, Tailwind CSS, and fluid GSAP micro-animations.",
+      icon: "Code2",
+    },
+    {
+      title: "Backend Engineering",
+      description: "RESTful API design, Express.js servers, JWT authentication, and secure middleware pipelines.",
+      icon: "Server",
+    },
+    {
+      title: "Database Architecture",
+      description: "Data modeling, schema validation, and indexing with MongoDB, Mongoose, and relational MySQL.",
+      icon: "Database",
+    },
+    {
+      title: "Data Structures & Java",
+      description: "Algorithmic problem solving, clean OOP patterns, and computational complexity optimization.",
+      icon: "Cpu",
+    },
+    {
+      title: "Developer Tooling & CI/CD",
+      description: "Git version control, Postman API testing, Vite build optimizations, and automated deployment.",
+      icon: "Terminal",
+    },
+  ],
   stats: [
-    { value: "01+", label: "Years Learning" },
-    { value: "10+", label: "Projects Built" },
+    { value: "20+", label: "Projects Built" },
     { value: "08+", label: "Technologies" },
-    { value: "100%", label: "Curiosity" },
+    { value: "01+", label: "Years Experience" },
+    { value: "2026", label: "Graduating Batch" },
   ],
 };

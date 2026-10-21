@@ -7,6 +7,8 @@ import CustomCursor from "./components/CustomCursor";
 import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
+import ResumeBuilderPage from "./pages/ResumeBuilderPage";
+import ResumeViewPage from "./pages/ResumeViewPage";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 
 function ScrollProgress() {
@@ -31,18 +33,49 @@ function AnimatedRoutes() {
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.fromTo(routeRef.current, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.35, ease: "power2.out" });
+      gsap.fromTo(
+        routeRef.current,
+        { autoAlpha: 0 },
+        { autoAlpha: 1, duration: 0.25, ease: "power2.out" }
+      );
     });
     return () => media.revert();
   }, [location.pathname]);
 
   return (
-    <div ref={routeRef}>
+    <div ref={routeRef} className="min-h-screen">
       <Routes location={location}>
         <Route path="/" element={<Home />} />
+        <Route path="/resume-builder" element={<ResumeBuilderPage />} />
+        <Route path="/resume-builder/view" element={<ResumeViewPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
+  );
+}
+
+function AppContent({ theme, toggleTheme }) {
+  const location = useLocation();
+  const isResumeApp = location.pathname.startsWith("/resume-builder");
+
+  return (
+    <>
+      <CustomCursor />
+      {!isResumeApp && <ScrollProgress />}
+
+      {!isResumeApp && (
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-4 focus:px-6 focus:py-3 focus:bg-[var(--color-accent)] focus:text-[var(--color-background)] focus:font-bold focus:rounded-b-lg focus:z-[9999]"
+        >
+          Skip to main content
+        </a>
+      )}
+
+      {!isResumeApp && <Navbar theme={theme} toggleTheme={toggleTheme} />}
+      <AnimatedRoutes />
+      {!isResumeApp && <ScrollToTop />}
+    </>
   );
 }
 
@@ -76,20 +109,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <CustomCursor />
-      <ScrollProgress />
-
-      {/* Skip to content */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-0 focus:left-4 focus:px-6 focus:py-3 focus:bg-[var(--color-accent)] focus:text-[var(--color-background)] focus:font-bold focus:rounded-b-lg focus:z-[9999]"
-      >
-        Skip to main content
-      </a>
-
-      <Navbar theme={theme} toggleTheme={toggleTheme} />
-      <AnimatedRoutes />
-      <ScrollToTop />
+      <AppContent theme={theme} toggleTheme={toggleTheme} />
     </BrowserRouter>
   );
 }
