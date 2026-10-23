@@ -11,41 +11,45 @@ import {
   sectionSurface,
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
-import { contactApi } from "../services/api";
-
-const DEFAULT_DEV = {
-  email: "ashishsahu01072005@gmail.com",
-  github: "https://github.com/Ashishsahu0107",
-  linkedin: "https://linkedin.com/in/ashishsahu0107",
-  location: "India",
-  statusPhrase: "Available for opportunities",
-  availableForWork: true,
-  emailjsServiceId: "service_mshfzaf",
-  emailjsTemplateId: "template_0rruyps",
-  emailjsPublicKey: "3JGbJNsXsGW1gQJGu",
-};
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { useCallback } from "react";
 
 export default function PortfolioContact() {
   const sectionRef = useRef(null);
-  const [contactData, setContactData] = useState(DEFAULT_DEV);
+  const [contactData, setContactData] = useState({
+    email: "",
+    github: "",
+    linkedin: "",
+    location: "",
+    locationShort: "",
+    statusPhrase: "",
+    availableForWork: true,
+    emailjsServiceId: "",
+    emailjsTemplateId: "",
+    emailjsPublicKey: "",
+  });
   const [state, setState] = useState("idle");
   const [errorMessage, setErrorMessage] = useState("");
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();
 
-  useEffect(() => {
-    async function loadContact() {
-      try {
-        const data = await contactApi.getInfo();
-        if (data) {
-          setContactData((prev) => ({ ...prev, ...data }));
-        }
-      } catch (err) {
-        console.warn("Using fallback contact info:", err.message);
+  const loadContact = useCallback(async () => {
+    try {
+      const data = await contactApi.getInfo();
+      if (data) {
+        setContactData((prev) => ({ ...prev, ...data }));
       }
+    } catch (err) {
+      console.warn("[PortfolioContact] Could not load contact info:", err.message);
     }
-    loadContact();
   }, []);
+
+  useEffect(() => {
+    loadContact();
+  }, [loadContact]);
+
+  // Real-time synchronization whenever contact settings are updated
+  usePortfolioSync(loadContact, "contact");
 
   const submit = async (event) => {
     event.preventDefault();

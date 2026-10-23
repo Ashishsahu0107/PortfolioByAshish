@@ -41,7 +41,7 @@ export const FormModel = {
     const updated = await Form.findOneAndUpdate(
       { id },
       { ...updates, updatedAt: new Date() },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

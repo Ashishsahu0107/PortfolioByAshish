@@ -289,7 +289,76 @@ export const initialSections = [
   { id: "about", name: "About & Philosophy", slug: "about", type: "builtin", enabled: true, order: 2, desc: "Personal bio, focus pillars, and statistics" },
   { id: "skills", name: "Skills & Toolkit", slug: "skills", type: "builtin", enabled: true, order: 3, desc: "Disciplines, technologies, and self-assessment metrics" },
   { id: "projects", name: "Selected Works", slug: "projects", type: "builtin", enabled: true, order: 4, desc: "Curated engineering projects with details" },
-  { id: "process", name: "Engineering Process", slug: "process", type: "builtin", enabled: true, order: 5, desc: "5-step architectural lifecycle from discovery to ship" },
+  {
+    id: "process",
+    name: "Engineering Process",
+    slug: "process",
+    type: "builtin",
+    enabled: true,
+    order: 5,
+    desc: "5-step architectural lifecycle from discovery to ship",
+    content: {
+      heading: "How ideas become software.",
+      subheading: "A systematic approach that balances high-speed iteration with architectural rigor.",
+      items: [
+        {
+          step: "01",
+          phase: "Discover",
+          tagline: "Problem Framing & Architecture",
+          description: "Deeply understanding the user requirements, scoping technical constraints, defining data models, and identifying edge cases before writing a line of code.",
+          deliverables: [
+            "Requirements gathering & user flows",
+            "API contract specification",
+            "Database schema diagramming"
+          ]
+        },
+        {
+          step: "02",
+          phase: "Design",
+          tagline: "UI & Technical Blueprints",
+          description: "Establishing design systems, responsive wireframes, component hierarchies, and state management strategies to ensure a cohesive experience.",
+          deliverables: [
+            "Typography & color tokens",
+            "Component hierarchy planning",
+            "Accessible interactive states"
+          ]
+        },
+        {
+          step: "03",
+          phase: "Develop",
+          tagline: "Clean, Modular Coding",
+          description: "Writing modular, self-documenting code with reusable React components, custom hooks, and robust error handling across both client and server.",
+          deliverables: [
+            "Semantic HTML5 & responsive CSS",
+            "Reusable component library",
+            "Strict data validation"
+          ]
+        },
+        {
+          step: "04",
+          phase: "Integrate",
+          tagline: "APIs, Persistence & Auth",
+          description: "Connecting frontend interfaces to high-throughput REST endpoints, managing database indexes, configuring JWT security, and optimizing query speeds.",
+          deliverables: [
+            "Secure REST API endpoints",
+            "MongoDB Mongoose pipelines",
+            "Protected auth routes & sessions"
+          ]
+        },
+        {
+          step: "05",
+          phase: "Test & Deploy",
+          tagline: "Vitals Optimization & Launch",
+          description: "Auditing cross-device responsiveness, tuning Core Web Vitals, verifying WCAG AA contrast compliance, and automating production deployments.",
+          deliverables: [
+            "Lighthouse performance ≥ 95 audit",
+            "Cross-browser responsive testing",
+            "CI/CD production deployment"
+          ]
+        }
+      ]
+    }
+  },
   { id: "experience", name: "Experience & Education", slug: "experience", type: "builtin", enabled: true, order: 6, desc: "Chronological academic and technical milestones" },
   { id: "contact", name: "Contact & Connect", slug: "contact", type: "builtin", enabled: true, order: 7, desc: "Get in touch form, links, and status" },
 ];

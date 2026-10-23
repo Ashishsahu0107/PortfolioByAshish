@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
-import { db } from "../db/database.js";
+import { UserModel } from "../models/User.model.js";
 
 export async function authMiddleware(req, res, next) {
   try {
@@ -29,9 +29,8 @@ export async function authMiddleware(req, res, next) {
       });
     }
 
-    // Lookup user in persistent database
-    const users = await db.get("users");
-    const user = users.find((u) => u.id === decoded.userId);
+    // Lookup user in persistent database (MongoDB)
+    const user = await UserModel.findById(decoded.userId);
 
     if (!user) {
       return res.status(401).json({

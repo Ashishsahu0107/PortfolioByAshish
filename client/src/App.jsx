@@ -14,6 +14,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
 import { AuthProvider, ProtectedRoute } from "./auth/AuthContext";
+import { DeveloperProvider } from "./context/DeveloperContext";
 
 function ScrollProgress() {
   const progress = useScrollProgress();
@@ -97,6 +98,7 @@ function AppContent({ theme, toggleTheme }) {
   );
 }
 
+
 export default function App() {
   const [theme, setTheme] = useState(() => {
     try {
@@ -128,9 +130,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ResumeModalProvider>
-          <AppContent theme={theme} toggleTheme={toggleTheme} />
-        </ResumeModalProvider>
+        <DeveloperProvider>
+          <ResumeModalProvider>
+            <AppContent theme={theme} toggleTheme={toggleTheme} />
+          </ResumeModalProvider>
+        </DeveloperProvider>
       </AuthProvider>
     </BrowserRouter>
   );

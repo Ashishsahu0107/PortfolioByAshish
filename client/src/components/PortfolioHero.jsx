@@ -10,33 +10,43 @@ import {
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { GithubIcon, LinkedinIcon, MailIcon } from "./icons";
-import { developer as initialDeveloper } from "../data/developer";
-import { techStack } from "../data/skills";
+import { useDeveloper } from "../context/DeveloperContext";
 import { contentWidth, primaryButton, outlineButton } from "./portfolioStyles";
 import heroPortrait from "../assets/hero.png";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
-import { developerApi } from "../services/api";
-import { useEffect } from "react";
+import { skillsApi } from "../services/api";
+import { useEffect, useCallback } from "react";
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PortfolioHero() {
-  const [developer, setDeveloper] = useState(initialDeveloper);
+  const { developer } = useDeveloper();
+  const [coreStack, setCoreStack] = useState([]);
   const heroRef = useRef(null);
   const [imageError, setImageError] = useState(false);
   const { openResumeModal } = useResumeModal();
 
-  useEffect(() => {
-    async function loadDeveloper() {
-      try {
-        const live = await developerApi.get();
-        if (live) setDeveloper((prev) => ({ ...prev, ...live }));
-      } catch {
-        // Fallback loaded
+  const loadSkills = useCallback(async () => {
+    try {
+      const live = await skillsApi.get();
+      if (Array.isArray(live) && live.length > 0) {
+        const all = live.flatMap((cat) => cat.skills || []);
+        if (all.length > 0) {
+          setCoreStack(all.slice(0, 4));
+        }
       }
+    } catch (err) {
+      console.warn("[PortfolioHero] Could not fetch live skills:", err.message);
     }
-    loadDeveloper();
   }, []);
+
+  useEffect(() => {
+    loadSkills();
+  }, [loadSkills]);
+
+  usePortfolioSync(loadSkills, "skills");
+
 
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
@@ -190,11 +200,13 @@ export default function PortfolioHero() {
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
               </span>
-              {developer.statusPhrase}
+              {developer?.statusPhrase || (developer?.availableForWork ? "Available for opportunities" : "Currently engaged")}
             </span>
-            <span className="font-mono text-[10px] text-secondary">
-              · Batch {developer.graduatingYear}
-            </span>
+            {developer?.graduatingYear && (
+              <span className="font-mono text-[10px] text-secondary">
+                · Batch {developer.graduatingYear}
+              </span>
+            )}
           </div>
 
           {/* Split Editorial Typography */}
@@ -202,24 +214,26 @@ export default function PortfolioHero() {
             className="mb-3 font-serif text-[clamp(52px,7.5vw,94px)] font-bold tracking-tight text-primary leading-[0.94]"
             id="hero-title"
           >
-            <span className="hero-title-first block">{developer.firstName}</span>
+            <span className="hero-title-first block">
+              {developer?.firstName || developer?.name?.split(" ")[0] || "Developer"}
+            </span>
             <span className="hero-title-last block italic font-normal text-action">
-              {developer.lastName}
+              {developer?.lastName || developer?.name?.split(" ").slice(1).join(" ") || ""}
             </span>
           </h1>
 
           {/* Monospaced Subheading Bar */}
           <div className="hero-role-bar mb-4 flex items-center gap-3 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase text-primary">
-            <span>FULL STACK DEVELOPER</span>
+            <span>{developer?.role ? developer.role.toUpperCase() : "FULL STACK DEVELOPER"}</span>
             <span className="h-px w-12 bg-action/60" />
-            <span className="text-[10px] text-secondary">CSE 2026</span>
+            <span className="text-[10px] text-secondary">
+              {developer?.degree ? `${developer.degree} · ${developer?.graduatingYear || ""}`.trim() : `CSE ${developer?.graduatingYear || "2026"}`}
+            </span>
           </div>
 
           {/* Punchy Bio Description */}
           <p className="hero-bio-copy mb-6 max-w-[500px] text-[15px] leading-[1.8] text-secondary max-sm:text-[14px]">
-            Engineering modern web platforms combining scalable backends with
-            refined editorial aesthetics. Focused on React, Next.js, Node.js, and
-            clean algorithmic architecture.
+            {developer?.tagline || developer?.bio || "Building modern, scalable web platforms with engineering precision."}
           </p>
 
           {/* Dual Action CTAs (View Work + 1-Click Download Resume) */}
@@ -243,34 +257,42 @@ export default function PortfolioHero() {
             <span className="font-mono text-[9px] uppercase tracking-wider text-secondary/80">
               Connect:
             </span>
-            <a
-              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
-              href={developer.github}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Ashish Sahu GitHub"
-            >
-              <GithubIcon size={15} />
-            </a>
-            <a
-              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
-              href={developer.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              aria-label="Ashish Sahu LinkedIn"
-            >
-              <LinkedinIcon size={15} />
-            </a>
-            <a
-              className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
-              href={`mailto:${developer.email}`}
-              aria-label="Email Ashish Sahu"
-            >
-              <MailIcon size={15} />
-            </a>
-            <span className="ml-2 font-mono text-[10px] text-secondary/70">
-              {developer.locationShort}
-            </span>
+            {developer?.github && (
+              <a
+                className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+                href={developer.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="GitHub"
+              >
+                <GithubIcon size={15} />
+              </a>
+            )}
+            {developer?.linkedin && (
+              <a
+                className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+                href={developer.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="LinkedIn"
+              >
+                <LinkedinIcon size={15} />
+              </a>
+            )}
+            {developer?.email && (
+              <a
+                className="inline-flex size-8 items-center justify-center rounded-full border border-border bg-surface transition-colors hover:border-action hover:text-action"
+                href={`mailto:${developer.email}`}
+                aria-label="Email"
+              >
+                <MailIcon size={15} />
+              </a>
+            )}
+            {developer?.locationShort && (
+              <span className="ml-2 font-mono text-[10px] text-secondary/70">
+                {developer.locationShort}
+              </span>
+            )}
           </div>
         </div>
 
@@ -348,7 +370,7 @@ export default function PortfolioHero() {
               </a>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {techStack.slice(0, 4).map((tech) => (
+              {coreStack.slice(0, 4).map((tech) => (
                 <div
                   key={tech.name}
                   className="hero-stack-item flex flex-col items-center justify-center rounded-sm border border-border bg-surface py-2 text-center transition-colors hover:border-action"
@@ -370,11 +392,11 @@ export default function PortfolioHero() {
         >
           {/* Key Metrics Counters */}
           <div className="flex flex-wrap items-center gap-6 sm:gap-10">
-            {developer.stats.map((stat, i) => (
+            {(developer?.stats || []).map((stat, i) => (
               <div
-                key={stat.label}
+                key={stat.label || i}
                 className={`flex items-baseline gap-2 ${
-                  i !== developer.stats.length - 1
+                  i !== (developer.stats || []).length - 1
                     ? "sm:border-r sm:border-border sm:pr-8"
                     : ""
                 }`}

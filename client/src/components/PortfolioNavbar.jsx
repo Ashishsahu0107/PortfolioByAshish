@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Download, Menu, Moon, Sun, X } from "lucide-react";
-import { developer } from "../data/developer";
+import { useDeveloper } from "../context/DeveloperContext";
 import { contentWidth } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 
@@ -14,6 +14,7 @@ const links = [
 ];
 
 export default function PortfolioNavbar({ theme, toggleTheme }) {
+  const { developer } = useDeveloper();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { openResumeModal } = useResumeModal();
@@ -23,6 +24,16 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
     window.addEventListener("scroll", update, { passive: true });
     return () => window.removeEventListener("scroll", update);
   }, []);
+
+  const initials = developer?.name
+    ? developer.name
+        .split(" ")
+        .filter(Boolean)
+        .map((w) => w[0])
+        .join("")
+        .slice(0, 2)
+        .toUpperCase()
+    : "AS";
 
   return (
     <header
@@ -40,9 +51,9 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
         <a
           className="group flex items-baseline font-serif text-[24px] font-bold text-primary no-underline transition-colors"
           href="#home"
-          aria-label={`${developer.name}, return to top`}
+          aria-label={`${developer?.name || "Portfolio"}, return to top`}
         >
-          <span>AS</span>
+          <span>{initials}</span>
           <span className="font-serif text-action transition-transform group-hover:scale-125">
             .
           </span>

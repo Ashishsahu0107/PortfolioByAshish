@@ -32,7 +32,7 @@ export const ExperienceModel = {
     const updated = await Experience.findOneAndUpdate(
       { id },
       { ...updates, updatedAt: new Date() },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

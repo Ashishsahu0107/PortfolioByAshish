@@ -35,7 +35,7 @@ export const ProjectModel = {
     const updated = await Project.findOneAndUpdate(
       { id },
       { ...updates, updatedAt: new Date() },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

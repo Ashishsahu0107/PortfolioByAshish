@@ -22,7 +22,7 @@ export const UserModel = {
     const updated = await User.findOneAndUpdate(
       { id },
       { password: newHashedPassword },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

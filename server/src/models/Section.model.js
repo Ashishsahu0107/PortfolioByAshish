@@ -51,7 +51,7 @@ export const SectionModel = {
     const updated = await Section.findOneAndUpdate(
       { id },
       { ...updates, updatedAt: new Date() },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

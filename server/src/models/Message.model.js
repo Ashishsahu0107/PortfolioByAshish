@@ -30,7 +30,7 @@ export const MessageModel = {
     const updated = await Message.findOneAndUpdate(
       { id },
       { read: readStatus },
-      { new: true }
+      { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
   },

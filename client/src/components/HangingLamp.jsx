@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
-import { Check } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Check, Move } from "lucide-react";
+import { LOGIN_THEMES } from "./loginThemes";
 
 // Web Audio API mechanical pull switch sound (click transient + spring snap)
 function playSwitchSound(isTurningOn) {
@@ -52,39 +53,93 @@ function playSwitchSound(isTurningOn) {
   }
 }
 
-export default function HangingLamp({ isLightOn, onToggle }) {
-  const [pullY, setPullY] = useState(0); // Current dynamic cord stretch in px
-  const [isDragging, setIsDragging] = useState(false);
+export default function HangingLamp({
+  isLightOn,
+  onToggle,
+  theme = LOGIN_THEMES[0],
+}) {
+  // Pull cord stretch state
+  const [pullY, setPullY] = useState(0);
+  const [isCordDragging, setIsCordDragging] = useState(false);
   const [hasTriggeredThisDrag, setHasTriggeredThisDrag] = useState(false);
-  const dragStartYRef = useRef(0);
+  const cordDragStartYRef = useRef(0);
   const knobRef = useRef(null);
+
+  // Lamp freeform drag-and-drop state before lighting
+  const [lampOffset, setLampOffset] = useState({ x: 0, y: 0 });
+  const [isLampDragging, setIsLampDragging] = useState(false);
+  const lampDragRef = useRef({ startX: 0, startY: 0, origX: 0, origY: 0 });
 
   const BASE_CORD_LENGTH = 75; // Cord length from shade aperture
   const TRIGGER_THRESHOLD = 28; // Drag distance required to activate
 
-  // Handle pointer down (mouse or touch)
-  const handlePointerDown = (e) => {
+  // Whenever lamp is lit, smoothly snap back to original resting position (x:0, y:0)!
+  useEffect(() => {
+    if (isLightOn) {
+      setLampOffset({ x: 0, y: 0 });
+      setIsLampDragging(false);
+    }
+  }, [isLightOn]);
+
+  // Handle Lamp Freeform Dragging (only allowed before lamp is lit)
+  const handleLampPointerDown = (e) => {
+    if (isLightOn) return; // Locked to original position while lit
+    if (e.target.closest("[data-cord-switch]")) return; // Cord handles its own pointer events
+
+    e.preventDefault();
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
+
+    lampDragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: lampOffset.x,
+      origY: lampOffset.y,
+    };
+    setIsLampDragging(true);
+  };
+
+  const handleLampPointerMove = (e) => {
+    if (!isLampDragging || isLightOn) return;
+    const dx = e.clientX - lampDragRef.current.startX;
+    const dy = e.clientY - lampDragRef.current.startY;
+    setLampOffset({
+      x: lampDragRef.current.origX + dx,
+      y: lampDragRef.current.origY + dy,
+    });
+  };
+
+  const handleLampPointerUp = (e) => {
+    if (!isLampDragging) return;
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+    setIsLampDragging(false);
+  };
+
+  // Handle Pull Cord Interaction
+  const handleCordPointerDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {}
 
-    dragStartYRef.current = e.clientY;
-    setIsDragging(true);
+    cordDragStartYRef.current = e.clientY;
+    setIsCordDragging(true);
     setHasTriggeredThisDrag(false);
   };
 
-  // Handle pointer drag
-  const handlePointerMove = (e) => {
-    if (!isDragging) return;
-    const rawDelta = e.clientY - dragStartYRef.current;
+  const handleCordPointerMove = (e) => {
+    if (!isCordDragging) return;
+    const rawDelta = e.clientY - cordDragStartYRef.current;
     if (rawDelta < 0) {
       setPullY(0);
       return;
     }
 
-    // Elastic resistance curve (diminishing stretch past threshold)
+    // Elastic resistance curve
     const dampedY = Math.min(50, Math.pow(rawDelta, 0.85));
     setPullY(dampedY);
 
@@ -94,14 +149,13 @@ export default function HangingLamp({ isLightOn, onToggle }) {
     }
   };
 
-  // Handle pointer release
-  const handlePointerUp = (e) => {
-    if (!isDragging) return;
+  const handleCordPointerUp = (e) => {
+    if (!isCordDragging) return;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {}
 
-    const totalDrag = e.clientY - dragStartYRef.current;
+    const totalDrag = e.clientY - cordDragStartYRef.current;
 
     // Trigger toggle if dragged past threshold OR quick tap/click (< 8px total movement)
     if (hasTriggeredThisDrag || Math.abs(totalDrag) < 8) {
@@ -110,14 +164,14 @@ export default function HangingLamp({ isLightOn, onToggle }) {
       onToggle();
     }
 
-    // Spring back
-    setIsDragging(false);
+    // Spring back cord
+    setIsCordDragging(false);
     setPullY(0);
     setHasTriggeredThisDrag(false);
   };
 
-  const handlePointerCancel = () => {
-    setIsDragging(false);
+  const handleCordPointerCancel = () => {
+    setIsCordDragging(false);
     setPullY(0);
     setHasTriggeredThisDrag(false);
   };
@@ -138,8 +192,7 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           isLightOn ? "opacity-100" : "opacity-0"
         }`}
         style={{
-          background:
-            "radial-gradient(ellipse 950px 850px at 30% 35%, rgba(254, 240, 138, 0.14) 0%, rgba(245, 158, 11, 0.07) 45%, rgba(217, 119, 6, 0.02) 75%, transparent 100%)",
+          background: theme.ambientGlow,
         }}
       />
 
@@ -149,15 +202,43 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           isLightOn ? "opacity-100" : "opacity-0"
         }`}
         style={{
-          background:
-            "radial-gradient(circle 650px at 68% 50%, rgba(254, 240, 138, 0.08) 0%, rgba(245, 158, 11, 0.03) 55%, transparent 85%)",
+          background: theme.secondaryGlow,
         }}
       />
 
       {/* ============================================================ */}
-      {/* ARCHITECT DESK LAMP SVG ILLUSTRATION                         */}
+      {/* ARCHITECT DESK LAMP FIXTURE (DRAGGABLE BEFORE LIGHTING)       */}
       {/* ============================================================ */}
-      <div className="relative z-30 w-[300px] sm:w-[350px] md:w-[380px] h-[400px] sm:h-[450px]">
+      <div
+        onPointerDown={handleLampPointerDown}
+        onPointerMove={handleLampPointerMove}
+        onPointerUp={handleLampPointerUp}
+        onPointerCancel={handleLampPointerUp}
+        className="relative z-30 w-[300px] sm:w-[350px] md:w-[380px] h-[400px] sm:h-[450px] pointer-events-auto select-none"
+        style={{
+          transform: `translate3d(${lampOffset.x}px, ${lampOffset.y}px, 0)`,
+          transition: isLampDragging
+            ? "none"
+            : "transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)",
+          cursor: isLightOn ? "default" : isLampDragging ? "grabbing" : "grab",
+          touchAction: "none",
+        }}
+      >
+        {/* Floating Drag Hint (Visible when lamp is UNLIT to guide user) */}
+        {!isLightOn && (
+          <div
+            className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap pointer-events-none transition-all duration-200 z-40"
+            style={{ opacity: isLampDragging ? 0.95 : 0.75 }}
+          >
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-zinc-900/90 border border-zinc-700/80 px-3 py-1 text-[11px] font-mono text-zinc-200 shadow-xl backdrop-blur-md">
+              <Move size={11} style={{ color: theme.glow }} />
+              <span>
+                {isLampDragging ? "Moving lamp..." : "Drag lamp anywhere"}
+              </span>
+            </div>
+          </div>
+        )}
+
         <svg
           viewBox="0 0 340 420"
           className="w-full h-full overflow-visible filter drop-shadow-2xl"
@@ -188,12 +269,12 @@ export default function HangingLamp({ isLightOn, onToggle }) {
               <stop offset="100%" stopColor="#18181b" />
             </linearGradient>
 
-            {/* Brass / Gold Pivot Joint Gradient */}
+            {/* Dynamic Joint Color Gradient (Adapts to Active Theme) */}
             <linearGradient id="brassJoint" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#fef08a" />
-              <stop offset="25%" stopColor="#f59e0b" />
-              <stop offset="65%" stopColor="#d97706" />
-              <stop offset="100%" stopColor="#78350f" />
+              <stop offset="0%" stopColor={theme.lampTrimLight || "#fef08a"} />
+              <stop offset="35%" stopColor={theme.lampTrim || "#f59e0b"} />
+              <stop offset="75%" stopColor="#3f3f46" />
+              <stop offset="100%" stopColor="#18181b" />
             </linearGradient>
 
             {/* Arm Rod Metal Gradient */}
@@ -214,8 +295,8 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             {/* Lampshade Inner Cavity Reflector */}
             <radialGradient id="shadeInteriorLit" cx="45%" cy="40%" r="60%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-              <stop offset="35%" stopColor="#fef9c3" stopOpacity="0.95" />
-              <stop offset="70%" stopColor="#fef08a" stopOpacity="0.8" />
+              <stop offset="35%" stopColor={theme.lightSoft} stopOpacity="0.95" />
+              <stop offset="70%" stopColor={theme.glow} stopOpacity="0.8" />
               <stop offset="95%" stopColor="#e2e8f0" stopOpacity="0.9" />
               <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0.95" />
             </radialGradient>
@@ -226,41 +307,23 @@ export default function HangingLamp({ isLightOn, onToggle }) {
               <stop offset="100%" stopColor="#94a3b8" stopOpacity="0.75" />
             </radialGradient>
 
-            {/* Brass Trim Rim for Lampshade Edge */}
+            {/* Dynamic Trim Rim for Lampshade Edge */}
             <linearGradient id="shadeBrassRim" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#b45309" />
-              <stop offset="25%" stopColor="#fef08a" />
-              <stop offset="55%" stopColor="#f59e0b" />
-              <stop offset="85%" stopColor="#d97706" />
-              <stop offset="100%" stopColor="#92400e" />
+              <stop offset="0%" stopColor="#27272a" />
+              <stop offset="25%" stopColor={theme.lampTrimLight || "#fef08a"} />
+              <stop offset="55%" stopColor={theme.lampTrim || "#f59e0b"} />
+              <stop offset="85%" stopColor="#3f3f46" />
+              <stop offset="100%" stopColor="#18181b" />
             </linearGradient>
 
             {/* Volumetric Angled Light Beam from Lampshade Aperture */}
             <linearGradient id="volumetricLight" x1="30%" y1="0%" x2="90%" y2="100%">
-              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.5" />
-              <stop offset="18%" stopColor="#fef08a" stopOpacity="0.32" />
-              <stop offset="50%" stopColor="#f59e0b" stopOpacity="0.14" />
-              <stop offset="85%" stopColor="#d97706" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#f59e0b" stopOpacity="0" />
+              <stop offset="0%" stopColor={theme.beamGradient.stop0} />
+              <stop offset="18%" stopColor={theme.beamGradient.stop1} />
+              <stop offset="50%" stopColor={theme.beamGradient.stop2} />
+              <stop offset="85%" stopColor={theme.beamGradient.stop3} />
+              <stop offset="100%" stopColor={theme.beamGradient.stop4} />
             </linearGradient>
-
-            {/* Bulb Glow Halo Filter */}
-            <filter id="bulbGlow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="6" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-
-            {/* Shade Outer Rim Glow Filter (When lamp is ON) */}
-            <filter id="shadeOuterHalo" x="-40%" y="-40%" width="180%" height="180%">
-              <feGaussianBlur in="SourceAlpha" stdDeviation="10" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="0.8" />
-              </feComponentTransfer>
-              <feMerge>
-                <feMergeNode />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
           </defs>
 
           {/* ========================================================== */}
@@ -287,64 +350,47 @@ export default function HangingLamp({ isLightOn, onToggle }) {
               opacity="0.75"
             />
 
-            {/* Floating Dust Motes in Light Beam (Cinematic Atmosphere) */}
-            <circle cx="210" cy="220" r="1.5" fill="#fef08a" opacity="0.7" />
+            {/* Floating Dust Motes in Light Beam (Themed Atmosphere) */}
+            <circle cx="210" cy="220" r="1.5" fill={theme.lightSoft} opacity="0.75" />
             <circle cx="245" cy="265" r="1.2" fill="#fff" opacity="0.6" />
-            <circle cx="195" cy="305" r="1.6" fill="#fef08a" opacity="0.5" />
+            <circle cx="195" cy="305" r="1.6" fill={theme.glow} opacity="0.6" />
             <circle cx="270" cy="330" r="1.4" fill="#fff" opacity="0.55" />
-            <circle cx="230" cy="360" r="1.2" fill="#fef08a" opacity="0.4" />
+            <circle cx="230" cy="360" r="1.2" fill={theme.lightSoft} opacity="0.5" />
             <circle cx="295" cy="245" r="1" fill="#fff" opacity="0.45" />
           </g>
 
           {/* ========================================================== */}
           {/* 2. BASE & DESK SHADOW                                      */}
           {/* ========================================================== */}
-          {/* Soft Ground Shadow */}
           <ellipse cx="145" cy="392" rx="68" ry="14" fill="url(#deskShadow)" />
-
-          {/* Base Rim Cylinder / Bevel */}
           <ellipse cx="145" cy="383" rx="50" ry="11" fill="url(#baseRim)" />
           <path
             d="M95 383 C95 391 117 396 145 396 C173 396 195 391 195 383 L195 386 C195 394 173 399 145 399 C117 399 95 394 95 386 Z"
             fill="url(#baseMetal)"
           />
-
-          {/* Base Top Plate with Circular Metallic Specular */}
           <ellipse cx="145" cy="382" rx="47" ry="9.5" fill="url(#baseMetal)" stroke="#3f3f46" strokeWidth="1" />
           <ellipse cx="145" cy="382" rx="36" ry="7" fill="none" stroke="#27272a" strokeWidth="1" />
-
-          {/* Base Center Stem Mount */}
           <ellipse cx="145" cy="381" rx="14" ry="4" fill="#18181b" stroke="#52525b" strokeWidth="1" />
 
           {/* ========================================================== */}
           {/* 3. LOWER ARM & ARTICULATED HINGE JOINTS                    */}
           {/* ========================================================== */}
-          {/* Lower Arm Pivot Joint at Base */}
           <g>
-            {/* Outer Joint Outer Gold/Brass Ring */}
-            <circle cx="145" cy="371" r="10" fill="url(#brassJoint)" stroke="#92400e" strokeWidth="1" />
-            {/* Joint Core Pin */}
+            <circle cx="145" cy="371" r="10" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
             <circle cx="145" cy="371" r="5" fill="#18181b" />
             <circle cx="145" cy="371" r="2.5" fill="url(#brassJoint)" />
           </g>
 
-          {/* Lower Arm Twin Parallel Rods (Leaning Left towards Elbow) */}
           <g>
-            {/* Primary Rod */}
             <line x1="142" y1="368" x2="122" y2="258" stroke="url(#armMetal)" strokeWidth="4.5" strokeLinecap="round" />
             <line x1="142" y1="368" x2="122" y2="258" stroke="#52525b" strokeWidth="1.2" strokeLinecap="round" />
-
-            {/* Secondary Parallel Strut */}
             <line x1="148" y1="371" x2="128" y2="261" stroke="url(#armMetal)" strokeWidth="3" strokeLinecap="round" />
             <line x1="148" y1="371" x2="128" y2="261" stroke="#3f3f46" strokeWidth="1" strokeLinecap="round" />
-
-            {/* Arm Stabilizer Ring / Clip in middle */}
             <line x1="134" y1="316" x2="139" y2="317" stroke="url(#brassJoint)" strokeWidth="2.5" strokeLinecap="round" />
           </g>
 
-          {/* Middle Elbow Joint */}
           <g>
-            <circle cx="125" cy="257" r="10.5" fill="url(#brassJoint)" stroke="#92400e" strokeWidth="1" />
+            <circle cx="125" cy="257" r="10.5" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
             <circle cx="125" cy="257" r="5.5" fill="#18181b" />
             <circle cx="125" cy="257" r="2.8" fill="url(#brassJoint)" />
           </g>
@@ -353,27 +399,20 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           {/* 4. UPPER ARM (Extending from Elbow to Shade Socket)        */}
           {/* ========================================================== */}
           <g>
-            {/* Primary Upper Rod */}
             <line x1="126" y1="254" x2="164" y2="166" stroke="url(#armMetal)" strokeWidth="4.5" strokeLinecap="round" />
             <line x1="126" y1="254" x2="164" y2="166" stroke="#52525b" strokeWidth="1.2" strokeLinecap="round" />
-
-            {/* Secondary Upper Strut */}
             <line x1="128" y1="259" x2="168" y2="170" stroke="url(#armMetal)" strokeWidth="3" strokeLinecap="round" />
-
-            {/* Arm Stabilizer Ring */}
             <line x1="146" y1="210" x2="149" y2="213" stroke="url(#brassJoint)" strokeWidth="2.5" strokeLinecap="round" />
           </g>
 
-          {/* Shade Pivot Joint Bracket */}
           <g>
-            <circle cx="166" cy="168" r="8" fill="url(#brassJoint)" stroke="#92400e" strokeWidth="1" />
+            <circle cx="166" cy="168" r="8" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
             <circle cx="166" cy="168" r="3.5" fill="#18181b" />
           </g>
 
           {/* ========================================================== */}
           {/* 5. ARCHITECTURAL DOME LAMPSHADE (HEAD)                      */}
           {/* ========================================================== */}
-          {/* Outer Soft Glow on Shade Top when ON (Matches Image 2) */}
           <path
             d="M138 163 C138 128 152 98 184 98 C216 98 230 134 230 172 Z"
             fill="none"
@@ -385,7 +424,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             style={{ filter: "blur(8px)" }}
           />
 
-          {/* Lampshade Outer Shell (Sleek Matte Black Dome) */}
           <path
             d="M141 161 C140 126 154 99 184 99 C215 99 229 133 229 171 C229 171 202 181 184 179 C164 177 141 161 141 161 Z"
             fill="url(#shadeExterior)"
@@ -393,7 +431,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             strokeWidth="1.5"
           />
 
-          {/* Specular Curved Sheen on Dome Exterior */}
           <path
             d="M152 145 C154 120 166 106 184 105"
             stroke="rgba(255, 255, 255, 0.28)"
@@ -401,7 +438,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             strokeLinecap="round"
           />
 
-          {/* Lampshade Inner Cavity Reflector (Visible from tilted bottom) */}
           <ellipse
             cx="185"
             cy="170"
@@ -412,7 +448,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             className="transition-colors duration-300"
           />
 
-          {/* Iconic Golden / Brass Rim Trim around Lampshade Aperture */}
           <ellipse
             cx="185"
             cy="170"
@@ -430,7 +465,7 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             ry="13.2"
             transform="rotate(11 185 170)"
             fill="none"
-            stroke="#fef08a"
+            stroke={theme.lampTrimLight || "#fef08a"}
             strokeWidth="1"
             opacity="0.8"
           />
@@ -438,7 +473,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           {/* ========================================================== */}
           {/* 6. LIGHT BULB (Inside center of cavity)                    */}
           {/* ========================================================== */}
-          {/* Intense Light Core Bloom when ON */}
           <circle
             cx="186"
             cy="162"
@@ -448,22 +482,20 @@ export default function HangingLamp({ isLightOn, onToggle }) {
               isLightOn ? "opacity-100" : "opacity-0"
             }`}
             style={{
-              filter: "drop-shadow(0 0 10px #ffffff) drop-shadow(0 0 22px #fef08a)",
+              filter: `drop-shadow(0 0 10px #ffffff) drop-shadow(0 0 24px ${theme.glow})`,
             }}
           />
 
-          {/* Light Bulb Glass Body */}
           <circle
             cx="186"
             cy="163"
             r="8.5"
             fill={isLightOn ? "#ffffff" : "#f1f5f9"}
-            stroke={isLightOn ? "#fde047" : "#94a3b8"}
+            stroke={isLightOn ? theme.glow : "#94a3b8"}
             strokeWidth="1.5"
             className="transition-colors duration-300"
           />
 
-          {/* Bulb Filament highlight */}
           {isLightOn && (
             <circle cx="186" cy="163" r="4.5" fill="#fffbeb" />
           )}
@@ -471,7 +503,6 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           {/* ========================================================== */}
           {/* 7. HANGING PULL CORD & PULL KNOB (Interactive)             */}
           {/* ========================================================== */}
-          {/* Slender White/Silver Pull Cord */}
           <line
             x1={cordOriginX}
             y1={cordOriginY}
@@ -480,59 +511,59 @@ export default function HangingLamp({ isLightOn, onToggle }) {
             stroke={isLightOn ? "#ffffff" : "#e4e4e7"}
             strokeWidth="1.8"
             strokeLinecap="round"
-            strokeDasharray={isLightOn ? "none" : "none"}
             className="transition-[y2] duration-75"
             style={{
-              filter: isLightOn ? "drop-shadow(0 0 4px rgba(255,255,255,0.8))" : "none",
+              filter: isLightOn
+                ? `drop-shadow(0 0 4px ${theme.glow})`
+                : "none",
             }}
           />
 
-          {/* Translucent Soft Glow Disc around the pull knob (Matches Image 2) */}
+          {/* Soft Glow Disc around the pull knob */}
           <circle
             cx={cordOriginX}
             cy={knobY + 8}
             r="15"
-            fill={isLightOn ? "rgba(254, 240, 138, 0.22)" : "rgba(255, 255, 255, 0.12)"}
+            fill={isLightOn ? theme.cordKnobGlow : "rgba(255, 255, 255, 0.12)"}
             className="transition-all duration-300"
           />
 
           {/* Tear-drop / Bell-shaped Golden Brass Pull Knob */}
           <g transform={`translate(${cordOriginX - 6}, ${knobY})`}>
-            {/* Top Collar */}
             <rect x="4.5" y="0" width="3" height="2" rx="0.8" fill="url(#brassJoint)" />
-            {/* Teardrop Bell Body */}
             <path
               d="M6 2 C3.5 2 2 5.5 2 9 C2 12.5 3.8 14.5 6 14.5 C8.2 14.5 10 12.5 10 9 C10 5.5 8.5 2 6 2 Z"
               fill="url(#brassJoint)"
-              stroke="#b45309"
+              stroke="#27272a"
               strokeWidth="0.8"
             />
-            {/* Specular Highlight Line on Knob */}
             <path d="M4 6 C3.8 7.5 4.2 10.5 5.5 12" stroke="#ffffff" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
-            {/* Bottom Tip Pearl */}
-            <circle cx="6" cy="14.5" r="1.5" fill="#fef08a" />
+            <circle cx="6" cy="14.5" r="1.5" fill={theme.lampTrimLight || "#fef08a"} />
           </g>
         </svg>
 
         {/* ============================================================ */}
-        {/* INVISIBLE DRAG HIT-AREA FOR PULL CORD & KNOB                 */}
+        {/* DRAG HIT-AREA FOR PULL CORD & KNOB                           */}
         {/* ============================================================ */}
         <div
           ref={knobRef}
-          onPointerDown={handlePointerDown}
-          onPointerMove={handlePointerMove}
-          onPointerUp={handlePointerUp}
-          onPointerCancel={handlePointerCancel}
+          data-cord-switch="true"
+          onPointerDown={handleCordPointerDown}
+          onPointerMove={handleCordPointerMove}
+          onPointerUp={handleCordPointerUp}
+          onPointerCancel={handleCordPointerCancel}
           tabIndex={0}
           role="button"
           aria-label="Desk lamp pull cord switch: Drag down or click to turn light on or off"
-          title="Grab and pull cord down to switch light"
+          title="Pull cord down or click to switch light"
           className="absolute z-50 pointer-events-auto cursor-grab active:cursor-grabbing focus:outline-hidden"
           style={{
             left: `${cordOriginX * (100 / 340)}%`,
             top: `${(knobY / 420) * 100}%`,
-            transform: `translate(-50%, -20%) scale(${isDragging ? 1.15 : 1})`,
-            transition: isDragging ? "none" : "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            transform: `translate(-50%, -20%) scale(${isCordDragging ? 1.15 : 1})`,
+            transition: isCordDragging
+              ? "none"
+              : "transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
             touchAction: "none",
             width: "56px",
             height: "56px",
@@ -541,36 +572,49 @@ export default function HangingLamp({ isLightOn, onToggle }) {
           {/* Subtle Halo Pulsing on Hover */}
           <div
             className={`size-full rounded-full transition-all flex items-center justify-center ${
-              isDragging
-                ? "bg-amber-400/35 ring-4 ring-amber-400/50 scale-110"
-                : "hover:bg-amber-400/20"
+              isCordDragging
+                ? "ring-4 scale-110"
+                : "hover:bg-white/10"
             }`}
+            style={{
+              backgroundColor: isCordDragging ? theme.cordKnobGlow : undefined,
+              boxShadow: isCordDragging ? `0 0 12px ${theme.glow}` : undefined,
+            }}
           />
 
           {/* Floating Instruction Pill (Guides user when light is OFF) */}
-          {!isLightOn && !isDragging && (
+          {!isLightOn && !isCordDragging && (
             <div className="absolute left-10 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none animate-bounce">
-              <div className="flex items-center gap-1.5 rounded-full bg-zinc-900/90 border border-amber-500/40 px-3 py-1 text-[11px] font-mono font-medium text-amber-300 shadow-xl backdrop-blur-md">
-                <span className="size-2 rounded-full bg-amber-400 animate-ping inline-block" />
+              <div
+                className="flex items-center gap-1.5 rounded-full bg-zinc-900/90 border px-3 py-1 text-[11px] font-mono font-medium shadow-xl backdrop-blur-md"
+                style={{
+                  borderColor: theme.cardBorder.replace("border-", ""),
+                  color: theme.glow,
+                }}
+              >
+                <span
+                  className="size-2 rounded-full animate-ping inline-block"
+                  style={{ backgroundColor: theme.glow }}
+                />
                 <span>Pull cord to illuminate</span>
               </div>
             </div>
           )}
 
           {/* Dragging State Feedback */}
-          {isDragging && (
+          {isCordDragging && (
             <div className="absolute left-10 top-1/2 -translate-y-1/2 whitespace-nowrap pointer-events-none">
               <div
-                className={`rounded-full px-2.5 py-0.5 text-[10px] font-mono font-bold transition-all ${
-                  hasTriggeredThisDrag
-                    ? "bg-amber-400 text-zinc-950 shadow-lg scale-105"
-                    : "bg-zinc-800 text-zinc-300 border border-zinc-700"
-                }`}
+                className="rounded-full px-2.5 py-0.5 text-[10px] font-mono font-bold transition-all shadow-lg"
+                style={{
+                  backgroundColor: hasTriggeredThisDrag ? theme.glow : "#27272a",
+                  color: hasTriggeredThisDrag ? "#09090b" : "#e4e4e7",
+                }}
               >
                 {hasTriggeredThisDrag ? (
                   <span className="inline-flex items-center gap-1">
                     <Check size={11} />
-                    <span>Release to toggle</span>
+                    <span>Release to snap back & light up</span>
                   </span>
                 ) : (
                   "Pull down..."

@@ -149,40 +149,162 @@ function SectionModal({ section, onSave, onClose }) {
               </label>
             </div>
 
+            <div className="col-span-full pt-3 border-t border-gray-100">
+              <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Display Content</h4>
+            </div>
+            <FormGroup label="Heading" fullWidth>
+              <input
+                className={inputCls}
+                name="heading"
+                value={form.content?.heading || ""}
+                onChange={handleContentChange}
+                placeholder="Section title / heading"
+              />
+            </FormGroup>
+            <FormGroup label="Subheading" fullWidth>
+              <input
+                className={inputCls}
+                name="subheading"
+                value={form.content?.subheading || ""}
+                onChange={handleContentChange}
+                placeholder="Short eyebrow or subtitle text"
+              />
+            </FormGroup>
+
             {form.type === "custom" && (
-              <>
-                <div className="col-span-full pt-3 border-t border-gray-100">
-                  <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Section Content</h4>
+              <FormGroup label="Body Description / Paragraph" fullWidth>
+                <textarea
+                  className={textareaCls}
+                  name="body"
+                  value={form.content?.body || ""}
+                  onChange={handleContentChange}
+                  rows={3}
+                  placeholder="Section text or notes…"
+                />
+              </FormGroup>
+            )}
+
+            {(form.slug === "process" || form.id === "process") && (
+              <div className="col-span-full pt-3 border-t border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider m-0">
+                    Process Roadmap Phases ({Array.isArray(form.content?.items) ? form.content.items.length : 0})
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentItems = Array.isArray(form.content?.items) ? [...form.content.items] : [];
+                      const nextNum = String(currentItems.length + 1).padStart(2, "0");
+                      setForm((p) => ({
+                        ...p,
+                        content: {
+                          ...p.content,
+                          items: [
+                            ...currentItems,
+                            {
+                              step: nextNum,
+                              phase: `Phase ${nextNum}`,
+                              tag: `PHASE ${nextNum}`,
+                              desc: "",
+                              deliverables: [],
+                            },
+                          ],
+                        },
+                      }));
+                    }}
+                    className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
+                  >
+                    <Plus size={12} />
+                    <span>Add Phase</span>
+                  </button>
                 </div>
-                <FormGroup label="Heading" fullWidth>
-                  <input
-                    className={inputCls}
-                    name="heading"
-                    value={form.content?.heading || ""}
-                    onChange={handleContentChange}
-                    placeholder="Main display heading"
-                  />
-                </FormGroup>
-                <FormGroup label="Subheading" fullWidth>
-                  <input
-                    className={inputCls}
-                    name="subheading"
-                    value={form.content?.subheading || ""}
-                    onChange={handleContentChange}
-                    placeholder="Short eyebrow or subtitle text"
-                  />
-                </FormGroup>
-                <FormGroup label="Body Description / Paragraph" fullWidth>
-                  <textarea
-                    className={textareaCls}
-                    name="body"
-                    value={form.content?.body || ""}
-                    onChange={handleContentChange}
-                    rows={3}
-                    placeholder="Section text or notes…"
-                  />
-                </FormGroup>
-              </>
+
+                <div className="flex flex-col gap-3">
+                  {(Array.isArray(form.content?.items) ? form.content.items : []).map((stepItem, idx) => (
+                    <div key={idx} className="p-3 rounded-lg border border-gray-200 bg-gray-50/60 relative">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="font-mono text-xs font-bold text-indigo-600">
+                          Step #{stepItem.step || String(idx + 1).padStart(2, "0")}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newItems = form.content.items.filter((_, i) => i !== idx);
+                            setForm((p) => ({
+                              ...p,
+                              content: { ...p.content, items: newItems },
+                            }));
+                          }}
+                          className="text-red-500 hover:text-red-700 p-1 cursor-pointer"
+                          title="Remove phase"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Phase Title</label>
+                          <input
+                            className={inputCls}
+                            value={stepItem.phase || ""}
+                            onChange={(e) => {
+                              const updated = [...form.content.items];
+                              updated[idx] = { ...updated[idx], phase: e.target.value };
+                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                            }}
+                            placeholder="e.g. ARCHITECTURE & DISCOVERY"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Tag / Eyebrow</label>
+                          <input
+                            className={inputCls}
+                            value={stepItem.tag || ""}
+                            onChange={(e) => {
+                              const updated = [...form.content.items];
+                              updated[idx] = { ...updated[idx], tag: e.target.value };
+                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                            }}
+                            placeholder="e.g. PHASE 01"
+                          />
+                        </div>
+                        <div className="col-span-full">
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Description</label>
+                          <textarea
+                            className={textareaCls}
+                            rows={2}
+                            value={stepItem.desc || ""}
+                            onChange={(e) => {
+                              const updated = [...form.content.items];
+                              updated[idx] = { ...updated[idx], desc: e.target.value };
+                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                            }}
+                            placeholder="What happens during this phase..."
+                          />
+                        </div>
+                        <div className="col-span-full">
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                            Deliverables (comma-separated)
+                          </label>
+                          <input
+                            className={inputCls}
+                            value={Array.isArray(stepItem.deliverables) ? stepItem.deliverables.join(", ") : ""}
+                            onChange={(e) => {
+                              const updated = [...form.content.items];
+                              updated[idx] = {
+                                ...updated[idx],
+                                deliverables: e.target.value.split(",").map((d) => d.trim()).filter(Boolean),
+                              };
+                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                            }}
+                            placeholder="e.g. RFC Spec, Schema Design, Performance Budgets"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
             )}
           </div>
 

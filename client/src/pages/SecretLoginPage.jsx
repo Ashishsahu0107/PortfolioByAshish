@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   ArrowLeft,
@@ -11,14 +11,20 @@ import {
   Loader2,
   Lock,
   Mail,
+  Palette,
   ShieldCheck,
   Sparkles,
+  LayoutDashboard,
 } from "lucide-react";
 import HangingLamp from "../components/HangingLamp";
+import { LOGIN_THEMES } from "../components/loginThemes";
 import { useAuth } from "../auth/AuthContext";
 
 export default function Login() {
   const [isLightOn, setIsLightOn] = useState(false);
+  const [selectedThemeId, setSelectedThemeId] = useState(() => {
+    return localStorage.getItem("secret_login_theme") || "amber";
+  });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -38,6 +44,14 @@ export default function Login() {
     logout,
     demoCredentials,
   } = useAuth();
+
+  const currentTheme =
+    LOGIN_THEMES.find((t) => t.id === selectedThemeId) || LOGIN_THEMES[0];
+
+  const handleThemeChange = (id) => {
+    setSelectedThemeId(id);
+    localStorage.setItem("secret_login_theme", id);
+  };
 
   // Client-side form validation
   const validateForm = () => {
@@ -86,8 +100,8 @@ export default function Login() {
         }}
       />
 
-      {/* Top Bar: Return Link & Light Status indicator */}
-      <header className="relative z-40 flex items-center justify-between p-4 sm:p-6 max-w-7xl mx-auto w-full">
+      {/* Top Bar: Return Link, 5-Color Theme Switcher, & Light Status indicator */}
+      <header className="relative z-40 flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full">
         <Link
           to="/"
           className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
@@ -96,13 +110,50 @@ export default function Login() {
           <span>Return to Portfolio</span>
         </Link>
 
+        {/* 5-Color Theme Switcher */}
+        <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/85 px-3.5 py-1.5 backdrop-blur-md shadow-xl">
+          <Palette size={13} className="text-zinc-400 mr-1" />
+          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">Theme:</span>
+          <div className="flex items-center gap-2">
+            {LOGIN_THEMES.map((t) => {
+              const isSelected = t.id === selectedThemeId;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => handleThemeChange(t.id)}
+                  title={`${t.name} (${t.label})`}
+                  className={`group relative size-5 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer ${
+                    isSelected
+                      ? "scale-125 ring-2 ring-white/90 shadow-md"
+                      : "hover:scale-115 opacity-70 hover:opacity-100"
+                  }`}
+                  style={{
+                    backgroundColor: t.accent,
+                    boxShadow: isSelected ? `0 0 10px ${t.glow}` : "none",
+                  }}
+                  aria-label={`Select ${t.name} theme`}
+                >
+                  {isSelected && (
+                    <span className="size-1.5 rounded-full bg-white shadow-xs" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          <span
+            className="text-[11px] font-mono font-semibold hidden md:inline ml-1"
+            style={{ color: currentTheme.glow }}
+          >
+            {currentTheme.name}
+          </span>
+        </div>
+
         {/* Ambient status pill */}
         <div className="flex items-center gap-2 text-xs font-mono text-zinc-500">
           <span
             className={`size-2 rounded-full transition-colors duration-300 ${
-              isLightOn
-                ? "bg-amber-400 shadow-[0_0_8px_#fbbf24]"
-                : "bg-zinc-700"
+              isLightOn ? currentTheme.indicatorColor : "bg-zinc-700"
             }`}
           />
           <span className="hidden sm:inline">
@@ -115,11 +166,12 @@ export default function Login() {
 
       {/* Main Content Area: Left Lamp & Right Login Panel */}
       <main className="relative z-30 flex-1 flex flex-col md:flex-row items-center md:items-center justify-around px-4 sm:px-8 lg:px-16 py-6 gap-8 max-w-7xl mx-auto w-full">
-        {/* Left: The Interactive Desk Lamp with Pull Cord */}
+        {/* Left: The Interactive Desk Lamp with Freeform Drag & Auto-Snap */}
         <div className="w-full md:w-auto flex justify-center md:justify-start">
           <HangingLamp
             isLightOn={isLightOn}
             onToggle={() => setIsLightOn((prev) => !prev)}
+            theme={currentTheme}
           />
         </div>
 
@@ -131,17 +183,17 @@ export default function Login() {
               : "opacity-0 translate-y-6 scale-95 blur-md pointer-events-none"
           }`}
         >
-          {/* Main Card Surface */}
+          {/* Main Card Surface with Dynamic Theme Glow */}
           <div
-            className="relative rounded-2xl border border-amber-500/20 bg-zinc-900/85 p-6 sm:p-8 shadow-2xl backdrop-blur-xl transition-all"
+            className={`relative rounded-2xl border ${currentTheme.cardBorder} bg-zinc-900/85 p-6 sm:p-8 shadow-2xl backdrop-blur-xl transition-all duration-500`}
             style={{
-              boxShadow: isLightOn
-                ? "0 20px 40px -15px rgba(245, 158, 11, 0.12), 0 0 0 1px rgba(251, 191, 36, 0.15)"
-                : "none",
+              boxShadow: isLightOn ? currentTheme.cardShadow : "none",
             }}
           >
             {/* Top Light Rim Highlight */}
-            <div className="absolute inset-x-8 -top-px h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+            <div
+              className={`absolute inset-x-8 -top-px h-px bg-gradient-to-r ${currentTheme.cardRim}`}
+            />
 
             {!isAuthenticated ? (
               /* ============================================================ */
@@ -150,14 +202,16 @@ export default function Login() {
               <div>
                 {/* Header Badge & Title */}
                 <div className="mb-6">
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-amber-300 mb-3 shadow-2xs">
-                    <ShieldCheck size={12} className="text-amber-400" />
+                  <div
+                    className={`inline-flex items-center gap-1.5 rounded-full border ${currentTheme.badge} px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider mb-3 shadow-2xs`}
+                  >
+                    <ShieldCheck size={12} className={currentTheme.badgeIcon} />
                     <span>Restricted • Portfolio Console</span>
                   </div>
 
                   <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
                     <span>Admin Sign In</span>
-                    <KeyRound size={18} className="text-amber-400" />
+                    <KeyRound size={18} className={currentTheme.accentText} />
                   </h1>
                   <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
                     Authenticate to access the administrative dashboard, project
@@ -200,7 +254,7 @@ export default function Login() {
                         className={`w-full rounded-lg border bg-zinc-950/60 pl-9 pr-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-hidden transition ${
                           validationErrors.email
                             ? "border-red-500/70 focus:border-red-500"
-                            : "border-zinc-800 focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/30"
+                            : `border-zinc-800 ${currentTheme.inputFocus}`
                         }`}
                       />
                     </div>
@@ -237,7 +291,7 @@ export default function Login() {
                         className={`w-full rounded-lg border bg-zinc-950/60 pl-9 pr-10 py-2.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-hidden transition ${
                           validationErrors.password
                             ? "border-red-500/70 focus:border-red-500"
-                            : "border-zinc-800 focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400/30"
+                            : `border-zinc-800 ${currentTheme.inputFocus}`
                         }`}
                       />
                       <button
@@ -267,7 +321,8 @@ export default function Login() {
                         type="checkbox"
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
-                        className="size-3.5 rounded border-zinc-800 bg-zinc-950 text-amber-500 focus:ring-amber-400"
+                        className="size-3.5 rounded border-zinc-800 bg-zinc-950 focus:ring-1"
+                        style={{ accentColor: currentTheme.accent }}
                       />
                       <span>Keep session active</span>
                     </label>
@@ -275,7 +330,8 @@ export default function Login() {
                     <button
                       type="button"
                       onClick={fillDemoCredentials}
-                      className="inline-flex items-center gap-1 font-mono text-[11px] text-amber-400 hover:text-amber-300 hover:underline cursor-pointer"
+                      className="inline-flex items-center gap-1 font-mono text-[11px] hover:underline cursor-pointer"
+                      style={{ color: currentTheme.glow }}
                       title="Quick fill test credentials"
                     >
                       <Sparkles size={11} />
@@ -287,7 +343,7 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-2.5 text-xs font-bold text-zinc-950 shadow-md hover:from-amber-400 hover:to-amber-500 active:scale-[0.99] disabled:opacity-50 cursor-pointer transition"
+                    className={`w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${currentTheme.buttonBg} ${currentTheme.buttonShadow} px-4 py-2.5 text-xs font-bold shadow-md active:scale-[0.99] disabled:opacity-50 cursor-pointer transition`}
                   >
                     {isLoading ? (
                       <>
@@ -335,7 +391,10 @@ export default function Login() {
                   <div className="rounded-lg bg-zinc-950/80 p-3 border border-zinc-800 text-xs">
                     <div className="flex justify-between text-zinc-400 mb-1">
                       <span>Session Token:</span>
-                      <span className="font-mono text-[10px] text-amber-400">
+                      <span
+                        className="font-mono text-[10px]"
+                        style={{ color: currentTheme.glow }}
+                      >
                         {user?.token
                           ? `${user.token.slice(0, 16)}...`
                           : "Active"}
@@ -349,19 +408,31 @@ export default function Login() {
                     </div>
                   </div>
 
+                  {/* Primary Enter Admin Dashboard Button */}
+                  <Link
+                    to="/admin/home"
+                    className={`w-full flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${currentTheme.buttonBg} ${currentTheme.buttonShadow} p-2.5 text-xs font-bold shadow-md transition`}
+                  >
+                    <LayoutDashboard size={14} />
+                    <span>Enter Admin Dashboard</span>
+                  </Link>
+
                   {/* Quick Admin Actions */}
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <Link
                       to="/resume-builder"
-                      className="flex items-center justify-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 font-medium text-zinc-200 hover:border-amber-400/50 hover:bg-zinc-850 transition"
+                      className="flex items-center justify-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 font-medium text-zinc-200 hover:border-zinc-700 hover:bg-zinc-850 transition"
                     >
-                      <FileText size={14} className="text-amber-400" />
+                      <FileText
+                        size={14}
+                        style={{ color: currentTheme.glow }}
+                      />
                       <span>Resume Builder</span>
                     </Link>
 
                     <Link
                       to="/"
-                      className="flex items-center justify-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 font-medium text-zinc-200 hover:border-amber-400/50 hover:bg-zinc-850 transition"
+                      className="flex items-center justify-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 font-medium text-zinc-200 hover:border-zinc-700 hover:bg-zinc-850 transition"
                     >
                       <ExternalLink size={14} className="text-blue-400" />
                       <span>Live Site</span>
@@ -384,10 +455,10 @@ export default function Login() {
         </div>
       </main>
 
-      {/* Bottom Footer Info (Clean & subtle) */}
+      {/* Bottom Footer Info */}
       <footer className="relative z-30 p-4 text-center text-xs font-mono text-zinc-600">
         <span>
-          Hidden Admin Terminal • Access restricted to authorized personnel
+          Hidden Admin Terminal • Drag unlit lamp anywhere • Pull cord to illuminate
         </span>
       </footer>
     </div>

@@ -1,0 +1,186 @@
+/* ========================================================================== */
+/* ADMIN DASHBOARD DARK THEME WITH 5 DYNAMIC COLOR THEME ACCENTS              */
+/* Strictly scoped to .admin-dashboard-scope (Leaves Portfolio untouched)    */
+/* ========================================================================== */
+
+.admin-dashboard-scope {
+  --admin-accent: #f59e0b;
+  --admin-glow: #fbbf24;
+  --admin-accent-rgb: 245, 158, 11;
+  --admin-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+  --admin-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+
+/* ── Container & Background Overrides ── */
+.admin-dashboard-scope aside {
+  background-color: rgba(14, 14, 17, 0.95) !important;
+  border-color: rgba(39, 39, 42, 0.9) !important;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4) !important;
+}
+
+.admin-dashboard-scope header {
+  background-color: rgba(14, 14, 17, 0.9) !important;
+  border-color: rgba(39, 39, 42, 0.9) !important;
+  backdrop-filter: blur(16px);
+}
+
+.admin-dashboard-scope .bg-white {
+  background-color: rgba(24, 24, 27, 0.88) !important;
+  border-color: rgba(39, 39, 42, 0.9) !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5) !important;
+  backdrop-filter: blur(12px);
+}
+
+.admin-dashboard-scope .bg-gray-50 {
+  background-color: rgba(14, 14, 17, 0.85) !important;
+  border-color: rgba(39, 39, 42, 0.8) !important;
+}
+
+.admin-dashboard-scope .bg-gray-100 {
+  background-color: #27272a !important;
+  color: #e4e4e7 !important;
+}
+
+.admin-dashboard-scope .hover\:bg-gray-50:hover {
+  background-color: rgba(39, 39, 42, 0.5) !important;
+}
+
+.admin-dashboard-scope .hover\:bg-gray-100:hover,
+.admin-dashboard-scope .hover\:bg-gray-200:hover {
+  background-color: #3f3f46 !important;
+}
+
+/* ── Borders & Dividers ── */
+.admin-dashboard-scope .border-gray-100,
+.admin-dashboard-scope .border-gray-200 {
+  border-color: rgba(39, 39, 42, 0.9) !important;
+}
+
+/* ── Text Hierarchy ── */
+.admin-dashboard-scope .text-gray-900 {
+  color: #fafafa !important;
+}
+
+.admin-dashboard-scope .text-gray-800,
+.admin-dashboard-scope .text-gray-700,
+.admin-dashboard-scope .text-gray-600 {
+  color: #d4d4d8 !important;
+}
+
+.admin-dashboard-scope .text-gray-500,
+.admin-dashboard-scope .text-gray-400 {
+  color: #a1a1aa !important;
+}
+
+/* ── Form Inputs & Textareas ── */
+.admin-dashboard-scope input,
+.admin-dashboard-scope textarea,
+.admin-dashboard-scope select {
+  background-color: rgba(9, 9, 11, 0.75) !important;
+  border-color: #27272a !important;
+  color: #fafafa !important;
+}
+
+.admin-dashboard-scope input::placeholder,
+.admin-dashboard-scope textarea::placeholder {
+  color: #71717a !important;
+}
+
+.admin-dashboard-scope input:focus,
+.admin-dashboard-scope textarea:focus,
+.admin-dashboard-scope select:focus {
+  border-color: var(--admin-accent) !important;
+  box-shadow: 0 0 0 2px rgba(var(--admin-accent-rgb), 0.25) !important;
+  background-color: rgba(9, 9, 11, 0.95) !important;
+  outline: none !important;
+}
+
+.admin-dashboard-scope select option {
+  background-color: #18181b !important;
+  color: #fafafa !important;
+}
+
+.admin-dashboard-scope input[disabled],
+.admin-dashboard-scope textarea[disabled] {
+  background-color: rgba(24, 24, 27, 0.5) !important;
+  border-color: #27272a !important;
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* ── Tables ── */
+.admin-dashboard-scope table thead th {
+  background-color: rgba(9, 9, 11, 0.9) !important;
+  color: #d4d4d8 !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+.admin-dashboard-scope table tbody td {
+  border-bottom: 1px solid rgba(39, 39, 42, 0.8) !important;
+  color: #e4e4e7 !important;
+}
+
+.admin-dashboard-scope table tbody tr:hover {
+  background-color: rgba(39, 39, 42, 0.35) !important;
+}
+
+/* ── Modal Dialogs ── */
+.admin-dashboard-scope .fixed.inset-0.bg-black\/45,
+.admin-dashboard-scope .fixed.inset-0.bg-black\/35 {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  backdrop-filter: blur(4px);
+}
+
+.admin-dashboard-scope .fixed.inset-0 .bg-white {
+  background-color: #18181b !important;
+  border: 1px solid #27272a !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+}
+
+/* ── Custom Theme Buttons ── */
+.admin-dashboard-scope .btn-theme-primary {
+  background: var(--admin-gradient) !important;
+  box-shadow: var(--admin-shadow) !important;
+  color: #09090b !important;
+  font-weight: 700;
+}
+
+.admin-dashboard-scope .nav-link-active {
+  background: var(--admin-gradient) !important;
+  box-shadow: var(--admin-shadow) !important;
+  color: #09090b !important;
+  font-weight: 700;
+}
+
+.admin-dashboard-scope .nav-link-inactive {
+  color: #a1a1aa !important;
+}
+
+.admin-dashboard-scope .nav-link-inactive:hover {
+  background-color: rgba(39, 39, 42, 0.6) !important;
+  color: #f4f4f5 !important;
+}
+
+/* Secondary Button Dark Polish */
+.admin-dashboard-scope .btn-theme-secondary,
+.admin-dashboard-scope .bg-indigo-50 {
+  background-color: rgba(39, 39, 42, 0.7) !important;
+  color: #e4e4e7 !important;
+  border-color: #3f3f46 !important;
+}
+
+.admin-dashboard-scope .btn-theme-secondary:hover,
+.admin-dashboard-scope .hover\:bg-indigo-100:hover,
+.admin-dashboard-scope .hover\:bg-indigo-50:hover {
+  background-color: rgba(63, 63, 70, 0.8) !important;
+  color: #ffffff !important;
+  border-color: #52525b !important;
+}
+
+.admin-dashboard-scope .text-indigo-600 {
+  color: var(--admin-glow) !important;
+}

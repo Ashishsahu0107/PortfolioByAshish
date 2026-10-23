@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { skillsApi } from "../services/api";
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import {
   Code2,
   FileCode,
@@ -24,9 +25,9 @@ import {
   Eye,
   CheckCircle2,
   Info,
+  Wrench,
 } from "lucide-react";
 import { GithubIcon } from "./icons";
-import { skillCategories } from "../data/skills";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import {
   contentWidth,
@@ -73,26 +74,33 @@ function SkillIcon({ iconKey }) {
   );
 }
 
-
 export default function PortfolioSkills() {
-  const [categories, setCategories] = useState(skillCategories);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
 
-  useEffect(() => {
-    async function loadSkills() {
-      try {
-        const live = await skillsApi.get();
-        if (Array.isArray(live) && live.length > 0) {
-          setCategories(live);
-        }
-      } catch (err) {
-        console.warn("Using fallback skills:", err.message);
+  const loadSkills = useCallback(async () => {
+    try {
+      setLoading(true);
+      const live = await skillsApi.get();
+      if (Array.isArray(live)) {
+        setCategories(live);
       }
+    } catch (err) {
+      console.warn("[PortfolioSkills] Failed to load live skills:", err.message);
+    } finally {
+      setLoading(false);
     }
-    loadSkills();
   }, []);
+
+  useEffect(() => {
+    loadSkills();
+  }, [loadSkills]);
+
+  // Real-time synchronization whenever skills are updated in Admin
+  usePortfolioSync(loadSkills, "skills");
 
   const displayedCategories =
     activeTab === "all"
@@ -122,43 +130,72 @@ export default function PortfolioSkills() {
         </div>
 
         {/* Category Filter Tabs */}
-        <div
-          className="reveal mb-8 mt-10 flex flex-wrap gap-2"
-          role="tablist"
-          aria-label="Skill categories"
-        >
-          <button
-            className={`min-h-9 rounded-sm border px-3.5 font-mono text-[11px] font-medium transition-all cursor-pointer ${
-              activeTab === "all"
-                ? "border-action bg-action text-canvas"
-                : "border-border bg-surface text-secondary hover:border-action hover:text-primary"
-            }`}
-            onClick={() => setActiveTab("all")}
-            role="tab"
-            aria-selected={activeTab === "all"}
+        {!loading && categories.length > 0 && (
+          <div
+            className="reveal mb-8 mt-10 flex flex-wrap gap-2"
+            role="tablist"
+            aria-label="Skill categories"
           >
-            All Disciplines
-          </button>
-          {skillCategories.map((category) => (
             <button
-              key={category.id}
               className={`min-h-9 rounded-sm border px-3.5 font-mono text-[11px] font-medium transition-all cursor-pointer ${
-                activeTab === category.id
+                activeTab === "all"
                   ? "border-action bg-action text-canvas"
                   : "border-border bg-surface text-secondary hover:border-action hover:text-primary"
               }`}
-              onClick={() => setActiveTab(category.id)}
+              onClick={() => setActiveTab("all")}
               role="tab"
-              id={`tab-${category.id}`}
-              aria-selected={activeTab === category.id}
+              aria-selected={activeTab === "all"}
             >
-              {category.label}
+              All Disciplines
             </button>
-          ))}
-        </div>
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                className={`min-h-9 rounded-sm border px-3.5 font-mono text-[11px] font-medium transition-all cursor-pointer ${
+                  activeTab === category.id
+                    ? "border-action bg-action text-canvas"
+                    : "border-border bg-surface text-secondary hover:border-action hover:text-primary"
+                }`}
+                onClick={() => setActiveTab(category.id)}
+                role="tab"
+                id={`tab-${category.id}`}
+                aria-selected={activeTab === category.id}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Loading State */}
+        {loading && categories.length === 0 && (
+          <div className="space-y-6 mt-10">
+            {[1, 2].map((n) => (
+              <div key={n} className="rounded-lg border border-border bg-surface p-6 shadow-xs animate-pulse">
+                <div className="h-5 w-40 bg-surface-alt rounded mb-4" />
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {[1, 2, 3].map((m) => (
+                    <div key={m} className="h-20 bg-surface-alt rounded" />
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && categories.length === 0 && (
+          <div className="reveal mt-10 rounded-lg border border-border bg-surface p-12 text-center max-w-lg mx-auto">
+            <Wrench size={36} className="mx-auto text-secondary/50 mb-3" />
+            <h3 className="text-base font-semibold text-primary mb-1">No Skills Configured</h3>
+            <p className="text-sm text-secondary">
+              Add your tech stack and competencies in the Admin Dashboard to showcase them here.
+            </p>
+          </div>
+        )}
 
         {/* Categorized Skills Grid */}
-        <div className="space-y-8">
+        <div className="space-y-8 mt-6">
           {displayedCategories.map((category) => (
             <div
               key={category.id}

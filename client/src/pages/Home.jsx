@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import PortfolioHero from "../components/PortfolioHero";
 import PortfolioAbout from "../components/PortfolioAbout";
 import PortfolioSkills from "../components/PortfolioSkills";
@@ -9,6 +9,7 @@ import PortfolioContact from "../components/PortfolioContact";
 import PortfolioFooter from "../components/PortfolioFooter";
 import { sectionsApi } from "../services/api";
 import { contentWidth, sectionSurface, eyebrow, sectionLede } from "../components/portfolioStyles";
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
 
 // Built-in section component mapping
 const SECTION_COMPONENTS = {
@@ -48,29 +49,52 @@ function DynamicCustomSection({ section }) {
 }
 
 export default function Home() {
-  const [sections, setSections] = useState([
-    { id: "hero", slug: "home", type: "builtin", enabled: true, order: 1 },
-    { id: "about", slug: "about", type: "builtin", enabled: true, order: 2 },
-    { id: "skills", slug: "skills", type: "builtin", enabled: true, order: 3 },
-    { id: "projects", slug: "projects", type: "builtin", enabled: true, order: 4 },
-    { id: "process", slug: "process", type: "builtin", enabled: true, order: 5 },
-    { id: "experience", slug: "experience", type: "builtin", enabled: true, order: 6 },
-    { id: "contact", slug: "contact", type: "builtin", enabled: true, order: 7 },
-  ]);
+  const [sections, setSections] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadDynamicSections = useCallback(async () => {
+    try {
+      const liveSections = await sectionsApi.getAll(false); // only enabled sections
+      if (Array.isArray(liveSections)) {
+        setSections(liveSections);
+      }
+    } catch (err) {
+      console.warn("Could not fetch sections from database:", err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadDynamicSections() {
-      try {
-        const liveSections = await sectionsApi.getAll(false); // only enabled sections
-        if (Array.isArray(liveSections) && liveSections.length > 0) {
-          setSections(liveSections);
-        }
-      } catch (err) {
-        console.warn("Using default section layout:", err.message);
-      }
-    }
     loadDynamicSections();
-  }, []);
+  }, [loadDynamicSections]);
+
+  // Real-time synchronization whenever sections are enabled, disabled, reordered, or added in Admin
+  usePortfolioSync(loadDynamicSections, "sections");
+
+  if (loading && sections.length === 0) {
+    return (
+      <main id="main-content" className="min-h-screen bg-canvas flex items-center justify-center p-8">
+        <div className="flex flex-col items-center gap-3">
+          <div className="size-8 rounded-full border-2 border-action border-t-transparent animate-spin" />
+          <span className="font-mono text-xs uppercase tracking-wider text-secondary">Loading Portfolio...</span>
+        </div>
+      </main>
+    );
+  }
+
+  if (!loading && sections.length === 0) {
+    return (
+      <main id="main-content" className="min-h-screen bg-canvas flex items-center justify-center p-8">
+        <div className="text-center max-w-md p-8 rounded-xl border border-border bg-surface">
+          <h2 className="text-lg font-bold text-primary mb-2">No Active Sections Found</h2>
+          <p className="text-sm text-secondary">
+            Sections have not been enabled yet in the database. Enable or create sections in the Admin Dashboard to display them.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main id="main-content">

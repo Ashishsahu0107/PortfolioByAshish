@@ -1,8 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Award, Briefcase, FolderOpen, GraduationCap } from "lucide-react";
-import { experience as initialExperience } from "../data/experience";
 import { experienceApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import {
   contentWidth,
   eyebrow,
@@ -40,23 +40,31 @@ const typeConfig = {
 };
 
 export default function PortfolioExperience() {
-  const [experienceList, setExperienceList] = useState(initialExperience);
+  const [experienceList, setExperienceList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
 
-  useEffect(() => {
-    async function loadExperience() {
-      try {
-        const live = await experienceApi.getAll();
-        if (Array.isArray(live) && live.length > 0) {
-          setExperienceList(live);
-        }
-      } catch (err) {
-        console.warn("Using fallback experience:", err.message);
+  const loadExperience = useCallback(async () => {
+    try {
+      setLoading(true);
+      const live = await experienceApi.getAll();
+      if (Array.isArray(live)) {
+        setExperienceList(live);
       }
+    } catch (err) {
+      console.warn("[PortfolioExperience] Failed to load experience:", err.message);
+    } finally {
+      setLoading(false);
     }
-    loadExperience();
   }, []);
+
+  useEffect(() => {
+    loadExperience();
+  }, [loadExperience]);
+
+  // Real-time synchronization whenever experience is modified in Admin
+  usePortfolioSync(loadExperience, "experience");
 
   return (
     <section
@@ -79,6 +87,26 @@ export default function PortfolioExperience() {
             engineering and algorithmic problem solving.
           </p>
         </div>
+
+        {/* Loading State */}
+        {loading && experienceList.length === 0 && (
+          <div className="mt-12 space-y-4">
+            {[1, 2].map((n) => (
+              <div key={n} className="h-28 animate-pulse rounded-lg border border-border bg-surface" />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && experienceList.length === 0 && (
+          <div className="reveal mt-12 rounded-lg border border-border bg-surface p-12 text-center max-w-lg mx-auto">
+            <Briefcase size={36} className="mx-auto text-secondary/50 mb-3" />
+            <h3 className="text-base font-semibold text-primary mb-1">No Experience Entries</h3>
+            <p className="text-sm text-secondary">
+              Add your education, work history, or certifications in the Admin Dashboard to display them here.
+            </p>
+          </div>
+        )}
 
         {/* Chronological Resume Feed */}
         <div className="mt-12 space-y-6">

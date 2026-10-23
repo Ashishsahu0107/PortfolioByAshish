@@ -10,9 +10,9 @@ import {
   Pause,
   Sparkles,
 } from "lucide-react";
-import { projects as fallbackProjects } from "../data/projects";
 import { projectsApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
+import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import {
   contentWidth,
   eyebrow,
@@ -24,26 +24,35 @@ import {
 const AUTO_SLIDE_INTERVAL = 3800; // 3.8 seconds auto slide
 
 export default function PortfolioProjects() {
-  const [projectList, setProjectList] = useState(fallbackProjects);
+  const [projectList, setProjectList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef(null);
 
   useGsapReveal(sectionRef);
 
-  useEffect(() => {
-    async function loadLiveProjects() {
-      try {
-        const live = await projectsApi.getAll();
-        if (Array.isArray(live) && live.length > 0) {
-          setProjectList(live);
-        }
-      } catch (err) {
-        console.warn("Using fallback projects:", err.message);
+  const loadLiveProjects = useCallback(async () => {
+    try {
+      setLoading(true);
+      const live = await projectsApi.getAll();
+      if (Array.isArray(live)) {
+        setProjectList(live);
       }
+    } catch (err) {
+      console.warn("[PortfolioProjects] Could not fetch live projects:", err.message);
+    } finally {
+      setLoading(false);
     }
-    loadLiveProjects();
   }, []);
+
+  useEffect(() => {
+    loadLiveProjects();
+  }, [loadLiveProjects]);
+
+  // Real-time synchronization whenever projects are created/updated/deleted in Admin
+  usePortfolioSync(loadLiveProjects, "projects");
+
 
   const nextSlide = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % projectList.length);
@@ -127,63 +136,83 @@ export default function PortfolioProjects() {
           </div>
         </div>
 
-        {/* Top Controls: Status pill & Prev/Next buttons */}
-        <div className="reveal mt-8 flex items-center justify-between border-b border-border/80 pb-4">
-          {/* Pause / Auto-sliding Live Badge */}
-          <div className="flex items-center gap-3">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-colors ${
-                isPaused
-                  ? "border border-amber-500/40 bg-amber-500/10 text-amber-500"
-                  : "border border-action/40 bg-action/10 text-action"
-              }`}
-            >
-              {isPaused ? (
-                <>
-                  <Pause size={12} className="shrink-0" />
-                  <span>Paused on hover</span>
-                </>
-              ) : (
-                <>
-                  <span className="relative flex size-2">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                    <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-                  </span>
-                  <span>Auto-sliding</span>
-                </>
-              )}
-            </span>
-
-            <span className="hidden font-mono text-[10px] text-secondary sm:inline">
-              (Hover mouse on card to inspect)
-            </span>
+        {/* Loading State */}
+        {loading && projectList.length === 0 && (
+          <div className="space-y-6 mt-10">
+            <div className="h-72 w-full animate-pulse rounded-2xl border border-border bg-surface" />
           </div>
+        )}
 
-          {/* Navigation Controls */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={prevSlide}
-              className="grid size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action cursor-pointer shadow-xs"
-              aria-label="Previous project"
-              title="Previous project"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <span className="font-mono text-[12px] font-semibold text-primary px-2">
-              <span className="text-action">{String(activeIndex + 1).padStart(2, "0")}</span>
-              <span className="text-secondary/60"> / </span>
-              <span className="text-secondary">{String(projectList.length).padStart(2, "0")}</span>
-            </span>
-            <button
-              onClick={nextSlide}
-              className="grid size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action cursor-pointer shadow-xs"
-              aria-label="Next project"
-              title="Next project"
-            >
-              <ChevronRight size={18} />
-            </button>
+        {/* Empty State */}
+        {!loading && projectList.length === 0 && (
+          <div className="reveal mt-12 rounded-lg border border-border bg-surface p-12 text-center max-w-lg mx-auto">
+            <FolderGit2 size={36} className="mx-auto text-secondary/50 mb-3" />
+            <h3 className="text-base font-semibold text-primary mb-1">No Projects Found</h3>
+            <p className="text-sm text-secondary">
+              Add your featured engineering projects in the Admin Dashboard to showcase them here.
+            </p>
           </div>
-        </div>
+        )}
+
+        {projectList.length > 0 && (
+          <>
+            {/* Top Controls: Status pill & Prev/Next buttons */}
+            <div className="reveal mt-8 flex items-center justify-between border-b border-border/80 pb-4">
+              {/* Pause / Auto-sliding Live Badge */}
+              <div className="flex items-center gap-3">
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[11px] font-medium transition-colors ${
+                    isPaused
+                      ? "border border-amber-500/40 bg-amber-500/10 text-amber-500"
+                      : "border border-action/40 bg-action/10 text-action"
+                  }`}
+                >
+                  {isPaused ? (
+                    <>
+                      <Pause size={12} className="shrink-0" />
+                      <span>Paused on hover</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="relative flex size-2">
+                        <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                        <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+                      </span>
+                      <span>Auto-sliding</span>
+                    </>
+                  )}
+                </span>
+
+                <span className="hidden font-mono text-[10px] text-secondary sm:inline">
+                  (Hover mouse on card to inspect)
+                </span>
+              </div>
+
+              {/* Navigation Controls */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={prevSlide}
+                  className="grid size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action cursor-pointer shadow-xs"
+                  aria-label="Previous project"
+                  title="Previous project"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <span className="font-mono text-[12px] font-semibold text-primary px-2">
+                  <span className="text-action">{String(activeIndex + 1).padStart(2, "0")}</span>
+                  <span className="text-secondary/60"> / </span>
+                  <span className="text-secondary">{String(projectList.length).padStart(2, "0")}</span>
+                </span>
+                <button
+                  onClick={nextSlide}
+                  className="grid size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-colors hover:border-action hover:text-action cursor-pointer shadow-xs"
+                  aria-label="Next project"
+                  title="Next project"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            </div>
 
         {/* 
           3D COVERFLOW HORIZONTAL STRIP (Matching User's Reference Image):
@@ -255,7 +284,7 @@ export default function PortfolioProjects() {
                         <span>{project.category}</span>
                       </p>
                       <p className="truncate text-primary/80">
-                        {project.tags.slice(0, 3).join(" · ")}
+                        {(project.tags || []).slice(0, 3).join(" · ")}
                       </p>
                     </div>
                   </div>
@@ -296,7 +325,7 @@ export default function PortfolioProjects() {
 
                   {/* Micro tags in pill */}
                   <div className="mt-2.5 flex items-center gap-1.5 overflow-hidden">
-                    {project.tech.slice(0, 2).map((t) => (
+                    {(project.tech || []).slice(0, 2).map((t) => (
                       <span
                         key={t}
                         className="rounded-xs bg-white/10 px-1.5 py-0.5 font-mono text-[8px] text-zinc-200"
@@ -411,7 +440,7 @@ export default function PortfolioProjects() {
                 Key Architecture & Features:
               </span>
               <ul className="space-y-2">
-                {activeProject.features.slice(0, 6).map((feat, i) => (
+                {(activeProject.features || []).slice(0, 6).map((feat, i) => (
                   <li
                     key={i}
                     className="flex items-start gap-2 text-[12px] leading-snug text-primary/90"
@@ -427,7 +456,7 @@ export default function PortfolioProjects() {
 
               {/* Tech Stack Tags */}
               <div className="mt-5 flex flex-wrap gap-1.5 border-t border-border/60 pt-3">
-                {activeProject.tags.map((tag) => (
+                {(activeProject.tags || []).map((tag) => (
                   <span
                     key={tag}
                     className="rounded-xs border border-border bg-canvas px-2.5 py-1 font-mono text-[9px] text-secondary"
@@ -439,7 +468,9 @@ export default function PortfolioProjects() {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </>
+    )}
+  </div>
+</section>
   );
 }

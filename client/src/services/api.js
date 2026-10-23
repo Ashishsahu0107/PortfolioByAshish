@@ -49,6 +49,16 @@ async function request(endpoint, options = {}) {
       throw error;
     }
 
+    // Trigger instant real-time synchronization across all portfolio components & tabs
+    const method = (options.method || "GET").toUpperCase();
+    if (method !== "GET" && typeof window !== "undefined") {
+      const eventDetail = { endpoint, method, timestamp: Date.now() };
+      window.dispatchEvent(new CustomEvent("portfolio_updated", { detail: eventDetail }));
+      try {
+        localStorage.setItem("portfolio_sync_timestamp", String(Date.now()));
+      } catch {}
+    }
+
     return data;
   } catch (err) {
     if (err.name === "TypeError" && err.message.includes("fetch")) {

@@ -1,6 +1,3 @@
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import { config } from "../config/env.js";
@@ -13,8 +10,6 @@ import {
   ExperienceModel,
   SectionModel,
   FormModel,
-  SubmissionModel,
-  MessageModel,
 } from "./schemas.js";
 import {
   initialDeveloper,
@@ -25,19 +20,6 @@ import {
   initialSections,
   initialForms,
 } from "./seedData.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const DATA_DIR = path.resolve(__dirname, "../../data");
-
-async function loadDiskData(filename, fallback) {
-  try {
-    const raw = await fs.readFile(path.join(DATA_DIR, filename), "utf8");
-    return JSON.parse(raw);
-  } catch {
-    return fallback;
-  }
-}
 
 async function autoSeedIfEmpty() {
   const userCount = await UserModel.countDocuments();
@@ -51,81 +33,54 @@ async function autoSeedIfEmpty() {
   console.log("==========================================");
 
   // 1. Users
-  const diskUsers = await loadDiskData("users.json", null);
-  if (diskUsers && Array.isArray(diskUsers) && diskUsers.length > 0) {
-    await UserModel.insertMany(diskUsers);
-    console.log(`[MongoDB Seed] Inserted ${diskUsers.length} user(s) from disk.`);
-  } else {
-    const hashedPassword = await bcrypt.hash(config.admin.password, 10);
-    await UserModel.create({
-      id: "usr_admin_root",
-      email: config.admin.email.toLowerCase(),
-      password: hashedPassword,
-      name: config.admin.name,
-      role: config.admin.role,
-    });
-    console.log("[MongoDB Seed] Created default admin user.");
-  }
+  const hashedPassword = await bcrypt.hash(config.admin.password, 10);
+  await UserModel.create({
+    id: "usr_admin_root",
+    email: config.admin.email.toLowerCase(),
+    password: hashedPassword,
+    name: config.admin.name,
+    role: config.admin.role,
+  });
+  console.log("[MongoDB Seed] Created default admin user.");
 
   // 2. Developer
-  const diskDev = await loadDiskData("developer.json", initialDeveloper);
-  await DeveloperModel.create(diskDev);
+  await DeveloperModel.create(initialDeveloper);
   console.log("[MongoDB Seed] Created developer profile.");
 
   // 3. About
-  const diskAbout = await loadDiskData("about.json", initialAbout);
-  await AboutModel.create(diskAbout);
+  await AboutModel.create(initialAbout);
   console.log("[MongoDB Seed] Created about document.");
 
   // 4. Skills
-  const diskSkills = await loadDiskData("skills.json", initialSkills);
-  if (Array.isArray(diskSkills) && diskSkills.length > 0) {
+  if (Array.isArray(initialSkills) && initialSkills.length > 0) {
     await SkillCategoryModel.insertMany(
-      diskSkills.map((c, idx) => ({ ...c, order: c.order !== undefined ? c.order : idx }))
+      initialSkills.map((c, idx) => ({ ...c, order: c.order !== undefined ? c.order : idx }))
     );
-    console.log(`[MongoDB Seed] Inserted ${diskSkills.length} skill categories.`);
+    console.log(`[MongoDB Seed] Inserted ${initialSkills.length} skill categories.`);
   }
 
   // 5. Projects
-  const diskProjects = await loadDiskData("projects.json", initialProjects);
-  if (Array.isArray(diskProjects) && diskProjects.length > 0) {
-    await ProjectModel.insertMany(diskProjects);
-    console.log(`[MongoDB Seed] Inserted ${diskProjects.length} projects.`);
+  if (Array.isArray(initialProjects) && initialProjects.length > 0) {
+    await ProjectModel.insertMany(initialProjects);
+    console.log(`[MongoDB Seed] Inserted ${initialProjects.length} projects.`);
   }
 
   // 6. Experience
-  const diskExp = await loadDiskData("experience.json", initialExperience);
-  if (Array.isArray(diskExp) && diskExp.length > 0) {
-    await ExperienceModel.insertMany(diskExp);
-    console.log(`[MongoDB Seed] Inserted ${diskExp.length} experience entries.`);
+  if (Array.isArray(initialExperience) && initialExperience.length > 0) {
+    await ExperienceModel.insertMany(initialExperience);
+    console.log(`[MongoDB Seed] Inserted ${initialExperience.length} experience entries.`);
   }
 
   // 7. Sections
-  const diskSections = await loadDiskData("sections.json", initialSections);
-  if (Array.isArray(diskSections) && diskSections.length > 0) {
-    await SectionModel.insertMany(diskSections);
-    console.log(`[MongoDB Seed] Inserted ${diskSections.length} sections.`);
+  if (Array.isArray(initialSections) && initialSections.length > 0) {
+    await SectionModel.insertMany(initialSections);
+    console.log(`[MongoDB Seed] Inserted ${initialSections.length} sections.`);
   }
 
   // 8. Forms
-  const diskForms = await loadDiskData("forms.json", initialForms);
-  if (Array.isArray(diskForms) && diskForms.length > 0) {
-    await FormModel.insertMany(diskForms);
-    console.log(`[MongoDB Seed] Inserted ${diskForms.length} forms.`);
-  }
-
-  // 9. Submissions
-  const diskSubmissions = await loadDiskData("submissions.json", []);
-  if (Array.isArray(diskSubmissions) && diskSubmissions.length > 0) {
-    await SubmissionModel.insertMany(diskSubmissions);
-    console.log(`[MongoDB Seed] Inserted ${diskSubmissions.length} submissions.`);
-  }
-
-  // 10. Messages
-  const diskMessages = await loadDiskData("messages.json", []);
-  if (Array.isArray(diskMessages) && diskMessages.length > 0) {
-    await MessageModel.insertMany(diskMessages);
-    console.log(`[MongoDB Seed] Inserted ${diskMessages.length} contact messages.`);
+  if (Array.isArray(initialForms) && initialForms.length > 0) {
+    await FormModel.insertMany(initialForms);
+    console.log(`[MongoDB Seed] Inserted ${initialForms.length} forms.`);
   }
 
   console.log("==========================================");
