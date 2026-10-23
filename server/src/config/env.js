@@ -22,10 +22,4 @@ export const config = {
     pass: process.env.SMTP_PASS || "",
     from: process.env.SMTP_FROM || `"Ashish Portfolio Security" <${process.env.SMTP_USER || "no-reply@ashish.dev"}>`,
   },
-  admin: {
-    email: process.env.ADMIN_EMAIL || "admin@ashish.dev",
-    password: process.env.ADMIN_PASSWORD || "AdminPassword123!",
-    name: process.env.ADMIN_NAME || "Ashish Sahu",
-    role: process.env.ADMIN_ROLE || "Portfolio Owner & Full Stack Engineer",
-  },
 };

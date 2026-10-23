@@ -542,7 +542,7 @@ export default function RegisterPage() {
                         }
                         if (error) setError("");
                       }}
-                      placeholder="admin@ashish.dev"
+                      placeholder="your-email@gmail.com"
                       className={`w-full rounded-lg border bg-zinc-950/60 pl-9 pr-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-hidden transition ${
                         validationErrors.email
                           ? "border-red-500/70 focus:border-red-500"

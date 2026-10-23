@@ -49,15 +49,8 @@ async function runMongoDBSeed() {
   ]);
   console.log("[SEED] Cleared existing MongoDB collections.");
 
-  // 1. Users
-  const hashedPassword = await bcrypt.hash(config.admin.password, 10);
-  await UserModel.create({
-    id: "usr_admin_root",
-    email: config.admin.email.toLowerCase(),
-    password: hashedPassword,
-    name: config.admin.name,
-    role: config.admin.role,
-  });
+  // 1. Users are registered through the secure OTP registration system
+  console.log("[SEED] User accounts are registered dynamically via OTP registration.");
   console.log("[SEED] Created default root admin into MongoDB.");
 
   // 2. Developer profile
