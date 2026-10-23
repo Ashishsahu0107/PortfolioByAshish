@@ -35,14 +35,24 @@ function ScrollProgress() {
 function AnimatedRoutes() {
   const location = useLocation();
   const routeRef = useRef(null);
+  const prevPathRef = useRef(location.pathname);
 
   useLayoutEffect(() => {
+    const prev = prevPathRef.current;
+    const current = location.pathname;
+    prevPathRef.current = current;
+
+    // Do NOT flash the screen when switching between internal admin tabs
+    if (prev.startsWith("/admin") && current.startsWith("/admin")) {
+      return;
+    }
+
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
       gsap.fromTo(
         routeRef.current,
         { autoAlpha: 0 },
-        { autoAlpha: 1, duration: 0.25, ease: "power2.out" },
+        { autoAlpha: 1, duration: 0.2, ease: "power2.out" },
       );
     });
     return () => media.revert();

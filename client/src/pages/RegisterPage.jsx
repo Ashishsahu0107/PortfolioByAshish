@@ -474,9 +474,26 @@ export default function RegisterPage() {
 
             {/* Error Banner */}
             {error && (
-              <div className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex items-start gap-2">
-                <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
-                <span>{error}</span>
+              <div className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex flex-col gap-2">
+                <div className="flex items-start gap-2">
+                  <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+                  <span className="leading-snug">{error}</span>
+                </div>
+                {error.toLowerCase().includes("already exists") && (
+                  <Link
+                    to="/secret-login"
+                    state={{ registeredEmail: email }}
+                    className="inline-flex items-center gap-1.5 self-start ml-6 px-3 py-1 rounded-md text-xs font-semibold transition"
+                    style={{
+                      color: currentTheme.glow,
+                      border: `1px solid ${currentTheme.glow}50`,
+                      backgroundColor: `${currentTheme.glow}15`,
+                    }}
+                  >
+                    <LogIn size={13} />
+                    <span>Click here to Sign In &rarr;</span>
+                  </Link>
+                )}
               </div>
             )}
 

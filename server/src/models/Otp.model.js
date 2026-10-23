@@ -43,6 +43,15 @@ export const OtpService = {
   },
 
   /**
+   * Delete any active OTPs for this email
+   */
+  async deleteOtp(email) {
+    if (!email) return;
+    const cleanEmail = email.trim().toLowerCase();
+    await Otp.deleteMany({ email: cleanEmail });
+  },
+
+  /**
    * Verify an entered OTP against the hashed value
    */
   async verifyOtp(email, enteredOtp) {

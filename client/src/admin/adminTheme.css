@@ -214,3 +214,19 @@
   color: #09090b !important;
   font-weight: 700;
 }
+
+/* Smooth Tab Content Transition */
+.admin-tab-content {
+  animation: adminTabFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes adminTabFadeIn {
+  from {
+    opacity: 0.88;
+    transform: translateY(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

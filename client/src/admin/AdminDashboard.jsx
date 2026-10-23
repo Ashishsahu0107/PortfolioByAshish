@@ -320,7 +320,10 @@ function AdminDashboardContent() {
         </header>
 
         {/* Content Router */}
-        <main className="flex-1 p-6 sm:p-8 max-w-[1400px] w-full">
+        <main
+          key={location.pathname}
+          className="flex-1 p-6 sm:p-8 max-w-[1400px] w-full admin-tab-content"
+        >
           <Routes>
             <Route index element={<AdminOverview />} />
             <Route path="home" element={<AdminHome />} />

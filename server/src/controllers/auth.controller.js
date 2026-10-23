@@ -55,7 +55,16 @@ export async function sendRegistrationOtp(req, res, next) {
     await OtpService.createOtp(cleanEmail, name.trim(), otp);
 
     // Send the OTP via Nodemailer SMTP
-    await sendOtpEmail(cleanEmail, name.trim(), otp);
+    try {
+      await sendOtpEmail(cleanEmail, name.trim(), otp);
+    } catch (mailErr) {
+      console.error("[OTP Mail Dispatch Error]:", mailErr.message);
+      await OtpService.deleteOtp(cleanEmail);
+      return res.status(502).json({
+        success: false,
+        message: `Failed to dispatch OTP email (${mailErr.message}). Please verify SMTP settings.`,
+      });
+    }
 
     return res.json({
       success: true,
