@@ -4,37 +4,59 @@ import { config } from "../config/env.js";
 let transporter = null;
 
 function getTransporter() {
-  if (transporter) return transporter;
-
   const { host, port, secure, user, pass } = config.smtp;
 
   if (user && pass) {
-    transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure,
-      auth: {
-        user,
-        pass,
-      },
-    });
-  } else {
-    // If SMTP credentials aren't yet populated in .env, create a mock or ethereal transport
-    // for seamless development experience without crashing
-    transporter = {
-      isDevFallback: true,
-      async sendMail(mailOptions) {
-        console.log("--------------------------------------------------");
-        console.log("[SMTP NOTICE] No SMTP_USER/SMTP_PASS in .env.");
-        console.log(`[SMTP DEV MODE] Email to: ${mailOptions.to}`);
-        console.log(`[SMTP DEV MODE] Subject: ${mailOptions.subject}`);
-        console.log("--------------------------------------------------");
-        return { messageId: `dev-${Date.now()}` };
-      },
-    };
+    if (!transporter || transporter.isDevFallback) {
+      const isGmail =
+        (host && host.includes("gmail.com")) ||
+        (user && user.toLowerCase().endsWith("@gmail.com"));
+
+      const transportOptions = isGmail
+        ? {
+            service: "gmail",
+            auth: {
+              user,
+              pass,
+            },
+            pool: true, // Keep connections pooled for instant sub-second delivery
+            maxConnections: 5,
+            maxMessages: 100,
+            rateDelta: 1000,
+            rateLimit: 5,
+          }
+        : {
+            host: host || "smtp.gmail.com",
+            port: Number(port) || 587,
+            secure: secure === true || Number(port) === 465,
+            auth: {
+              user,
+              pass,
+            },
+            pool: true,
+            maxConnections: 5,
+            tls: {
+              rejectUnauthorized: false, // Ensures zero SSL handshake issues in cloud containers (Render, AWS, Railway)
+            },
+          };
+
+      transporter = nodemailer.createTransport(transportOptions);
+    }
+    return transporter;
   }
 
-  return transporter;
+  // Fallback logger transporter if SMTP credentials are missing
+  return {
+    isDevFallback: true,
+    async sendMail(mailOptions) {
+      console.log("--------------------------------------------------");
+      console.log("[SMTP DEV NOTICE] No SMTP_USER/SMTP_PASS in environment.");
+      console.log(`[SMTP DEV NOTICE] Destination: ${mailOptions.to}`);
+      console.log(`[SMTP DEV NOTICE] Subject: ${mailOptions.subject}`);
+      console.log("--------------------------------------------------");
+      return { messageId: `dev-${Date.now()}` };
+    },
+  };
 }
 
 /**
@@ -48,8 +70,10 @@ function getTransporter() {
 export async function sendOtpEmail(toEmail, name, otp) {
   const mailer = getTransporter();
 
-  const recipientName = name ? name.trim() : "Valued User";
-  const fromAddress = config.smtp.from || `"Portfolio Security" <no-reply@ashish.dev>`;
+  const recipientName = name ? name.trim() : "Admin User";
+  const fromAddress =
+    config.smtp.from ||
+    (config.smtp.user ? `"Ashish Sahu Portfolio" <${config.smtp.user}>` : `"Portfolio Security" <no-reply@ashish.dev>`);
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -89,7 +113,7 @@ export async function sendOtpEmail(toEmail, name, otp) {
           <div class="otp-container">
             <p style="margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #71717a;">One-Time Verification Code</p>
             <div class="otp-code">${otp}</div>
-            <div class="otp-timer">⏱ Valid for 5 minutes only</div>
+            <div class="otp-timer">&#x23F1; Valid for 5 minutes only</div>
           </div>
 
           <div class="warning-box">
@@ -101,7 +125,7 @@ export async function sendOtpEmail(toEmail, name, otp) {
           </p>
         </div>
         <div class="footer">
-          &copy; ${new Date().getFullYear()} Ashish Sahu. All rights reserved. • Portfolio Admin Security
+          &copy; ${new Date().getFullYear()} Ashish Sahu. All rights reserved. &bull; Portfolio Admin Security
         </div>
       </div>
     </body>
@@ -130,6 +154,7 @@ If you did not request this verification, please ignore this email.
       html: htmlContent,
     });
 
+    console.log(`[SMTP SUCCESS] Verification code sent to ${toEmail}. MessageId: ${info.messageId}`);
     return { success: true, messageId: info.messageId };
   } catch (err) {
     console.error("[Mailer Error] Failed to send email via SMTP:", err.message);

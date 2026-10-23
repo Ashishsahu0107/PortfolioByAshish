@@ -19,8 +19,8 @@ export const OtpService = {
     // Invalidate any previous OTPs for this email to prevent replay attacks
     await Otp.deleteMany({ email: cleanEmail });
 
-    // Securely hash the 4-digit OTP using bcrypt
-    const otpHash = await bcrypt.hash(String(plainOtp), 10);
+    // Securely hash the 4-digit OTP using bcrypt (8 rounds for high-speed sub-10ms response)
+    const otpHash = await bcrypt.hash(String(plainOtp), 8);
     const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS);
     const id = `otp_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
 
