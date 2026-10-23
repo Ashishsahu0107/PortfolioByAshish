@@ -98,10 +98,6 @@ export function AuthProvider({ children }) {
         login,
         logout,
         changePassword,
-        demoCredentials: {
-          email: "admin@ashish.dev",
-          password: "AdminPassword123!",
-        },
       }}
     >
       {children}

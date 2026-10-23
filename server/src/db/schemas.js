@@ -186,6 +186,21 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true, strict: false }
 );
 
+// 11. OTP Verification Schema
+const otpSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    email: { type: String, required: true, lowercase: true, trim: true, index: true },
+    name: { type: String, default: "" },
+    otpHash: { type: String, required: true },
+    verificationToken: { type: String, default: null, index: true },
+    attempts: { type: Number, default: 0 },
+    verified: { type: Boolean, default: false },
+    expiresAt: { type: Date, required: true, index: { expires: 0 } },
+  },
+  { timestamps: true }
+);
+
 export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 export const DeveloperModel = mongoose.models.Developer || mongoose.model("Developer", developerSchema);
 export const AboutModel = mongoose.models.About || mongoose.model("About", aboutSchema);
@@ -196,3 +211,4 @@ export const SectionModel = mongoose.models.Section || mongoose.model("Section",
 export const FormModel = mongoose.models.Form || mongoose.model("Form", formSchema);
 export const SubmissionModel = mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
 export const MessageModel = mongoose.models.Message || mongoose.model("Message", messageSchema);
+export const OtpModel = mongoose.models.Otp || mongoose.model("Otp", otpSchema);

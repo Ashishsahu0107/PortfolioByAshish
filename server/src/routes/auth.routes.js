@@ -1,8 +1,20 @@
 import { Router } from "express";
-import { login, getMe, changePassword } from "../controllers/auth.controller.js";
+import {
+  sendRegistrationOtp,
+  verifyRegistrationOtp,
+  completeRegistration,
+  login,
+  getMe,
+  changePassword,
+} from "../controllers/auth.controller.js";
 import { authMiddleware } from "../middleware/auth.js";
 
 const router = Router();
+
+// Registration flow endpoints
+router.post("/send-otp", sendRegistrationOtp);
+router.post("/verify-otp", verifyRegistrationOtp);
+router.post("/register", completeRegistration);
 
 // Public login
 router.post("/login", login);

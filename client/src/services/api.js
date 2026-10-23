@@ -1,8 +1,11 @@
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.PROD
-    ? "https://portfoliobyashish.onrender.com/api"
-    : "http://localhost:5000/api");
+const isLocalHost =
+  typeof window !== "undefined" &&
+  (window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1");
+
+const API_BASE = isLocalHost
+  ? "http://localhost:5000/api"
+  : (import.meta.env.VITE_API_URL || "https://portfoliobyashish.onrender.com/api");
 const AUTH_STORAGE_KEY = "portfolio_admin_session_v1";
 
 /**
@@ -72,6 +75,24 @@ async function request(endpoint, options = {}) {
 // Authentication API
 // -------------------------------------------------------------
 export const authApi = {
+  sendOtp: async (name, email) => {
+    return request("/auth/send-otp", {
+      method: "POST",
+      body: JSON.stringify({ name, email }),
+    });
+  },
+  verifyOtp: async (email, otp) => {
+    return request("/auth/verify-otp", {
+      method: "POST",
+      body: JSON.stringify({ email, otp }),
+    });
+  },
+  register: async (payload) => {
+    return request("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+  },
   login: async (email, password) => {
     return request("/auth/login", {
       method: "POST",

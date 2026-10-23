@@ -14,6 +14,14 @@ export const config = {
   mongodbUri: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET || "fallback_super_secret_jwt_key_2026",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "24h",
+  smtp: {
+    host: process.env.SMTP_HOST || "smtp.gmail.com",
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    secure: process.env.SMTP_SECURE === "true",
+    user: process.env.SMTP_USER || "",
+    pass: process.env.SMTP_PASS || "",
+    from: process.env.SMTP_FROM || `"Ashish Portfolio Security" <${process.env.SMTP_USER || "no-reply@ashish.dev"}>`,
+  },
   admin: {
     email: process.env.ADMIN_EMAIL || "admin@ashish.dev",
     password: process.env.ADMIN_PASSWORD || "AdminPassword123!",

@@ -23,7 +23,6 @@ import {
   LayoutGrid,
   FileSpreadsheet,
   Palette,
-  ShieldCheck,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { AdminThemeProvider, useAdminTheme } from "./AdminThemeContext";
@@ -83,12 +82,30 @@ function AdminDashboardContent() {
         : location.pathname.startsWith(item.path) && item.path !== "/admin"
     )?.label || "Dashboard";
 
+  // Calculate RGB string for dynamic rgba overlays
+  const hex = (currentTheme.accent || "#f59e0b").replace("#", "");
+  const r = parseInt(hex.substring(0, 2), 16) || 245;
+  const g = parseInt(hex.substring(2, 4), 16) || 158;
+  const b = parseInt(hex.substring(4, 6), 16) || 11;
+  const currentThemeRgb = `${r}, ${g}, ${b}`;
+
   return (
-    <div className="admin-dashboard-scope flex min-h-screen bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-amber-500/30">
+    <div
+      className="admin-dashboard-scope flex min-h-screen bg-zinc-950 text-zinc-100 font-sans antialiased selection:bg-amber-500/30"
+      style={{
+        "--admin-accent": currentTheme.accent,
+        "--admin-glow": currentTheme.glow,
+        "--admin-trim": currentTheme.lampTrim,
+        "--admin-trim-light": currentTheme.lampTrimLight,
+        "--admin-accent-rgb": currentThemeRgb,
+        "--admin-gradient": `linear-gradient(135deg, ${currentTheme.accent}, ${currentTheme.glow})`,
+        "--admin-shadow": `0 4px 18px rgba(${currentThemeRgb}, 0.35)`,
+      }}
+    >
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 bg-black/60 z-[199] lg:hidden backdrop-blur-xs"
+          className="fixed inset-0 bg-black/70 z-[199] lg:hidden backdrop-blur-xs"
           onClick={() => setMobileOpen(false)}
           aria-hidden="true"
         />
@@ -106,7 +123,7 @@ function AdminDashboardContent() {
         <div className="flex items-center justify-between px-4 py-4 border-b border-zinc-800/80 min-h-[64px] shrink-0">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div
-              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-zinc-800 bg-zinc-900/90 shadow-xs"
+              className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 border border-zinc-800 bg-zinc-900/90 shadow-xs transition-colors duration-300"
               style={{ color: currentTheme.glow }}
             >
               <Zap size={18} />
@@ -115,7 +132,7 @@ function AdminDashboardContent() {
               <span className="text-sm font-bold text-white whitespace-nowrap tracking-tight flex items-center gap-1.5">
                 <span>Portfolio Admin</span>
                 <span
-                  className="size-1.5 rounded-full"
+                  className="size-1.5 rounded-full transition-colors duration-300"
                   style={{ backgroundColor: currentTheme.glow }}
                 />
               </span>
@@ -142,8 +159,8 @@ function AdminDashboardContent() {
                 style={({ isActive }) =>
                   isActive
                     ? {
-                        background: "var(--admin-gradient)",
-                        boxShadow: "var(--admin-shadow)",
+                        background: `linear-gradient(135deg, ${currentTheme.accent}, ${currentTheme.glow})`,
+                        boxShadow: `0 4px 16px rgba(${currentThemeRgb}, 0.35)`,
                         color: "#09090b",
                         fontWeight: 700,
                       }
@@ -172,8 +189,10 @@ function AdminDashboardContent() {
           {sidebarOpen && user && (
             <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-zinc-900/80 border border-zinc-800/80 overflow-hidden">
               <div
-                className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs"
-                style={{ background: "var(--admin-gradient)" }}
+                className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs transition-all duration-300"
+                style={{
+                  background: `linear-gradient(135deg, ${currentTheme.accent}, ${currentTheme.glow})`,
+                }}
               >
                 {user.name?.charAt(0) || "A"}
               </div>
@@ -241,29 +260,30 @@ function AdminDashboardContent() {
                   return (
                     <button
                       key={t.id}
+                      id={`theme-btn-${t.id}`}
                       type="button"
                       onClick={() => setTheme(t.id)}
                       title={`${t.name} (${t.label})`}
-                      className={`group relative size-4 sm:size-5 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer ${
+                      className={`group relative size-5 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer ${
                         isSelected
-                          ? "scale-125 ring-2 ring-white/90 shadow-md"
+                          ? "scale-125 ring-2 ring-white/95 shadow-lg"
                           : "hover:scale-115 opacity-70 hover:opacity-100"
                       }`}
                       style={{
                         backgroundColor: t.accent,
-                        boxShadow: isSelected ? `0 0 10px ${t.glow}` : "none",
+                        boxShadow: isSelected ? `0 0 12px ${t.glow}` : "none",
                       }}
                       aria-label={`Select ${t.name} theme`}
                     >
                       {isSelected && (
-                        <span className="size-1 rounded-full bg-white shadow-xs" />
+                        <span className="size-1.5 rounded-full bg-white shadow-xs" />
                       )}
                     </button>
                   );
                 })}
               </div>
               <span
-                className="text-[11px] font-mono font-semibold hidden md:inline ml-1"
+                className="text-[11px] font-mono font-semibold hidden md:inline ml-1 transition-colors duration-300"
                 style={{ color: currentTheme.glow }}
               >
                 {currentTheme.name}
@@ -277,15 +297,22 @@ function AdminDashboardContent() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/90 text-zinc-300 text-xs font-semibold no-underline hover:border-zinc-700 hover:text-white hover:bg-zinc-850 transition-all whitespace-nowrap shadow-xs"
             >
-              <Globe size={13} style={{ color: currentTheme.glow }} />
+              <Globe
+                size={13}
+                style={{ color: currentTheme.glow }}
+                className="transition-colors duration-300"
+              />
               <span>Live Site</span>
             </a>
 
             {/* User Avatar */}
             <div
               title={user?.name}
-              className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center cursor-pointer shadow-md"
-              style={{ background: "var(--admin-gradient)" }}
+              className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center cursor-pointer shadow-md transition-all duration-300"
+              style={{
+                background: `linear-gradient(135deg, ${currentTheme.accent}, ${currentTheme.glow})`,
+                boxShadow: `0 0 10px rgba(${currentThemeRgb}, 0.3)`,
+              }}
             >
               {user?.name?.charAt(0) || "A"}
             </div>

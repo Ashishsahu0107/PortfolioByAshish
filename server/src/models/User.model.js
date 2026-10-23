@@ -26,4 +26,20 @@ export const UserModel = {
     ).lean();
     return cleanDoc(updated);
   },
+
+  async create({ name, email, password, role = "admin" }) {
+    if (!email || !password) {
+      throw new Error("Email and password are required.");
+    }
+    const cleanEmail = email.trim().toLowerCase();
+    const id = `user_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    const created = await User.create({
+      id,
+      name: name?.trim() || "Admin User",
+      email: cleanEmail,
+      password,
+      role,
+    });
+    return cleanDoc(created);
+  },
 };

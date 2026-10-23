@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import ResumeBuilderPage from "./pages/ResumeBuilderPage";
 import ResumeViewPage from "./pages/ResumeViewPage";
 import SecretLoginPage from "./pages/SecretLoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import AdminDashboard from "./admin/AdminDashboard";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
@@ -55,6 +56,8 @@ function AnimatedRoutes() {
         <Route path="/resume-builder/view" element={<ResumeViewPage />} />
         <Route path="/login" element={<SecretLoginPage />} />
         <Route path="/secret-login" element={<SecretLoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/secret-register" element={<RegisterPage />} />
         <Route
           path="/admin/*"
           element={
@@ -75,6 +78,8 @@ function AppContent({ theme, toggleTheme }) {
     location.pathname.startsWith("/resume-builder") ||
     location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/secret-login") ||
+    location.pathname.startsWith("/register") ||
+    location.pathname.startsWith("/secret-register") ||
     location.pathname.startsWith("/admin");
 
   return (

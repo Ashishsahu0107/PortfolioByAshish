@@ -6,9 +6,11 @@ import {
   inputCls, btnPrimary, btnDanger,
 } from "../adminUtils";
 import { useAuth } from "../../auth/AuthContext";
+import { useAdminTheme } from "../AdminThemeContext";
 
 export default function AdminSettings() {
   const { user, logout, changePassword } = useAuth();
+  const { currentTheme, themeId, setTheme, themes } = useAdminTheme();
   const navigate = useNavigate();
   const { toast, showToast } = useToast();
   const logoutModal = useModal();
@@ -86,24 +88,69 @@ export default function AdminSettings() {
           </div>
         </AdminCard>
 
-        {/* Appearance */}
-        <AdminCard title="Appearance" icon={Palette}>
-          <div className="flex flex-col gap-4">
-            {TOGGLES.map(({ name, label, desc }) => (
-              <div key={name} className="flex items-center justify-between">
-                <div>
-                  <p className="m-0 text-sm font-semibold text-gray-900">{label}</p>
-                  <p className="m-0 text-xs text-gray-400">{desc}</p>
-                </div>
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 accent-indigo-600 cursor-pointer"
-                  name={name}
-                  checked={appearance[name]}
-                  onChange={(e) => setAppearance((p) => ({ ...p, [name]: e.target.checked }))}
-                />
+        {/* Appearance & Accent Theme */}
+        <AdminCard title="Appearance & Accent Theme" icon={Palette}>
+          <div className="flex flex-col gap-5">
+            <div>
+              <p className="text-xs font-semibold text-zinc-300 m-0 mb-2">
+                Console Accent Palette (5 Themes)
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                {themes.map((t) => {
+                  const isSelected = t.id === themeId;
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setTheme(t.id)}
+                      className={`flex flex-col items-center justify-between p-3.5 rounded-xl border text-left cursor-pointer transition-all ${
+                        isSelected
+                          ? "bg-zinc-800/90 border-white/40 ring-2 ring-white/60 shadow-lg scale-[1.02]"
+                          : "bg-zinc-950/60 border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-2 w-full">
+                        <span
+                          className="size-4 rounded-full shrink-0 shadow-sm"
+                          style={{ backgroundColor: t.accent }}
+                        />
+                        <span className="text-xs font-bold text-white truncate flex-1">
+                          {t.name}
+                        </span>
+                        {isSelected && (
+                          <span
+                            className="size-2 rounded-full shrink-0 shadow-xs"
+                            style={{ backgroundColor: t.glow }}
+                          />
+                        )}
+                      </div>
+                      <p className="text-[11px] text-zinc-400 m-0 w-full line-clamp-1">
+                        {t.label}
+                      </p>
+                    </button>
+                  );
+                })}
               </div>
-            ))}
+            </div>
+
+            <div className="pt-3 border-t border-zinc-800/80 flex flex-col gap-3">
+              {TOGGLES.map(({ name, label, desc }) => (
+                <div key={name} className="flex items-center justify-between">
+                  <div>
+                    <p className="m-0 text-sm font-semibold text-zinc-100">{label}</p>
+                    <p className="m-0 text-xs text-zinc-400">{desc}</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 cursor-pointer"
+                    style={{ accentColor: "var(--admin-accent)" }}
+                    name={name}
+                    checked={appearance[name]}
+                    onChange={(e) => setAppearance((p) => ({ ...p, [name]: e.target.checked }))}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </AdminCard>
 

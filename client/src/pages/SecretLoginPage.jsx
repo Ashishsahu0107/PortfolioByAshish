@@ -15,6 +15,7 @@ import {
   ShieldCheck,
   Sparkles,
   LayoutDashboard,
+  UserPlus,
 } from "lucide-react";
 import HangingLamp from "../components/HangingLamp";
 import { LOGIN_THEMES } from "../components/loginThemes";
@@ -25,13 +26,13 @@ export default function Login() {
   const [selectedThemeId, setSelectedThemeId] = useState(() => {
     return localStorage.getItem("secret_login_theme") || "amber";
   });
-  const [email, setEmail] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState(location.state?.registeredEmail || "");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [validationErrors, setValidationErrors] = useState({});
-  const navigate = useNavigate();
-  const location = useLocation();
   const from = location.state?.from?.pathname || "/admin";
 
   const {
@@ -42,7 +43,6 @@ export default function Login() {
     setError,
     login,
     logout,
-    demoCredentials,
   } = useAuth();
 
   const currentTheme =
@@ -82,13 +82,6 @@ export default function Login() {
     }
   };
 
-  const fillDemoCredentials = () => {
-    setEmail(demoCredentials.email);
-    setPassword(demoCredentials.password);
-    setValidationErrors({});
-    setError("");
-  };
-
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-zinc-950 text-zinc-100 flex flex-col justify-between font-sans antialiased selection:bg-amber-500/30">
       {/* Background Room Atmosphere & Vignette */}
@@ -102,13 +95,22 @@ export default function Login() {
 
       {/* Top Bar: Return Link, 5-Color Theme Switcher, & Light Status indicator */}
       <header className="relative z-40 flex flex-wrap items-center justify-between gap-4 p-4 sm:p-6 max-w-7xl mx-auto w-full">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
-        >
-          <ArrowLeft size={14} />
-          <span>Return to Portfolio</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
+          >
+            <ArrowLeft size={14} />
+            <span>Return to Portfolio</span>
+          </Link>
+          <Link
+            to="/register"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
+          >
+            <UserPlus size={13} />
+            <span className="hidden sm:inline">Register Admin</span>
+          </Link>
+        </div>
 
         {/* 5-Color Theme Switcher */}
         <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/85 px-3.5 py-1.5 backdrop-blur-md shadow-xl">
@@ -219,6 +221,14 @@ export default function Login() {
                   </p>
                 </div>
 
+                {/* Registration Success Banner */}
+                {location.state?.message && (
+                  <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-center gap-2">
+                    <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                    <span>{location.state.message}</span>
+                  </div>
+                )}
+
                 {/* Error Banner */}
                 {error && (
                   <div className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300">
@@ -250,7 +260,7 @@ export default function Login() {
                           }
                           if (error) setError("");
                         }}
-                        placeholder="admin@ashish.dev"
+                        placeholder="Enter your email address"
                         className={`w-full rounded-lg border bg-zinc-950/60 pl-9 pr-3.5 py-2.5 text-xs text-zinc-100 placeholder-zinc-600 focus:outline-hidden transition ${
                           validationErrors.email
                             ? "border-red-500/70 focus:border-red-500"
@@ -314,7 +324,7 @@ export default function Login() {
                     )}
                   </div>
 
-                  {/* Remember Me & Help */}
+                  {/* Remember Me & Register Quick Link */}
                   <div className="flex items-center justify-between text-xs pt-1">
                     <label className="flex items-center gap-2 text-zinc-400 cursor-pointer select-none">
                       <input
@@ -327,16 +337,15 @@ export default function Login() {
                       <span>Keep session active</span>
                     </label>
 
-                    <button
-                      type="button"
-                      onClick={fillDemoCredentials}
+                    <Link
+                      to="/register"
                       className="inline-flex items-center gap-1 font-mono text-[11px] hover:underline cursor-pointer"
                       style={{ color: currentTheme.glow }}
-                      title="Quick fill test credentials"
+                      title="Register a new administrator account"
                     >
-                      <Sparkles size={11} />
-                      <span>Fill demo keys</span>
-                    </button>
+                      <UserPlus size={11} />
+                      <span>Register new account</span>
+                    </Link>
                   </div>
 
                   {/* Submit Button */}
@@ -358,6 +367,18 @@ export default function Login() {
                     )}
                   </button>
                 </form>
+
+                {/* Register Callout */}
+                <div className="mt-4 pt-4 border-t border-zinc-800/80 text-center text-xs text-zinc-400">
+                  <span>First time setting up? </span>
+                  <Link
+                    to="/register"
+                    className="font-medium hover:underline transition"
+                    style={{ color: currentTheme.glow }}
+                  >
+                    Verify email & register with OTP &rarr;
+                  </Link>
+                </div>
 
                 {/* Footer security note */}
                 <div className="mt-6 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-[11px] font-mono text-zinc-500">
