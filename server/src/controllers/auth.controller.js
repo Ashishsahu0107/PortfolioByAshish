@@ -90,15 +90,10 @@ export async function sendRegistrationOtp(req, res, next) {
       });
     }
 
-    const responseMsg = resendResult?.sandboxNotice
-      ? `A 6-digit verification code has been dispatched! (${resendResult.sandboxNotice})`
-      : "A 6-digit verification code has been dispatched via Resend to your email inbox.";
-
     return res.json({
       success: true,
-      message: responseMsg,
+      message: `A 6-digit verification code has been dispatched via Resend to ${cleanEmail}.`,
       email: cleanEmail,
-      sandboxDeliveredTo: resendResult?.sandboxDeliveredTo,
       cooldownSeconds: 60,
       expiryMinutes: 10,
     });

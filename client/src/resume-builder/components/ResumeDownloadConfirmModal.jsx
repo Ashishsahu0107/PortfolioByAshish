@@ -13,6 +13,7 @@ import {
 import { renderResumeTemplate } from "../templatesRegistry";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { resumeApi } from "../../services/api";
+import { toast } from "../../utils/toast";
 
 export default function ResumeDownloadConfirmModal({
   isOpen,
@@ -69,6 +70,7 @@ export default function ResumeDownloadConfirmModal({
     setIsExporting(true);
     setExportError(null);
     setDownloadSuccess(false);
+    toast.loading("Preparing approved resume PDF...", { id: "resume-pdf-dl" });
 
     try {
       // 1. Double-check with backend download authorization
@@ -93,13 +95,16 @@ export default function ResumeDownloadConfirmModal({
       await exportResumeToPdf(targetEl, customFileName);
 
       setDownloadSuccess(true);
+      toast.success("Resume downloaded successfully!", { id: "resume-pdf-dl" });
       setTimeout(() => {
         setDownloadSuccess(false);
         onClose();
       }, 1500);
     } catch (err) {
       console.error("[ResumeDownloadConfirmModal] Export failed:", err);
-      setExportError(err.message || "Failed to generate resume PDF. Please try again.");
+      const msg = err.message || "Failed to generate resume PDF. Please try again.";
+      setExportError(msg);
+      toast.error(msg, { id: "resume-pdf-dl" });
     } finally {
       setIsExporting(false);
     }

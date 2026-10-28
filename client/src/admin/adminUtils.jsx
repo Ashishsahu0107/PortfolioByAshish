@@ -1,14 +1,23 @@
 import { useState, useCallback } from "react";
 import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from "lucide-react";
+import { toast as sonnerToast, showToast as sonnerShowToast } from "../utils/toast";
 
-/** Toast hook */
+export { sonnerToast as toast, sonnerShowToast };
+
+/** Toast hook mapped to Sonner */
 export function useToast() {
-  const [toast, setToast] = useState(null);
   const showToast = useCallback((message, type = "success") => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3200);
+    if (type === "error") {
+      sonnerShowToast.error(message);
+    } else if (type === "info") {
+      sonnerShowToast.info(message);
+    } else if (type === "warning") {
+      sonnerShowToast.warning(message);
+    } else {
+      sonnerShowToast.success(message);
+    }
   }, []);
-  return { toast, showToast };
+  return { toast: null, showToast };
 }
 
 /** Modal state hook */
@@ -19,28 +28,9 @@ export function useModal(initial = null) {
   return { modal, open, close };
 }
 
-/** Toast component */
-export function Toast({ toast }) {
-  if (!toast) return null;
-  const icons = {
-    success: <CheckCircle2 size={16} className="shrink-0 text-white" />,
-    error: <AlertCircle size={16} className="shrink-0 text-white" />,
-    info: <Info size={16} className="shrink-0 text-white" />,
-  };
-  const colors = {
-    success: "bg-emerald-600/90 border border-emerald-500/40 text-emerald-100",
-    error: "bg-red-600/90 border border-red-500/40 text-red-100",
-    info: "bg-blue-600/90 border border-blue-500/40 text-blue-100",
-  };
-  return (
-    <div
-      className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-2.5 px-4 py-3 rounded-xl text-white text-sm font-medium shadow-2xl backdrop-blur-md animate-[fadeUp_0.3s_ease] ${colors[toast.type] || colors.success}`}
-      style={{ animation: "fadeUp 0.3s ease" }}
-    >
-      {icons[toast.type] || icons.success}
-      <span>{toast.message}</span>
-    </div>
-  );
+/** Legacy Toast component - suppressed in favor of Sonner Toaster */
+export function Toast() {
+  return null;
 }
 
 /** Confirm delete modal */

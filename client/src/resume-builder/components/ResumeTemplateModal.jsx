@@ -13,6 +13,7 @@ import {
 import { RESUME_TEMPLATES, getTemplateById } from "../templatesRegistry";
 import { sampleResumeData } from "../sampleData";
 import { exportResumeToPdf } from "../utils/pdfExport";
+import { toast } from "../../utils/toast";
 
 function ResumeTemplateModalContent({ onClose, defaultTemplate }) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(defaultTemplate);
@@ -84,13 +85,15 @@ function ResumeTemplateModalContent({ onClose, defaultTemplate }) {
         resumeData?.personalInfo?.fullName || "Ashish Sahu";
       const customFileName = `${candidateName}_${template.name}`;
 
+      toast.loading("Exporting resume PDF...", { id: `pdf-export-${templateId}` });
       await exportResumeToPdf(targetElement, customFileName);
 
       setDownloadSuccessId(templateId);
+      toast.success(`Exported ${template.name} PDF successfully!`, { id: `pdf-export-${templateId}` });
       setTimeout(() => setDownloadSuccessId(null), 3000);
     } catch (err) {
       console.error("PDF export error:", err);
-      alert("Failed to export PDF: " + (err.message || "Unknown error"));
+      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), { id: `pdf-export-${templateId}` });
     } finally {
       setExportingId(null);
       setHiddenTemplateToExport(null);

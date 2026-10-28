@@ -13,6 +13,8 @@ import {
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import { useCallback } from "react";
+import { contactApi } from "../services/api";
+import { showToast, toast } from "../utils/toast";
 
 export default function PortfolioContact() {
   const sectionRef = useRef(null);
@@ -53,6 +55,8 @@ export default function PortfolioContact() {
 
   const submit = async (event) => {
     event.preventDefault();
+    if (state === "sending") return;
+
     const form = event.currentTarget;
     const formData = new FormData(form);
     const name = formData.get("name")?.toString().trim();
@@ -61,28 +65,37 @@ export default function PortfolioContact() {
     const message = formData.get("message")?.toString().trim();
 
     if (!name || name.length < 2) {
-      setErrorMessage("Please enter your name (at least 2 characters).");
+      const err = "Please enter your name (at least 2 characters).";
+      setErrorMessage(err);
       setState("error");
+      showToast.error(err);
       return;
     }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setErrorMessage("Please enter a valid email address.");
+      const err = "Please enter a valid email address.";
+      setErrorMessage(err);
       setState("error");
+      showToast.error(err);
       return;
     }
     if (!subject || subject.length < 4) {
-      setErrorMessage("Subject must be at least 4 characters.");
+      const err = "Subject must be at least 4 characters.";
+      setErrorMessage(err);
       setState("error");
+      showToast.error(err);
       return;
     }
     if (!message || message.length < 10) {
-      setErrorMessage("Message must be at least 10 characters.");
+      const err = "Message must be at least 10 characters.";
+      setErrorMessage(err);
       setState("error");
+      showToast.error(err);
       return;
     }
 
     setState("sending");
     setErrorMessage("");
+    toast.loading("Sending your message...", { id: "contact-submit" });
 
     try {
       // 1. Save directly into backend persistent database
@@ -98,9 +111,12 @@ export default function PortfolioContact() {
 
       form.reset();
       setState("sent");
+      toast.success("Message sent successfully! Thank you for reaching out.", { id: "contact-submit" });
     } catch (err) {
       setState("error");
-      setErrorMessage(err.message || "Could not send message. Please reach out directly via email.");
+      const msg = err.message || "Could not send message. Please reach out directly via email.";
+      setErrorMessage(msg);
+      toast.error(msg, { id: "contact-submit" });
     }
   };
 

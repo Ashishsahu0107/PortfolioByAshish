@@ -1,6 +1,7 @@
 import { useRef, useState, useLayoutEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { gsap } from "gsap";
+import { Toaster } from "sonner";
 
 import Navbar from "./components/PortfolioNavbar";
 import CustomCursor from "./components/CustomCursor";
@@ -106,6 +107,20 @@ function AppContent({ theme, toggleTheme }) {
 
   return (
     <>
+      <Toaster
+        position="top-right"
+        richColors
+        closeButton
+        expand={false}
+        theme={theme === "light" ? "light" : "dark"}
+        toastOptions={{
+          style: {
+            borderRadius: "12px",
+            fontSize: "13px",
+            fontFamily: "inherit",
+          },
+        }}
+      />
       <CustomCursor />
       {!isStandalone && <ScrollProgress />}
 

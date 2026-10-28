@@ -18,6 +18,7 @@ import { RESUME_TEMPLATES } from "../templatesRegistry";
 import { useAuth } from "../../auth/AuthContext";
 import { resumeApi } from "../../services/api";
 import { usePortfolioSync } from "../../hooks/usePortfolioSync";
+import { toast, showToast } from "../../utils/toast";
 
 export default function ResumeBuilderNav() {
   const {
@@ -55,17 +56,21 @@ export default function ResumeBuilderNav() {
 
   const handleApproveCurrent = async () => {
     if (!user) {
+      showToast.info("Please sign in to approve resume templates.");
       navigate("/secret-login");
       return;
     }
     setIsApproving(true);
+    toast.loading("Approving resume template on server...", { id: "approve-resume-toast" });
     try {
       await resumeApi.approve(activeTemplate, resumeData);
       setApprovedTemplateId(activeTemplate);
-      setApprovalNotice(`Template approved! Only this resume is now live on your portfolio.`);
+      const notice = `Template approved! Only this resume is now live on your portfolio.`;
+      setApprovalNotice(notice);
+      toast.success(notice, { id: "approve-resume-toast" });
       setTimeout(() => setApprovalNotice(null), 3500);
     } catch (err) {
-      alert("Failed to approve template: " + (err.message || "Unknown error"));
+      toast.error("Failed to approve template: " + (err.message || "Unknown error"), { id: "approve-resume-toast" });
     } finally {
       setIsApproving(false);
     }
@@ -74,15 +79,17 @@ export default function ResumeBuilderNav() {
   const handleDownload = async () => {
     const previewEl = document.getElementById("resume-a4-document");
     if (!previewEl) {
-      alert("Resume preview element is not ready. Please try again.");
+      toast.error("Resume preview element is not ready. Please try again.");
       return;
     }
 
     setIsExporting(true);
+    toast.loading("Exporting resume PDF...", { id: "nav-pdf-export" });
     try {
       await exportResumeToPdf(previewEl, resumeData.personalInfo.fullName);
+      toast.success("Resume PDF downloaded successfully!", { id: "nav-pdf-export" });
     } catch (err) {
-      alert("Failed to export PDF: " + (err.message || "Unknown error"));
+      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), { id: "nav-pdf-export" });
     } finally {
       setIsExporting(false);
     }

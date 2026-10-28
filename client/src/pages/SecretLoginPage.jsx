@@ -20,6 +20,7 @@ import {
 import HangingLamp from "../components/HangingLamp";
 import { LOGIN_THEMES } from "../components/loginThemes";
 import { useAuth } from "../auth/AuthContext";
+import { toast, showToast } from "../utils/toast";
 
 export default function Login() {
   const [isLightOn, setIsLightOn] = useState(() => {
@@ -91,11 +92,19 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    if (isLoading) return;
+    if (!validateForm()) {
+      showToast.error("Please enter valid credentials to sign in.");
+      return;
+    }
 
+    toast.loading("Signing in...", { id: "secret-login" });
     const res = await login(email, password, rememberMe);
     if (res.success) {
+      toast.success("Welcome back! Signed in successfully.", { id: "secret-login" });
       navigate(from, { replace: true });
+    } else {
+      toast.error(res.error || "Authentication failed. Please check your credentials.", { id: "secret-login" });
     }
   };
 

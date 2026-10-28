@@ -22,6 +22,7 @@ import {
 import HangingLamp from "../components/HangingLamp";
 import { LOGIN_THEMES } from "../components/loginThemes";
 import { authApi } from "../services/api";
+import { toast, showToast } from "../utils/toast";
 
 const DEFAULT_EXPIRY_SECONDS = 600; // 10 minutes
 const DEFAULT_COOLDOWN_SECONDS = 60; // 60 seconds
@@ -199,22 +200,25 @@ export default function RegisterPage() {
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
+      showToast.error(errors.email || errors.name || "Please enter valid info.");
       return;
     }
 
     setValidationErrors({});
     setIsLoading(true);
+    const targetEmail = email.trim().toLowerCase();
+    toast.loading(`Sending verification code to ${targetEmail}...`, { id: "reg-page-otp-send" });
 
     try {
-      const res = await authApi.sendOtp(name.trim(), email.trim().toLowerCase());
+      const res = await authApi.sendOtp(name.trim(), targetEmail);
       if (res.success) {
         setStep(2);
         setExpirySeconds((res.expiryMinutes || 10) * 60);
         setCooldownSeconds(res.cooldownSeconds || 60);
         setOtpDigits(["", "", "", "", "", ""]);
-        setSuccessNotice(
-          res.message || "A 6-digit verification code has been dispatched via Resend to your email."
-        );
+        const notice = res.message || `A 6-digit verification code has been dispatched via Resend to ${targetEmail}.`;
+        setSuccessNotice(notice);
+        toast.success(notice, { id: "reg-page-otp-send" });
       } else {
         throw new Error(res.message || "Failed to dispatch verification code via Resend.");
       }
@@ -222,7 +226,9 @@ export default function RegisterPage() {
       if (err.status === 429 && err.data?.retryAfter) {
         setCooldownSeconds(err.data.retryAfter);
       }
-      setError(err.message || "Failed to dispatch verification code via Resend. Please try again.");
+      const errMsg = err.message || "Failed to dispatch verification code via Resend. Please try again.";
+      setError(errMsg);
+      toast.error(errMsg, { id: "reg-page-otp-send" });
     } finally {
       setIsLoading(false);
     }
@@ -234,21 +240,27 @@ export default function RegisterPage() {
     setIsLoading(true);
     setError("");
     setSuccessNotice("");
+    const targetEmail = email.trim().toLowerCase();
+    toast.loading(`Resending verification code to ${targetEmail}...`, { id: "reg-page-otp-resend" });
 
     try {
-      const res = await authApi.sendOtp(name.trim(), email.trim().toLowerCase());
+      const res = await authApi.sendOtp(name.trim(), targetEmail);
       if (res.success) {
         setExpirySeconds((res.expiryMinutes || 10) * 60);
         setCooldownSeconds(res.cooldownSeconds || 60);
         setOtpDigits(["", "", "", "", "", ""]);
-        setSuccessNotice("A new 6-digit verification code has been dispatched via Resend.");
+        const notice = res.message || `A new 6-digit verification code has been dispatched to ${targetEmail}.`;
+        setSuccessNotice(notice);
+        toast.success(notice, { id: "reg-page-otp-resend" });
         otpInputRefs[0].current?.focus();
       }
     } catch (err) {
       if (err.status === 429 && err.data?.retryAfter) {
         setCooldownSeconds(err.data.retryAfter);
       }
-      setError(err.message || "Failed to resend verification code via Resend.");
+      const errMsg = err.message || "Failed to resend verification code via Resend.";
+      setError(errMsg);
+      toast.error(errMsg, { id: "reg-page-otp-resend" });
     } finally {
       setIsLoading(false);
     }
@@ -259,28 +271,36 @@ export default function RegisterPage() {
   // -------------------------------------------------------------
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
     setError("");
     setSuccessNotice("");
 
     const fullOtp = otpDigits.join("");
     if (fullOtp.length !== 6) {
-      setError("Please enter the complete 6-digit verification code.");
+      const msg = "Please enter the complete 6-digit verification code.";
+      setError(msg);
+      showToast.error(msg);
       return;
     }
 
     setIsLoading(true);
+    toast.loading("Verifying security code...", { id: "reg-page-otp-verify" });
 
     try {
       const res = await authApi.verifyOtp(email.trim().toLowerCase(), fullOtp);
       if (res.success && res.verificationToken) {
         setVerificationToken(res.verificationToken);
         setStep(3);
-        setSuccessNotice("Identity verified successfully via Resend! Please create your secure password.");
+        const notice = "Identity verified successfully via Resend! Please create your secure password.";
+        setSuccessNotice(notice);
+        toast.success(notice, { id: "reg-page-otp-verify" });
       } else {
         throw new Error(res.message || "Invalid verification code.");
       }
     } catch (err) {
-      setError(err.message || "Incorrect verification code. Please check and try again.");
+      const errMsg = err.message || "Incorrect verification code. Please check and try again.";
+      setError(errMsg);
+      toast.error(errMsg, { id: "reg-page-otp-verify" });
     } finally {
       setIsLoading(false);
     }
@@ -291,6 +311,7 @@ export default function RegisterPage() {
   // -------------------------------------------------------------
   const handleCompleteRegistration = async (e) => {
     e.preventDefault();
+    if (isLoading) return;
     setError("");
     setSuccessNotice("");
 
@@ -309,11 +330,13 @@ export default function RegisterPage() {
 
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
+      showToast.error(errors.password || errors.confirmPassword || "Please correct password fields.");
       return;
     }
 
     setValidationErrors({});
     setIsLoading(true);
+    toast.loading("Creating admin account...", { id: "reg-page-complete" });
 
     try {
       const payload = {
@@ -326,6 +349,7 @@ export default function RegisterPage() {
 
       const res = await authApi.register(payload);
       if (res.success) {
+        toast.success("Registration completed successfully!", { id: "reg-page-complete" });
         // Successful registration: redirect to login with pre-filled email and confirmation
         navigate("/secret-login", {
           replace: true,
@@ -338,7 +362,9 @@ export default function RegisterPage() {
         throw new Error(res.message || "Registration failed.");
       }
     } catch (err) {
-      setError(err.message || "Unable to complete registration. Please try again.");
+      const errMsg = err.message || "Unable to complete registration. Please try again.";
+      setError(errMsg);
+      toast.error(errMsg, { id: "reg-page-complete" });
     } finally {
       setIsLoading(false);
     }

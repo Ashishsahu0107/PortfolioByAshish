@@ -10,6 +10,7 @@ import {
 import { ResumeProvider, useResume } from "../resume-builder/context/ResumeContext";
 import { exportResumeToPdf } from "../resume-builder/utils/pdfExport";
 import { RESUME_TEMPLATES, renderResumeTemplate } from "../resume-builder/templatesRegistry";
+import { toast } from "../utils/toast";
 
 function ResumeViewContent() {
   const { resumeData, activeTemplate, setActiveTemplate, isExporting, setIsExporting } = useResume();
@@ -18,13 +19,18 @@ function ResumeViewContent() {
 
   const handleDownload = async () => {
     const el = document.getElementById("resume-a4-document");
-    if (!el) return;
+    if (!el) {
+      toast.error("Resume document element is not ready for download.");
+      return;
+    }
 
     setIsExporting(true);
+    toast.loading("Exporting resume PDF...", { id: "view-page-export" });
     try {
       await exportResumeToPdf(el, resumeData.personalInfo.fullName);
+      toast.success("Resume PDF downloaded successfully!", { id: "view-page-export" });
     } catch (err) {
-      alert("Download failed: " + (err.message || "Unknown error"));
+      toast.error("Download failed: " + (err.message || "Unknown error"), { id: "view-page-export" });
     } finally {
       setIsExporting(false);
     }

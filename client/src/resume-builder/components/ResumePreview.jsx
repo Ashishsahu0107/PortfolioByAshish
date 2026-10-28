@@ -10,6 +10,7 @@ import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { renderResumeTemplate } from "../templatesRegistry";
 import { useNavigate } from "react-router-dom";
+import { toast } from "../../utils/toast";
 
 export default function ResumePreview() {
   const { resumeData, activeTemplate, isExporting, setIsExporting } = useResume();
@@ -40,13 +41,18 @@ export default function ResumePreview() {
 
   const handleDownloadPdf = async () => {
     const el = document.getElementById("resume-a4-document");
-    if (!el) return;
+    if (!el) {
+      toast.error("Resume document element is not ready for download.");
+      return;
+    }
 
     setIsExporting(true);
+    toast.loading("Exporting resume PDF...", { id: "resume-preview-export" });
     try {
       await exportResumeToPdf(el, resumeData.personalInfo.fullName);
+      toast.success("Resume PDF downloaded successfully!", { id: "resume-preview-export" });
     } catch (err) {
-      alert("PDF generation failed: " + (err.message || "Unknown error"));
+      toast.error("PDF generation failed: " + (err.message || "Unknown error"), { id: "resume-preview-export" });
     } finally {
       setIsExporting(false);
     }

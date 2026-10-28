@@ -66,6 +66,9 @@ async function request(endpoint, options = {}) {
   } catch (err) {
     if (err.name === "TypeError" && err.message.includes("fetch")) {
       console.warn(`[API] Unable to reach backend server at ${url}. Is it running on port 5000?`);
+      const networkErr = new Error("Unable to connect to backend server. Please verify your network connection or server status.");
+      networkErr.status = 0;
+      throw networkErr;
     }
     throw err;
   }
@@ -75,22 +78,51 @@ async function request(endpoint, options = {}) {
 // Authentication API
 // -------------------------------------------------------------
 export const authApi = {
-  sendOtp: async (name, email) => {
+  sendOtp: async (nameOrPayload, maybeEmail) => {
+    let name = "";
+    let email = "";
+    if (typeof nameOrPayload === "object" && nameOrPayload !== null) {
+      name = nameOrPayload.name || "";
+      email = nameOrPayload.email || "";
+    } else if (typeof maybeEmail === "string") {
+      name = nameOrPayload;
+      email = maybeEmail;
+    } else {
+      email = nameOrPayload;
+    }
     return request("/auth/send-otp", {
       method: "POST",
-      body: JSON.stringify({ name, email }),
+      body: JSON.stringify({
+        name: typeof name === "string" ? name.trim() : "",
+        email: typeof email === "string" ? email.trim().toLowerCase() : "",
+      }),
     });
   },
-  verifyOtp: async (email, otp) => {
+  verifyOtp: async (emailOrPayload, maybeOtp) => {
+    let email = "";
+    let otp = "";
+    if (typeof emailOrPayload === "object" && emailOrPayload !== null) {
+      email = emailOrPayload.email || "";
+      otp = emailOrPayload.otp || "";
+    } else {
+      email = emailOrPayload;
+      otp = maybeOtp;
+    }
     return request("/auth/verify-otp", {
       method: "POST",
-      body: JSON.stringify({ email, otp }),
+      body: JSON.stringify({
+        email: typeof email === "string" ? email.trim().toLowerCase() : "",
+        otp: String(otp || "").trim(),
+      }),
     });
   },
   register: async (payload) => {
     return request("/auth/register", {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        ...payload,
+        email: payload.email ? String(payload.email).trim().toLowerCase() : "",
+      }),
     });
   },
   login: async (email, password) => {

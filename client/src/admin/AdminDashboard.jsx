@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { AdminThemeProvider, useAdminTheme } from "./AdminThemeContext";
+import { showToast } from "../utils/toast";
 import "./adminTheme.css";
 
 import AdminHome from "./sections/AdminHome";
@@ -71,6 +72,7 @@ function AdminDashboardContent() {
   const handleLogout = () => {
     if (logoutConfirm) {
       logout();
+      showToast.info("Signed out of Admin Console.");
       navigate("/secret-login", { replace: true });
     } else {
       setLogoutConfirm(true);
