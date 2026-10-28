@@ -1,28 +1,77 @@
-import { createContext, useContext, useState, useCallback } from "react";
-import ResumeTemplateModal from "../components/ResumeTemplateModal";
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import ResumeDownloadConfirmModal from "../components/ResumeDownloadConfirmModal";
+import { resumeApi } from "../../services/api";
+import { usePortfolioSync } from "../../hooks/usePortfolioSync";
 
 const ResumeModalContext = createContext(null);
 
 export function ResumeModalProvider({ children }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [initialTemplate, setInitialTemplate] = useState("modern");
+  const [approvedResume, setApprovedResume] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const openResumeModal = useCallback((templateId = "modern") => {
-    setInitialTemplate(templateId);
-    setIsOpen(true);
+  // Fetch approved resume from backend API
+  const fetchApprovedResume = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await resumeApi.getApproved();
+      if (data) {
+        setApprovedResume(data);
+        setError(null);
+      } else {
+        setApprovedResume(null);
+        setError("No approved resume found.");
+      }
+    } catch (err) {
+      console.warn(
+        "[ResumeModalContext] Failed to load approved resume:",
+        err.message
+      );
+      setError(err.message || "Failed to load approved resume from server.");
+      setApprovedResume(null);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchApprovedResume();
+  }, [fetchApprovedResume]);
+
+  // Real-time synchronization: automatically updates when approval changes on backend without page refresh
+  usePortfolioSync(fetchApprovedResume, "resume");
+
+  const openResumeModal = useCallback(() => {
+    setIsOpen(true);
+    // Re-verify latest approved state on open
+    fetchApprovedResume();
+  }, [fetchApprovedResume]);
 
   const closeResumeModal = useCallback(() => {
     setIsOpen(false);
   }, []);
 
   return (
-    <ResumeModalContext.Provider value={{ isOpen, openResumeModal, closeResumeModal }}>
+    <ResumeModalContext.Provider
+      value={{
+        isOpen,
+        openResumeModal,
+        closeResumeModal,
+        approvedResume,
+        loading,
+        error,
+        refreshApprovedResume: fetchApprovedResume,
+      }}
+    >
       {children}
-      <ResumeTemplateModal
+      <ResumeDownloadConfirmModal
         isOpen={isOpen}
         onClose={closeResumeModal}
-        defaultTemplate={initialTemplate}
+        approvedResume={approvedResume}
+        loading={loading}
+        error={error}
+        onRetry={fetchApprovedResume}
       />
     </ResumeModalContext.Provider>
   );
@@ -36,3 +85,4 @@ export function useResumeModal() {
   }
   return context;
 }
+

@@ -77,6 +77,7 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
           {/* Resume PDF Template Selector Button */}
           <button
             type="button"
+            id="navbar-resume-btn"
             onClick={() => openResumeModal("modern")}
             className="inline-flex items-center gap-1.5 rounded-sm border border-border bg-surface px-3 py-1.5 font-mono text-[10px] font-medium tracking-wider text-secondary transition-all hover:border-action hover:text-action cursor-pointer"
             title="Open Resume PDF Template Selector"

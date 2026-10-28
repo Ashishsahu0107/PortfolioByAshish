@@ -14,6 +14,7 @@ import sectionsRoutes from "./routes/sections.routes.js";
 import formsRoutes from "./routes/forms.routes.js";
 import contactRoutes from "./routes/contact.routes.js";
 import overviewRoutes from "./routes/overview.routes.js";
+import resumeRoutes from "./routes/resume.routes.js";
 
 const app = express();
 
@@ -71,6 +72,8 @@ app.use("/api/sections", sectionsRoutes);
 app.use("/api/forms", formsRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/overview", overviewRoutes);
+app.use("/api/resumes", resumeRoutes);
+app.use("/api/resume", resumeRoutes);
 
 // Catch-all 404 for API endpoints
 app.use("/api/*", (req, res) => {

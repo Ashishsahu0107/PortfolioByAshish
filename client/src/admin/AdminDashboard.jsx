@@ -23,6 +23,7 @@ import {
   LayoutGrid,
   FileSpreadsheet,
   Palette,
+  FileText,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { AdminThemeProvider, useAdminTheme } from "./AdminThemeContext";
@@ -38,10 +39,12 @@ import AdminSettings from "./sections/AdminSettings";
 import AdminOverview from "./sections/AdminOverview";
 import AdminSections from "./sections/AdminSections";
 import AdminFormBuilder from "./sections/AdminFormBuilder";
+import AdminResumeBuilder from "./sections/AdminResumeBuilder";
 
 const NAV_ITEMS = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { path: "/admin/home", label: "Home", icon: Home },
+  { path: "/admin/resume", label: "Resume Builder", icon: FileText },
   { path: "/admin/sections", label: "Manage Sections", icon: LayoutGrid },
   { path: "/admin/about", label: "About", icon: User },
   { path: "/admin/skills", label: "Skills", icon: Zap },
@@ -327,6 +330,7 @@ function AdminDashboardContent() {
           <Routes>
             <Route index element={<AdminOverview />} />
             <Route path="home" element={<AdminHome />} />
+            <Route path="resume" element={<AdminResumeBuilder />} />
             <Route path="sections" element={<AdminSections />} />
             <Route path="about" element={<AdminAbout />} />
             <Route path="skills" element={<AdminSkills />} />

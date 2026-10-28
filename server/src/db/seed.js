@@ -13,6 +13,7 @@ import {
   FormModel,
   SubmissionModel,
   MessageModel,
+  ResumeModel,
 } from "./schemas.js";
 import {
   initialDeveloper,
@@ -22,6 +23,7 @@ import {
   initialExperience,
   initialSections,
   initialForms,
+  initialResumeTemplates,
 } from "./seedData.js";
 
 async function runMongoDBSeed() {
@@ -46,6 +48,7 @@ async function runMongoDBSeed() {
     FormModel.deleteMany({}),
     SubmissionModel.deleteMany({}),
     MessageModel.deleteMany({}),
+    ResumeModel.deleteMany({}),
   ]);
   console.log("[SEED] Cleared existing MongoDB collections.");
 
@@ -91,6 +94,12 @@ async function runMongoDBSeed() {
   if (Array.isArray(initialForms)) {
     await FormModel.insertMany(initialForms);
     console.log(`[SEED] Populated ${initialForms.length} forms into MongoDB.`);
+  }
+
+  // 9. Resume Templates (with default approved resume)
+  if (Array.isArray(initialResumeTemplates)) {
+    await ResumeModel.insertMany(initialResumeTemplates);
+    console.log(`[SEED] Populated ${initialResumeTemplates.length} resume templates into MongoDB.`);
   }
 
   console.log("==========================================");

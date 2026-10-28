@@ -10,6 +10,7 @@ import {
   ExperienceModel,
   SectionModel,
   FormModel,
+  ResumeModel,
 } from "./schemas.js";
 import {
   initialDeveloper,
@@ -19,9 +20,17 @@ import {
   initialExperience,
   initialSections,
   initialForms,
+  initialResumeTemplates,
 } from "./seedData.js";
 
 async function autoSeedIfEmpty() {
+  // Ensure resume templates exist in DB even if other collections are populated
+  const resumeCount = await ResumeModel.countDocuments();
+  if (resumeCount === 0 && Array.isArray(initialResumeTemplates)) {
+    await ResumeModel.insertMany(initialResumeTemplates);
+    console.log(`[MongoDB Seed] Initialized ${initialResumeTemplates.length} resume templates into MongoDB.`);
+  }
+
   const userCount = await UserModel.countDocuments();
   if (userCount > 0) {
     console.log("[MongoDB] Collections already populated. Skipping initial seed.");

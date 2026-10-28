@@ -133,9 +133,9 @@ export default function PortfolioAbout() {
               <button
                 type="button"
                 className={`${textLink} cursor-pointer inline-flex items-center gap-1.5`}
-                onClick={() => openResumeModal("modern")}
+                onClick={() => openResumeModal()}
               >
-                <span>Resume PDF (6 Templates)</span>
+                <span>Resume PDF</span>
                 <ArrowUpRight size={16} />
               </button>
             </div>

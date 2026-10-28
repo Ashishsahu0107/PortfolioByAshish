@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft,
@@ -7,10 +7,17 @@ import {
   FileText,
   RotateCcw,
   Sparkles,
+  CheckCircle2,
+  ShieldCheck,
+  Settings,
+  Loader2,
 } from "lucide-react";
 import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { RESUME_TEMPLATES } from "../templatesRegistry";
+import { useAuth } from "../../auth/AuthContext";
+import { resumeApi } from "../../services/api";
+import { usePortfolioSync } from "../../hooks/usePortfolioSync";
 
 export default function ResumeBuilderNav() {
   const {
@@ -24,8 +31,45 @@ export default function ResumeBuilderNav() {
     setIsExporting,
   } = useResume();
 
+  const { user } = useAuth();
+  const [approvedTemplateId, setApprovedTemplateId] = useState(null);
+  const [isApproving, setIsApproving] = useState(false);
+  const [approvalNotice, setApprovalNotice] = useState(null);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const navigate = useNavigate();
+
+  const fetchApproved = useCallback(async () => {
+    try {
+      const data = await resumeApi.getApproved();
+      if (data?.templateId) {
+        setApprovedTemplateId(data.templateId);
+      }
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    fetchApproved();
+  }, [fetchApproved]);
+
+  usePortfolioSync(fetchApproved, "resume");
+
+  const handleApproveCurrent = async () => {
+    if (!user) {
+      navigate("/secret-login");
+      return;
+    }
+    setIsApproving(true);
+    try {
+      await resumeApi.approve(activeTemplate, resumeData);
+      setApprovedTemplateId(activeTemplate);
+      setApprovalNotice(`Template approved! Only this resume is now live on your portfolio.`);
+      setTimeout(() => setApprovalNotice(null), 3500);
+    } catch (err) {
+      alert("Failed to approve template: " + (err.message || "Unknown error"));
+    } finally {
+      setIsApproving(false);
+    }
+  };
 
   const handleDownload = async () => {
     const previewEl = document.getElementById("resume-a4-document");
@@ -97,6 +141,36 @@ export default function ResumeBuilderNav() {
             ))}
           </div>
 
+          {/* Admin Approval Control */}
+          {user && (
+            <div className="flex items-center gap-1.5">
+              {activeTemplate === approvedTemplateId ? (
+                <span
+                  className="inline-flex items-center gap-1 rounded-md bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-1 text-[11px] font-bold"
+                  title="This template is currently approved and live for portfolio visitor downloads"
+                >
+                  <CheckCircle2 size={13} className="text-emerald-600" />
+                  <span>Approved Live</span>
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleApproveCurrent}
+                  disabled={isApproving}
+                  className="inline-flex items-center gap-1 rounded-md bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 text-[11px] font-bold shadow-xs transition cursor-pointer disabled:opacity-50"
+                  title="Set this template as the approved download for portfolio visitors"
+                >
+                  {isApproving ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={12} />
+                  )}
+                  <span>Approve Template</span>
+                </button>
+              )}
+            </div>
+          )}
+
           {/* Completion Score */}
           <div className="hidden items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 lg:flex">
             <div className="flex flex-col">
@@ -124,6 +198,17 @@ export default function ResumeBuilderNav() {
 
         {/* Right: Actions (Sample, Clear, View, Download) */}
         <div className="flex items-center gap-2">
+          {user && (
+            <Link
+              to="/admin/resume"
+              className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-xs font-medium text-zinc-700 shadow-2xs hover:bg-zinc-100 hover:text-zinc-900"
+              title="Return to Admin Resume Builder"
+            >
+              <Settings size={13} />
+              <span className="hidden xl:inline">Admin</span>
+            </Link>
+          )}
+
           {/* Sample Data Button */}
           <button
             onClick={loadSampleData}
@@ -166,6 +251,14 @@ export default function ResumeBuilderNav() {
           </button>
         </div>
       </div>
+
+      {/* Approval Notification Banner */}
+      {approvalNotice && (
+        <div className="bg-emerald-600 text-white text-xs font-semibold py-1.5 px-4 text-center shadow-inner flex items-center justify-center gap-1.5 animate-fadeIn">
+          <CheckCircle2 size={14} />
+          <span>{approvalNotice}</span>
+        </div>
+      )}
 
       {/* Confirmation Dialog for Clear Form */}
       {showClearConfirm && (

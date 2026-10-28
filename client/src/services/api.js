@@ -391,3 +391,39 @@ export const overviewApi = {
     return res.data;
   },
 };
+
+// -------------------------------------------------------------
+// Resume Templates & Approved Portfolio Resume API
+// -------------------------------------------------------------
+export const resumeApi = {
+  getApproved: async () => {
+    const res = await request("/resumes/approved");
+    return res.data;
+  },
+  getAll: async () => {
+    const res = await request("/resumes");
+    return res.data;
+  },
+  getById: async (templateId) => {
+    const res = await request(`/resumes/${templateId}`);
+    return res.data;
+  },
+  approve: async (templateId, resumeData) => {
+    const res = await request("/resumes/approve", {
+      method: "POST",
+      body: JSON.stringify({ templateId, resumeData }),
+    });
+    return res;
+  },
+  update: async (templateId, updates) => {
+    const res = await request(`/resumes/${templateId}`, {
+      method: "PUT",
+      body: JSON.stringify(updates),
+    });
+    return res;
+  },
+  getDownloadUrl: (templateId) => {
+    return `${API_BASE}/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`;
+  },
+};
+

@@ -244,6 +244,7 @@ export default function PortfolioHero() {
             </a>
             <button
               type="button"
+              id="hero-resume-btn"
               className={`${outlineButton} cursor-pointer`}
               onClick={() => openResumeModal("modern")}
             >

@@ -201,6 +201,28 @@ const otpSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// 12. Resume Template / Approved Resume Schema
+const resumeSchema = new mongoose.Schema(
+  {
+    id: { type: String, required: true, unique: true, index: true },
+    templateId: { type: String, required: true, index: true },
+    title: { type: String, default: "" },
+    tagline: { type: String, default: "" },
+    badge: { type: String, default: "" },
+    badgeColor: { type: String, default: "" },
+    description: { type: String, default: "" },
+    accent: { type: String, default: "#2563eb" },
+    status: { type: String, enum: ["draft", "approved"], default: "draft", index: true },
+    isApproved: { type: Boolean, default: false, index: true },
+    approvedAt: { type: Date, default: null },
+    resumeData: { type: Object, default: {} },
+    pdfUrl: { type: String, default: "" },
+    version: { type: Number, default: 1 },
+    updatedBy: { type: String, default: "Admin" },
+  },
+  { timestamps: true, strict: false }
+);
+
 export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 export const DeveloperModel = mongoose.models.Developer || mongoose.model("Developer", developerSchema);
 export const AboutModel = mongoose.models.About || mongoose.model("About", aboutSchema);
@@ -212,3 +234,5 @@ export const FormModel = mongoose.models.Form || mongoose.model("Form", formSche
 export const SubmissionModel = mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
 export const MessageModel = mongoose.models.Message || mongoose.model("Message", messageSchema);
 export const OtpModel = mongoose.models.Otp || mongoose.model("Otp", otpSchema);
+export const ResumeModel = mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
+
