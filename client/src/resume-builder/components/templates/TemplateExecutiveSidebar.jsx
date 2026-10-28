@@ -219,12 +219,12 @@ export default function TemplateExecutiveSidebar({ data }) {
         {/* Professional Experience */}
         {workExperience && workExperience.length > 0 && (
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               Professional Experience
             </h3>
             <div className="space-y-4">
               {workExperience.map((exp) => (
-                <div key={exp.id}>
+                <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <div className="flex justify-between items-baseline">
                     <h4 className="font-bold text-[13px] text-slate-900">
                       {exp.title}
@@ -250,12 +250,12 @@ export default function TemplateExecutiveSidebar({ data }) {
         {/* Featured Projects */}
         {projects && projects.length > 0 && (
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               Technical Project Deliverables
             </h3>
             <div className="space-y-3.5">
               {projects.map((proj) => (
-                <div key={proj.id}>
+                <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <div className="flex justify-between items-baseline">
                     <h4 className="font-bold text-[13px] text-slate-900">
                       {proj.name}
@@ -291,13 +291,13 @@ export default function TemplateExecutiveSidebar({ data }) {
 
         {/* Achievements */}
         {achievements && achievements.length > 0 && (
-          <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-2">
+          <section className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               Recognitions & Milestones
             </h3>
             <div className="space-y-1.5 text-[11.5px]">
               {achievements.map((ach) => (
-                <div key={ach.id} className="flex justify-between items-baseline">
+                <div key={ach.id} className="flex justify-between items-baseline break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <div>
                     <strong className="text-slate-900">{ach.title}</strong>
                     <span className="text-slate-600 block text-[11px]">

@@ -405,7 +405,7 @@ export default function AdminContact() {
                     {msg.message}
                   </p>
                   <span className="mt-2 block text-[10px] text-gray-400 font-mono">
-                    {new Date(msg.createdAt).toLocaleString()}
+                    {new Date(msg.receivedAt || msg.createdAt || Date.now()).toLocaleString()}
                   </span>
                 </div>
               ))}

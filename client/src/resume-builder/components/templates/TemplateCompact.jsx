@@ -193,12 +193,12 @@ export default function TemplateCompact({ data }) {
           {/* Experience */}
           {workExperience?.length > 0 && (
             <section>
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2">
+              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
                 Work Experience
               </h2>
               <div className="space-y-2.5">
                 {workExperience.map((exp, i) => (
-                  <div key={exp.id || i}>
+                  <div key={exp.id || i} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                     <div className="flex justify-between items-baseline">
                       <span className="font-bold text-zinc-900 text-[11.5px]">{exp.title}</span>
                       <span className="text-zinc-500 text-[10px] font-medium">
@@ -222,12 +222,12 @@ export default function TemplateCompact({ data }) {
           {/* Key Projects */}
           {projects?.length > 0 && (
             <section>
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2">
+              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
                 Key Engineering Projects
               </h2>
               <div className="space-y-2.5">
                 {projects.map((proj, i) => (
-                  <div key={proj.id || i} className="bg-zinc-50/70 p-2 rounded border border-zinc-200/80">
+                  <div key={proj.id || i} className="bg-zinc-50/70 p-2 rounded border border-zinc-200/80 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                     <div className="flex justify-between items-baseline">
                       <div className="flex items-center gap-1.5">
                         <span className="font-bold text-zinc-900 text-[11px]">{proj.name}</span>

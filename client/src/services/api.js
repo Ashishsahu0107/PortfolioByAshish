@@ -29,8 +29,9 @@ async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
   const token = getStoredToken();
 
+  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
     ...options.headers,
   };
@@ -337,6 +338,12 @@ export const formsApi = {
     });
     return res;
   },
+  duplicate: async (id) => {
+    const res = await request(`/forms/${id}/duplicate`, {
+      method: "POST",
+    });
+    return res;
+  },
   update: async (id, payload) => {
     const res = await request(`/forms/${id}`, {
       method: "PUT",
@@ -351,9 +358,10 @@ export const formsApi = {
     return res;
   },
   submit: async (idOrSlug, formData) => {
+    const isFormData = typeof FormData !== "undefined" && formData instanceof FormData;
     const res = await request(`/forms/${idOrSlug}/submit`, {
       method: "POST",
-      body: JSON.stringify(formData),
+      body: isFormData ? formData : JSON.stringify(formData),
     });
     return res;
   },
@@ -453,6 +461,12 @@ export const resumeApi = {
       body: JSON.stringify(updates),
     });
     return res;
+  },
+  validateDownload: async (templateId) => {
+    const res = await request(
+      `/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`
+    );
+    return res.data;
   },
   getDownloadUrl: (templateId) => {
     return `${API_BASE}/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`;

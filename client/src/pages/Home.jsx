@@ -43,6 +43,15 @@ function DynamicCustomSection({ section }) {
             {content.body}
           </div>
         )}
+        {content.formSlug && (
+          <div className="mt-8 max-w-2xl">
+            <iframe
+              src={`/form/${content.formSlug}?embed=true`}
+              title={section.name}
+              className="w-full min-h-[520px] rounded-xl border border-border bg-surface"
+            />
+          </div>
+        )}
       </div>
     </section>
   );

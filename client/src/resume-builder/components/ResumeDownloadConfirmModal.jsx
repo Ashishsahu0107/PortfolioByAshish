@@ -75,7 +75,7 @@ export default function ResumeDownloadConfirmModal({
     try {
       // 1. Double-check with backend download authorization
       try {
-        await resumeApi.getApproved();
+        await resumeApi.validateDownload(approvedResume.templateId);
       } catch (authErr) {
         throw new Error(
           authErr.message || "Failed to verify approved resume on server."

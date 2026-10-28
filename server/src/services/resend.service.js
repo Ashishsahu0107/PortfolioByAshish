@@ -252,3 +252,201 @@ export async function sendOtpEmailViaResend({ to, name, otp, expiryMinutes = 10 
     messageId: data?.id,
   };
 }
+
+/**
+ * Sends a notification email to the portfolio owner when a new enquiry is submitted
+ *
+ * @param {Object} options
+ * @param {string} [options.to] - Recipient owner email
+ * @param {string} options.visitorName - Visitor name
+ * @param {string} options.visitorEmail - Visitor email
+ * @param {string} options.subject - Subject line
+ * @param {string} options.message - Inquiry message content
+ * @returns {Promise<{ success: boolean, messageId?: string, error?: any }>}
+ */
+export async function sendContactNotificationEmail({
+  to,
+  visitorName,
+  visitorEmail,
+  subject,
+  message,
+}) {
+  const apiKey = config.resend.apiKey?.trim();
+  if (!apiKey) {
+    console.warn("[Resend] Notification skipped: RESEND_API_KEY is not configured.");
+    return { success: false, reason: "Missing API Key" };
+  }
+
+  try {
+    const resend = getResendClient();
+    let fromEmail = config.resend.fromEmail || "Portfolio Inquiries <onboarding@resend.dev>";
+    if (/@(gmail|yahoo|hotmail|outlook|icloud)\.com/i.test(fromEmail)) {
+      fromEmail = "Portfolio Inquiries <onboarding@resend.dev>";
+    }
+
+    const recipient = (to || "ashishsahu01072005@gmail.com").trim().toLowerCase();
+    const safeName = (visitorName || "Portfolio Visitor").trim();
+    const safeEmail = (visitorEmail || "").trim();
+    const safeSubject = (subject || "New Portfolio Enquiry").trim();
+    const safeMessage = (message || "").trim();
+    const formattedDate = new Date().toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+      dateStyle: "full",
+      timeStyle: "medium",
+    });
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Portfolio Enquiry</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #09090b;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      color: #f4f4f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 32px auto;
+      background-color: #121217;
+      border: 1px solid #27272a;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    }
+    .header {
+      background: linear-gradient(135deg, #18181b 0%, #09090b 100%);
+      padding: 30px;
+      border-bottom: 1px solid #27272a;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background-color: rgba(34, 197, 94, 0.12);
+      color: #4ade80;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px;
+    }
+    .content {
+      padding: 30px;
+    }
+    .field-group {
+      margin-bottom: 20px;
+    }
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #71717a;
+      margin-bottom: 6px;
+    }
+    .value {
+      font-size: 15px;
+      color: #f4f4f5;
+      font-weight: 500;
+    }
+    .message-box {
+      background-color: #09090b;
+      border: 1px solid #3f3f46;
+      border-left: 3px solid #00f0ff;
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #e4e4e7;
+      white-space: pre-wrap;
+      margin: 20px 0;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 24px;
+      border-radius: 8px;
+      background-color: #00f0ff;
+      color: #09090b;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+    .footer {
+      padding: 20px 30px;
+      background-color: #0a0a0c;
+      border-top: 1px solid #27272a;
+      text-align: center;
+      font-size: 11px;
+      color: #71717a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="badge">New Portfolio Message</span>
+      <h1 class="title">${safeSubject}</h1>
+      <p style="margin:0;font-size:12px;color:#a1a1aa;">Received on ${formattedDate}</p>
+    </div>
+    <div class="content">
+      <div class="field-group">
+        <div class="label">From</div>
+        <div class="value"><strong>${safeName}</strong> &bull; <a href="mailto:${safeEmail}" style="color:#00f0ff;text-decoration:none;">${safeEmail}</a></div>
+      </div>
+      <div class="field-group">
+        <div class="label">Subject</div>
+        <div class="value">${safeSubject}</div>
+      </div>
+      <div class="field-group">
+        <div class="label">Message</div>
+        <div class="message-box">${safeMessage}</div>
+      </div>
+      <div style="margin-top: 24px;">
+        <a href="mailto:${safeEmail}?subject=Re:%20${encodeURIComponent(safeSubject)}" class="btn">Reply to ${safeName}</a>
+      </div>
+    </div>
+    <div class="footer">
+      Sent from Portfolio Contact Form &bull; Ashish Sahu
+    </div>
+  </div>
+</body>
+</html>
+    `.trim();
+
+    const text = `New Portfolio Enquiry from ${safeName} (${safeEmail})\n\nSubject: ${safeSubject}\nReceived: ${formattedDate}\n\nMessage:\n${safeMessage}\n\nReply directly to: ${safeEmail}`;
+
+    const { data, error } = await resend.emails.send({
+      from: fromEmail,
+      to: [recipient],
+      reply_to: safeEmail,
+      subject: `[Portfolio Enquiry] ${safeName}: ${safeSubject}`,
+      html,
+      text,
+    });
+
+    if (error) {
+      console.warn("[Resend Notification Warning]:", error.message || error);
+      return { success: false, error };
+    }
+
+    return { success: true, messageId: data?.id };
+  } catch (err) {
+    console.warn("[Resend Notification Error]:", err.message);
+    return { success: false, error: err };
+  }
+}
+

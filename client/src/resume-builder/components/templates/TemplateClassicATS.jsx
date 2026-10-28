@@ -102,12 +102,12 @@ export default function TemplateClassicATS({ data }) {
       {/* Work Experience */}
       {workExperience && workExperience.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-2 font-sans">
+          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-2 font-sans" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Professional Experience
           </h2>
           <div className="space-y-3 font-sans">
             {workExperience.map((exp) => (
-              <div key={exp.id}>
+              <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div className="flex justify-between items-baseline text-[12.5px]">
                   <strong>{exp.company} {exp.location && `— ${exp.location}`}</strong>
                   <span className="text-[11px] text-neutral-600">
@@ -131,12 +131,12 @@ export default function TemplateClassicATS({ data }) {
       {/* Projects */}
       {projects && projects.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-2 font-sans">
+          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-2 font-sans" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Technical Projects
           </h2>
           <div className="space-y-2.5 font-sans">
             {projects.map((proj) => (
-              <div key={proj.id}>
+              <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div className="flex justify-between items-baseline text-[12.5px]">
                   <div>
                     <strong>{proj.name}</strong>
@@ -173,12 +173,12 @@ export default function TemplateClassicATS({ data }) {
       {/* Education */}
       {education && education.length > 0 && (
         <section className="mb-4 font-sans">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-1.5 font-sans">
+          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-1.5 font-sans" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Education
           </h2>
           <div className="space-y-1.5">
             {education.map((edu) => (
-              <div key={edu.id} className="flex justify-between items-baseline">
+              <div key={edu.id} className="flex justify-between items-baseline break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div>
                   <strong>{edu.institution}</strong> {edu.location && `— ${edu.location}`}
                   <div className="text-[11.5px] text-neutral-800 font-serif italic">
@@ -199,8 +199,8 @@ export default function TemplateClassicATS({ data }) {
 
       {/* Certifications & Achievements */}
       {(certifications.length > 0 || achievements.length > 0) && (
-        <section className="font-sans text-[11.5px]">
-          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-1.5 font-sans">
+        <section className="font-sans text-[11.5px] break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+          <h2 className="text-[12px] font-bold uppercase tracking-wider border-b border-neutral-400 pb-0.5 mb-1.5 font-sans" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Certifications & Accomplishments
           </h2>
           <div className="space-y-1">

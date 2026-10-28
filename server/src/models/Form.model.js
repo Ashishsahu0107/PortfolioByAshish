@@ -16,18 +16,26 @@ export const FormModel = {
   },
 
   async create(data) {
-    const cleanSlug = (data.slug || data.name)
+    let cleanSlug = (data.slug || data.name || "form")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
 
-    const id = data.id || `form_${Date.now().toString(36)}`;
+    if (!cleanSlug) cleanSlug = `form-${Date.now().toString(36)}`;
+
+    // Ensure slug uniqueness
+    const existing = await Form.findOne({ slug: cleanSlug }).lean();
+    if (existing) {
+      cleanSlug = `${cleanSlug}-${Math.random().toString(36).substring(2, 6)}`;
+    }
+
+    const id = data.id || `form_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Form.create({
       id,
-      name: data.name.trim(),
+      name: (data.name || "Untitled Form").trim(),
       slug: cleanSlug,
       description: data.description || "",
-      enabled: data.enabled !== undefined ? data.enabled : true,
+      enabled: data.enabled !== undefined ? Boolean(data.enabled) : true,
       submitButtonText: data.submitButtonText || "Submit",
       successMessage:
         data.successMessage ||
@@ -37,10 +45,41 @@ export const FormModel = {
     return cleanDoc(created.toObject());
   },
 
+  async duplicate(id) {
+    const original = await this.findByIdOrSlug(id);
+    if (!original) return null;
+
+    const baseSlug = `${original.slug || "form"}-copy`;
+    const newName = `${original.name} (Copy)`;
+
+    const clonedFields = (original.fields || []).map((f) => ({
+      ...f,
+      id: "f_" + Math.random().toString(36).substring(2, 9),
+    }));
+
+    return this.create({
+      name: newName,
+      slug: `${baseSlug}-${Math.random().toString(36).substring(2, 6)}`,
+      description: original.description || "",
+      enabled: false, // Default duplicated forms to draft
+      submitButtonText: original.submitButtonText || "Submit",
+      successMessage: original.successMessage || "Your submission has been received successfully.",
+      fields: clonedFields,
+    });
+  },
+
   async update(id, updates) {
+    const payload = { ...updates };
+    if (payload.slug) {
+      payload.slug = payload.slug
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
     const updated = await Form.findOneAndUpdate(
       { id },
-      { ...updates, updatedAt: new Date() },
+      { ...payload, updatedAt: new Date() },
       { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);
@@ -51,3 +90,4 @@ export const FormModel = {
     return !!doc;
   },
 };
+

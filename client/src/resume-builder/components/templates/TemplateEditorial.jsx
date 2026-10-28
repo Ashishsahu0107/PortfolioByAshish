@@ -137,12 +137,12 @@ export default function TemplateEditorial({ data }) {
       {/* Experience */}
       {workExperience && workExperience.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3">
+          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Experience History
           </h2>
           <div className="space-y-3.5">
             {workExperience.map((exp) => (
-              <div key={exp.id}>
+              <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-serif font-bold text-[13.5px] text-[#171717]">
                     {exp.title}
@@ -168,12 +168,12 @@ export default function TemplateEditorial({ data }) {
       {/* Projects */}
       {projects && projects.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3">
+          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Selected Software Projects
           </h2>
           <div className="space-y-3">
             {projects.map((proj) => (
-              <div key={proj.id}>
+              <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div className="flex justify-between items-baseline">
                   <div className="flex items-center gap-2">
                     <h3 className="font-serif font-bold text-[13px] text-[#171717]">
@@ -212,12 +212,12 @@ export default function TemplateEditorial({ data }) {
       {/* Education */}
       {education && education.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2">
+          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             Academic Background
           </h2>
           <div className="space-y-1.5">
             {education.map((edu) => (
-              <div key={edu.id} className="flex justify-between items-baseline">
+              <div key={edu.id} className="flex justify-between items-baseline break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div>
                   <h3 className="font-serif font-bold text-[12.5px] text-[#171717]">
                     {edu.degree}
@@ -240,15 +240,15 @@ export default function TemplateEditorial({ data }) {
       )}
 
       {/* Certifications & Achievements in 2 columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2">
+            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               Certifications
             </h2>
             <ul className="space-y-1 text-[11px] text-[#4A4D46]">
               {certifications.map((c) => (
-                <li key={c.id}>
+                <li key={c.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <strong className="text-[#171717]">{c.name}</strong> — {c.issuer} ({c.date})
                 </li>
               ))}
@@ -258,12 +258,12 @@ export default function TemplateEditorial({ data }) {
 
         {achievements && achievements.length > 0 && (
           <section>
-            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2">
+            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               Recognitions
             </h2>
             <ul className="space-y-1 text-[11px] text-[#4A4D46]">
               {achievements.map((a) => (
-                <li key={a.id}>
+                <li key={a.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <strong className="text-[#171717]">{a.title}</strong> — {a.issuer} ({a.year})
                 </li>
               ))}

@@ -1,5 +1,6 @@
-import { useRef, useState, useEffect } from "react";
-import { ArrowUpRight, Download, Mail, MapPin, Send } from "lucide-react";
+import { useRef, useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, CheckCircle2, Download, Loader2, Mail, MapPin, Send, AlertCircle, Sparkles } from "lucide-react";
 import emailjs from "@emailjs/browser";
 import { GithubIcon, LinkedinIcon } from "./icons";
 import { useGsapReveal } from "../hooks/useGsapReveal";
@@ -12,37 +13,56 @@ import {
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
-import { useCallback } from "react";
-import { contactApi } from "../services/api";
+import { contactApi, formsApi } from "../services/api";
 import { showToast, toast } from "../utils/toast";
+
+const INITIAL_FORM = {
+  name: "",
+  email: "",
+  subject: "",
+  message: "",
+};
 
 export default function PortfolioContact() {
   const sectionRef = useRef(null);
   const [contactData, setContactData] = useState({
-    email: "",
-    github: "",
-    linkedin: "",
-    location: "",
-    locationShort: "",
-    statusPhrase: "",
+    email: "ashishsahu01072005@gmail.com",
+    github: "https://github.com/Ashishsahu0107",
+    linkedin: "https://linkedin.com/in/ashishsahu0107",
+    location: "Bhilai, Chhattisgarh, India",
+    locationShort: "India",
+    statusPhrase: "Available for full-time & freelance projects",
     availableForWork: true,
     emailjsServiceId: "",
     emailjsTemplateId: "",
     emailjsPublicKey: "",
   });
-  const [state, setState] = useState("idle");
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const [customForms, setCustomForms] = useState([]);
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [generalError, setGeneralError] = useState("");
+
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();
 
   const loadContact = useCallback(async () => {
     try {
-      const data = await contactApi.getInfo();
-      if (data) {
-        setContactData((prev) => ({ ...prev, ...data }));
+      const [contactInfo, formsList] = await Promise.all([
+        contactApi.getInfo().catch(() => null),
+        formsApi.getAll().catch(() => []),
+      ]);
+      if (contactInfo) {
+        setContactData((prev) => ({ ...prev, ...contactInfo }));
+      }
+      if (Array.isArray(formsList)) {
+        // Show published forms
+        setCustomForms(formsList.filter((f) => f.enabled));
       }
     } catch (err) {
-      console.warn("[PortfolioContact] Could not load contact info:", err.message);
+      console.warn("[PortfolioContact] Could not load contact or forms:", err.message);
     }
   }, []);
 
@@ -50,73 +70,131 @@ export default function PortfolioContact() {
     loadContact();
   }, [loadContact]);
 
-  // Real-time synchronization whenever contact settings are updated
+  // Real-time synchronization whenever contact or form settings are updated
   usePortfolioSync(loadContact, "contact");
+  usePortfolioSync(loadContact, "forms");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear field-specific error as user types
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: "" }));
+    }
+    if (generalError) {
+      setGeneralError("");
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    const cleanName = formData.name.trim();
+    const cleanEmail = formData.email.trim();
+    const cleanSubject = formData.subject.trim();
+    const cleanMessage = formData.message.trim();
+
+    if (!cleanName) {
+      errors.name = "Please enter your name.";
+    } else if (cleanName.length < 2) {
+      errors.name = "Name must be at least 2 characters.";
+    } else if (cleanName.length > 100) {
+      errors.name = "Name cannot exceed 100 characters.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!cleanEmail) {
+      errors.email = "Please enter your email address.";
+    } else if (!emailRegex.test(cleanEmail)) {
+      errors.email = "Please enter a valid email address (e.g. name@domain.com).";
+    } else if (cleanEmail.length > 120) {
+      errors.email = "Email cannot exceed 120 characters.";
+    }
+
+    if (!cleanSubject) {
+      errors.subject = "Please enter a subject for your message.";
+    } else if (cleanSubject.length < 3) {
+      errors.subject = "Subject must be at least 3 characters.";
+    } else if (cleanSubject.length > 200) {
+      errors.subject = "Subject cannot exceed 200 characters.";
+    }
+
+    if (!cleanMessage) {
+      errors.message = "Please write a brief message.";
+    } else if (cleanMessage.length < 10) {
+      errors.message = "Message must be at least 10 characters.";
+    } else if (cleanMessage.length > 5000) {
+      errors.message = "Message cannot exceed 5000 characters.";
+    }
+
+    return errors;
+  };
 
   const submit = async (event) => {
     event.preventDefault();
-    if (state === "sending") return;
+    if (submitting) return;
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const name = formData.get("name")?.toString().trim();
-    const email = formData.get("email")?.toString().trim();
-    const subject = formData.get("subject")?.toString().trim();
-    const message = formData.get("message")?.toString().trim();
-
-    if (!name || name.length < 2) {
-      const err = "Please enter your name (at least 2 characters).";
-      setErrorMessage(err);
-      setState("error");
-      showToast.error(err);
-      return;
-    }
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      const err = "Please enter a valid email address.";
-      setErrorMessage(err);
-      setState("error");
-      showToast.error(err);
-      return;
-    }
-    if (!subject || subject.length < 4) {
-      const err = "Subject must be at least 4 characters.";
-      setErrorMessage(err);
-      setState("error");
-      showToast.error(err);
-      return;
-    }
-    if (!message || message.length < 10) {
-      const err = "Message must be at least 10 characters.";
-      setErrorMessage(err);
-      setState("error");
-      showToast.error(err);
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstError = Object.values(errors)[0];
+      showToast.error(firstError);
       return;
     }
 
-    setState("sending");
-    setErrorMessage("");
-    toast.loading("Sending your message...", { id: "contact-submit" });
+    setSubmitting(true);
+    setGeneralError("");
+    const toastId = toast.loading("Sending your message...", { id: "contact-submit" });
+
+    const payload = {
+      name: formData.name.trim(),
+      email: formData.email.trim().toLowerCase(),
+      subject: formData.subject.trim(),
+      message: formData.message.trim(),
+    };
 
     try {
       // 1. Save directly into backend persistent database
-      await contactApi.sendMessage({ name, email, subject, message });
+      const res = await contactApi.sendMessage(payload);
 
-      // 2. Dispatch via EmailJS if configured
+      // 2. Dispatch via EmailJS if credentials are configured
       const { emailjsServiceId, emailjsTemplateId, emailjsPublicKey } = contactData;
       if (emailjsServiceId && emailjsTemplateId && emailjsPublicKey) {
-        emailjs.sendForm(emailjsServiceId, emailjsTemplateId, form, emailjsPublicKey).catch(() => {
-          // Soft failure for EmailJS; the backend message is already saved!
-        });
+        emailjs
+          .send(
+            emailjsServiceId,
+            emailjsTemplateId,
+            {
+              from_name: payload.name,
+              from_email: payload.email,
+              reply_to: payload.email,
+              subject: payload.subject,
+              message: payload.message,
+            },
+            emailjsPublicKey
+          )
+          .catch((emailErr) => {
+            console.warn("[PortfolioContact] EmailJS dispatch non-critical error:", emailErr);
+          });
       }
 
-      form.reset();
-      setState("sent");
-      toast.success("Message sent successfully! Thank you for reaching out.", { id: "contact-submit" });
+      // Reset the form only after successful submission
+      setFormData(INITIAL_FORM);
+      setFieldErrors({});
+      setSubmitSuccess(true);
+
+      toast.success(
+        res?.message || "Message sent successfully! Thank you for reaching out.",
+        { id: toastId }
+      );
     } catch (err) {
-      setState("error");
-      const msg = err.message || "Could not send message. Please reach out directly via email.";
-      setErrorMessage(msg);
-      toast.error(msg, { id: "contact-submit" });
+      const msg =
+        err?.data?.message ||
+        err?.message ||
+        "Could not send your message. Please reach out directly via email.";
+      setGeneralError(msg);
+      toast.error(msg, { id: toastId });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -159,7 +237,7 @@ export default function PortfolioContact() {
 
             {/* Location & Status Info */}
             <p className="mt-5 flex items-center gap-2 font-mono text-[11px] text-secondary">
-              <MapPin className="text-action" size={15} />
+              <MapPin className="text-action shrink-0" size={15} />
               <span>{contactData.location} · Available worldwide (Remote & On-site)</span>
             </p>
 
@@ -192,118 +270,219 @@ export default function PortfolioContact() {
                 <LinkedinIcon size={16} />
               </a>
             </div>
+
+            {/* Custom Forms & Questionnaires Integration */}
+            {customForms.length > 0 && (
+              <div className="mt-8 pt-6 border-t border-border/60">
+                <p className="font-mono text-[10px] uppercase tracking-wider text-secondary mb-2.5">
+                  Available Questionnaires & Custom Forms
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {customForms.map((cf) => (
+                    <Link
+                      key={cf.id}
+                      to={`/form/${cf.slug}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-border bg-surface text-xs font-mono text-primary hover:border-action hover:text-action transition-colors no-underline"
+                    >
+                      <Sparkles size={12} className="text-action" />
+                      <span>{cf.name}</span>
+                      <ArrowUpRight size={13} className="text-secondary" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column: Reactive Contact Form */}
-          <div className="reveal rounded-lg border border-border bg-surface p-7 sm:p-8 shadow-xs">
-            {state === "sent" ? (
-              <div className="py-8 text-center">
-                <span className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-emerald-500/10 text-emerald-500">
-                  <Send size={22} />
+          <div className="reveal rounded-lg border border-border bg-surface p-6 sm:p-8 shadow-xs">
+            {submitSuccess ? (
+              <div className="py-8 text-center animate-in fade-in zoom-in-95 duration-200">
+                <span className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <CheckCircle2 size={28} />
                 </span>
                 <h3 className="font-serif text-2xl font-bold text-primary">
                   Message Sent Successfully
                 </h3>
-                <p className="mt-2 text-sm text-secondary">
-                  Thank you for reaching out. I have received your message and will respond shortly.
+                <p className="mt-2 text-sm text-secondary max-w-sm mx-auto leading-relaxed">
+                  Thank you for reaching out! Your message has been saved to the database and delivered. I will respond to your email shortly.
                 </p>
                 <button
                   type="button"
-                  onClick={() => setState("idle")}
-                  className={`${primaryButton} mt-6`}
+                  onClick={() => {
+                    setSubmitSuccess(false);
+                    setFormData(INITIAL_FORM);
+                    setFieldErrors({});
+                    setGeneralError("");
+                  }}
+                  className={`${primaryButton} mt-6 inline-flex items-center gap-2`}
                 >
-                  Send Another Message
+                  <Send size={14} />
+                  <span>Send Another Message</span>
                 </button>
               </div>
             ) : (
-              <form className="contact-form space-y-5" onSubmit={submit}>
-                <div>
-                  <label
-                    htmlFor="contact-name"
-                    className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
+              <form className="contact-form space-y-5" onSubmit={submit} noValidate>
+                {/* General Error Banner */}
+                {generalError && (
+                  <div
+                    className="p-3 rounded-sm border border-red-500/30 bg-red-500/10 text-red-400 text-xs flex items-start gap-2.5"
+                    role="alert"
                   >
-                    Your Name *
-                  </label>
+                    <AlertCircle size={15} className="shrink-0 mt-0.5" />
+                    <span>{generalError}</span>
+                  </div>
+                )}
+
+                {/* Name Field */}
+                <div>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="contact-name"
+                      className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
+                    >
+                      Your Name <span className="text-action">*</span>
+                    </label>
+                    {fieldErrors.name && (
+                      <span className="font-mono text-[10px] text-red-400 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {fieldErrors.name}
+                      </span>
+                    )}
+                  </div>
                   <input
                     id="contact-name"
                     name="name"
                     type="text"
                     autoComplete="name"
                     placeholder="Jane Doe"
-                    required
-                    className="mt-1.5 block w-full rounded-sm border border-border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 focus:border-action"
+                    disabled={submitting}
+                    value={formData.name}
+                    onChange={handleChange}
+                    className={`mt-1.5 block w-full rounded-sm border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 disabled:opacity-60 disabled:cursor-not-allowed ${
+                      fieldErrors.name
+                        ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                        : "border-border focus:border-action focus:ring-1 focus:ring-action/20"
+                    }`}
                   />
                 </div>
 
+                {/* Email Field */}
                 <div>
-                  <label
-                    htmlFor="contact-email"
-                    className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
-                  >
-                    Email Address *
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="contact-email"
+                      className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
+                    >
+                      Email Address <span className="text-action">*</span>
+                    </label>
+                    {fieldErrors.email && (
+                      <span className="font-mono text-[10px] text-red-400 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {fieldErrors.email}
+                      </span>
+                    )}
+                  </div>
                   <input
                     id="contact-email"
                     name="email"
                     type="email"
                     autoComplete="email"
                     placeholder="jane@company.com"
-                    required
-                    className="mt-1.5 block w-full rounded-sm border border-border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 focus:border-action"
+                    disabled={submitting}
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`mt-1.5 block w-full rounded-sm border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 disabled:opacity-60 disabled:cursor-not-allowed ${
+                      fieldErrors.email
+                        ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                        : "border-border focus:border-action focus:ring-1 focus:ring-action/20"
+                    }`}
                   />
                 </div>
 
+                {/* Subject Field */}
                 <div>
-                  <label
-                    htmlFor="contact-subject"
-                    className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
-                  >
-                    Subject *
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="contact-subject"
+                      className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
+                    >
+                      Subject <span className="text-action">*</span>
+                    </label>
+                    {fieldErrors.subject && (
+                      <span className="font-mono text-[10px] text-red-400 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {fieldErrors.subject}
+                      </span>
+                    )}
+                  </div>
                   <input
                     id="contact-subject"
                     name="subject"
                     type="text"
-                    placeholder="Project Inquiry / Opportunity"
-                    required
-                    className="mt-1.5 block w-full rounded-sm border border-border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 focus:border-action"
+                    placeholder="Project Inquiry / Job Opportunity"
+                    disabled={submitting}
+                    value={formData.subject}
+                    onChange={handleChange}
+                    className={`mt-1.5 block w-full rounded-sm border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 disabled:opacity-60 disabled:cursor-not-allowed ${
+                      fieldErrors.subject
+                        ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                        : "border-border focus:border-action focus:ring-1 focus:ring-action/20"
+                    }`}
                   />
                 </div>
 
+                {/* Message Field */}
                 <div>
-                  <label
-                    htmlFor="contact-message"
-                    className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
-                  >
-                    Message *
-                  </label>
+                  <div className="flex items-center justify-between">
+                    <label
+                      htmlFor="contact-message"
+                      className="block font-mono text-[10px] uppercase tracking-wider text-secondary"
+                    >
+                      Message <span className="text-action">*</span>
+                    </label>
+                    {fieldErrors.message && (
+                      <span className="font-mono text-[10px] text-red-400 flex items-center gap-1">
+                        <AlertCircle size={10} />
+                        {fieldErrors.message}
+                      </span>
+                    )}
+                  </div>
                   <textarea
                     id="contact-message"
                     name="message"
                     rows={4}
                     placeholder="Tell me a bit about your project, timeline, or inquiry..."
-                    required
-                    className="mt-1.5 block w-full resize-y rounded-sm border border-border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 focus:border-action"
+                    disabled={submitting}
+                    value={formData.message}
+                    onChange={handleChange}
+                    className={`mt-1.5 block w-full resize-y rounded-sm border bg-canvas px-3.5 py-2.5 text-[13px] text-primary outline-none transition-colors placeholder:text-secondary/50 disabled:opacity-60 disabled:cursor-not-allowed ${
+                      fieldErrors.message
+                        ? "border-red-500/70 focus:border-red-500 focus:ring-1 focus:ring-red-500/20"
+                        : "border-border focus:border-action focus:ring-1 focus:ring-action/20"
+                    }`}
                   />
                 </div>
 
+                {/* Submit Button */}
                 <button
-                  className={`${primaryButton} w-full mt-2`}
+                  className={`${primaryButton} w-full mt-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-75`}
                   type="submit"
-                  disabled={state === "sending"}
+                  disabled={submitting}
+                  id="contact-submit-btn"
                 >
-                  <span>{state === "sending" ? "Submitting Message..." : "Send Message"}</span>
-                  <Send size={15} />
+                  {submitting ? (
+                    <>
+                      <Loader2 size={15} className="animate-spin text-canvas" />
+                      <span>Sending Message...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Message</span>
+                      <Send size={15} />
+                    </>
+                  )}
                 </button>
-
-                {state === "error" && (
-                  <p
-                    className="mt-3 text-[11px] leading-relaxed text-red-400"
-                    role="alert"
-                  >
-                    {errorMessage || "Something went wrong. Please email me directly."}
-                  </p>
-                )}
               </form>
             )}
           </div>
@@ -312,3 +491,4 @@ export default function PortfolioContact() {
     </section>
   );
 }
+

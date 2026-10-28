@@ -14,6 +14,7 @@ import SecretLoginPage from "./pages/SecretLoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AuthPage from "./pages/AuthPage";
 import AdminDashboard from "./admin/AdminDashboard";
+import PublicFormPage from "./pages/PublicFormPage";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
 import { AuthProvider, ProtectedRoute } from "./auth/AuthContext";
@@ -77,6 +78,8 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/resume-builder" element={<ResumeBuilderPage />} />
         <Route path="/resume-builder/view" element={<ResumeViewPage />} />
+        <Route path="/form/:slug" element={<PublicFormPage />} />
+        <Route path="/forms/:slug" element={<PublicFormPage />} />
         <Route path="/login" element={<AuthPage initialMode="login" />} />
         <Route path="/secret-login" element={<AuthPage initialMode="login" />} />
         <Route path="/register" element={<AuthPage initialMode="register" />} />
@@ -99,6 +102,8 @@ function AppContent({ theme, toggleTheme }) {
   const location = useLocation();
   const isStandalone =
     location.pathname.startsWith("/resume-builder") ||
+    location.pathname.startsWith("/form/") ||
+    location.pathname.startsWith("/forms/") ||
     location.pathname.startsWith("/login") ||
     location.pathname.startsWith("/secret-login") ||
     location.pathname.startsWith("/register") ||

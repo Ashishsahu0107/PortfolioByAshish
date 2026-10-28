@@ -220,7 +220,7 @@ export default function TemplateDeveloper({ data }) {
           </h2>
           <div className="space-y-4">
             {workExperience.map((exp, i) => (
-              <div key={exp.id || i} className="border-l-2 border-emerald-500 pl-3.5">
+              <div key={exp.id || i} className="border-l-2 border-emerald-500 pl-3.5 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                   <h3 className="font-bold text-zinc-900 text-[13px] font-mono">
                     {exp.title}
@@ -247,14 +247,15 @@ export default function TemplateDeveloper({ data }) {
       {/* Featured Projects */}
       {projects && projects.length > 0 && (
         <section className="mb-5">
-          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-3">
+          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             <span className="text-emerald-600">//</span> Featured Engineering Projects
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {projects.map((proj, i) => (
               <div
                 key={proj.id || i}
-                className="bg-zinc-50/80 p-3 rounded-md border border-zinc-200 flex flex-col justify-between"
+                className="bg-zinc-50/80 p-3 rounded-md border border-zinc-200 flex flex-col justify-between break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
               >
                 <div>
                   <div className="flex items-start justify-between gap-1">
@@ -321,16 +322,16 @@ export default function TemplateDeveloper({ data }) {
       )}
 
       {/* Education & Certifications Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
         {/* Education */}
         {education && education.length > 0 && (
           <section>
-            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5">
+            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               <span className="text-emerald-600">//</span> Education
             </h2>
             <div className="space-y-2.5">
               {education.map((edu, i) => (
-                <div key={edu.id || i}>
+                <div key={edu.id || i} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <div className="flex justify-between items-baseline">
                     <h3 className="font-bold text-zinc-900 text-[12px]">
                       {edu.degree}
@@ -352,12 +353,12 @@ export default function TemplateDeveloper({ data }) {
         {/* Certifications */}
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5">
+            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
               <span className="text-emerald-600">//</span> Certifications
             </h2>
             <div className="space-y-2">
               {certifications.map((cert, i) => (
-                <div key={cert.id || i} className="text-[11.5px]">
+                <div key={cert.id || i} className="text-[11.5px] break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                   <div className="flex justify-between">
                     <span className="font-semibold text-zinc-800">{cert.name}</span>
                     <span className="font-mono text-[10.5px] text-zinc-500">{cert.date}</span>
@@ -372,13 +373,13 @@ export default function TemplateDeveloper({ data }) {
 
       {/* Honors & Key Achievements */}
       {achievements && achievements.length > 0 && (
-        <section className="mt-4 pt-3 border-t border-zinc-200/80">
-          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1 mb-2">
+        <section className="mt-4 pt-3 border-t border-zinc-200/80 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
             <span className="text-emerald-600">//</span> Achievements & Awards
           </h2>
           <div className="space-y-1.5">
             {achievements.map((ach, i) => (
-              <div key={ach.id || i} className="flex justify-between items-baseline text-[11.5px]">
+              <div key={ach.id || i} className="flex justify-between items-baseline text-[11.5px] break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
                 <span className="font-semibold text-zinc-900">{ach.title}</span>
                 {ach.description && <span className="text-zinc-500 text-[11px]">{ach.description}</span>}
               </div>

@@ -15,7 +15,7 @@ import { sampleResumeData } from "../sampleData";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { toast } from "../../utils/toast";
 
-function ResumeTemplateModalContent({ onClose, defaultTemplate }) {
+function ResumeTemplateModalContent({ onClose, defaultTemplate, onSelectTemplate }) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(defaultTemplate);
   const [previewMode, setPreviewMode] = useState(false);
   const [zoom, setZoom] = useState(90);
@@ -458,6 +458,20 @@ function ResumeTemplateModalContent({ onClose, defaultTemplate }) {
           </div>
 
           <div className="flex items-center gap-3">
+            {onSelectTemplate && (
+              <button
+                type="button"
+                onClick={() => {
+                  onSelectTemplate(selectedTemplateId);
+                  toast.success(`Applied ${activeTemplateObj.name} template.`);
+                  onClose();
+                }}
+                className="inline-flex items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-700 shadow-2xs hover:bg-zinc-50 hover:text-blue-600 cursor-pointer transition"
+              >
+                <Check size={14} className="text-emerald-600" />
+                <span>Use {activeTemplateObj.name} Template</span>
+              </button>
+            )}
 
             {/* Primary Download Button for selected template */}
             <button
@@ -489,13 +503,14 @@ function ResumeTemplateModalContent({ onClose, defaultTemplate }) {
   );
 }
 
-export default function ResumeTemplateModal({ isOpen, onClose, defaultTemplate = "modern" }) {
+export default function ResumeTemplateModal({ isOpen, onClose, defaultTemplate = "modern", onSelectTemplate }) {
   if (!isOpen) return null;
   return (
     <ResumeTemplateModalContent
       key={defaultTemplate}
       onClose={onClose}
       defaultTemplate={defaultTemplate}
+      onSelectTemplate={onSelectTemplate}
     />
   );
 }

@@ -19,6 +19,11 @@ import {
   Briefcase,
   User,
   GraduationCap,
+  Plus,
+  Trash2,
+  Award,
+  FolderGit2,
+  BookOpen,
 } from "lucide-react";
 import {
   AdminSection,
@@ -117,15 +122,223 @@ export default function AdminResumeBuilder() {
   const handleSaveResumeData = async () => {
     try {
       setIsSaving(true);
-      const targetTemplate = approvedResume?.templateId || selectedTemplateId;
-      await resumeApi.approve(targetTemplate, resumeData);
-      showToast("Resume data saved and synchronized successfully!", "success");
+      const targetTemplate = selectedTemplateId || approvedResume?.templateId || "modern";
+      await resumeApi.update(targetTemplate, { resumeData });
+      showToast(`Resume data for "${targetTemplate}" saved successfully!`, "success");
       await loadData();
     } catch (err) {
       showToast("Failed to save resume data: " + (err.message || "Unknown error"), "error");
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleSaveAndApprove = async () => {
+    try {
+      setIsSaving(true);
+      const targetTemplate = selectedTemplateId || approvedResume?.templateId || "modern";
+      const res = await resumeApi.approve(targetTemplate, resumeData);
+      showToast(
+        `Template "${res?.data?.title || targetTemplate}" saved and approved as the active portfolio resume!`,
+        "success"
+      );
+      await loadData();
+    } catch (err) {
+      showToast("Failed to approve template: " + (err.message || "Unknown error"), "error");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // CRUD Helpers for Admin Content Editor
+  const handleAddExperience = () => {
+    setResumeData((prev) => ({
+      ...prev,
+      workExperience: [
+        {
+          id: "exp-" + Date.now(),
+          title: "",
+          company: "",
+          location: "",
+          startDate: "",
+          endDate: "",
+          current: false,
+          description: "",
+        },
+        ...(prev.workExperience || []),
+      ],
+    }));
+    showToast("Added new work experience entry.", "success");
+  };
+
+  const handleUpdateExperience = (id, field, value) => {
+    setResumeData((prev) => ({
+      ...prev,
+      workExperience: (prev.workExperience || []).map((exp) =>
+        exp.id === id ? { ...exp, [field]: value } : exp
+      ),
+    }));
+  };
+
+  const handleDeleteExperience = (id) => {
+    setResumeData((prev) => ({
+      ...prev,
+      workExperience: (prev.workExperience || []).filter((exp) => exp.id !== id),
+    }));
+    showToast("Experience entry removed.", "info");
+  };
+
+  const handleAddProject = () => {
+    setResumeData((prev) => ({
+      ...prev,
+      projects: [
+        {
+          id: "proj-" + Date.now(),
+          name: "",
+          technologies: "",
+          description: "",
+          githubUrl: "",
+          liveUrl: "",
+        },
+        ...(prev.projects || []),
+      ],
+    }));
+    showToast("Added new project entry.", "success");
+  };
+
+  const handleUpdateProject = (id, field, value) => {
+    setResumeData((prev) => ({
+      ...prev,
+      projects: (prev.projects || []).map((p) =>
+        p.id === id ? { ...p, [field]: value } : p
+      ),
+    }));
+  };
+
+  const handleDeleteProject = (id) => {
+    setResumeData((prev) => ({
+      ...prev,
+      projects: (prev.projects || []).filter((p) => p.id !== id),
+    }));
+    showToast("Project entry removed.", "info");
+  };
+
+  const handleAddEducation = () => {
+    setResumeData((prev) => ({
+      ...prev,
+      education: [
+        {
+          id: "edu-" + Date.now(),
+          degree: "",
+          institution: "",
+          location: "",
+          graduationYear: "",
+          gradeGpa: "",
+          details: "",
+        },
+        ...(prev.education || []),
+      ],
+    }));
+    showToast("Added new education entry.", "success");
+  };
+
+  const handleUpdateEducation = (id, field, value) => {
+    setResumeData((prev) => ({
+      ...prev,
+      education: (prev.education || []).map((edu) =>
+        edu.id === id ? { ...edu, [field]: value } : edu
+      ),
+    }));
+  };
+
+  const handleDeleteEducation = (id) => {
+    setResumeData((prev) => ({
+      ...prev,
+      education: (prev.education || []).filter((edu) => edu.id !== id),
+    }));
+    showToast("Education entry removed.", "info");
+  };
+
+  const handleAddCertification = () => {
+    setResumeData((prev) => ({
+      ...prev,
+      certifications: [
+        {
+          id: "cert-" + Date.now(),
+          name: "",
+          issuer: "",
+          date: "",
+          credentialUrl: "",
+        },
+        ...(prev.certifications || []),
+      ],
+    }));
+    showToast("Added new certification.", "success");
+  };
+
+  const handleUpdateCertification = (id, field, value) => {
+    setResumeData((prev) => ({
+      ...prev,
+      certifications: (prev.certifications || []).map((c) =>
+        c.id === id ? { ...c, [field]: value } : c
+      ),
+    }));
+  };
+
+  const handleDeleteCertification = (id) => {
+    setResumeData((prev) => ({
+      ...prev,
+      certifications: (prev.certifications || []).filter((c) => c.id !== id),
+    }));
+    showToast("Certification removed.", "info");
+  };
+
+  const handleAddAchievement = () => {
+    setResumeData((prev) => ({
+      ...prev,
+      achievements: [
+        {
+          id: "ach-" + Date.now(),
+          title: "",
+          issuer: "",
+          year: "",
+          description: "",
+        },
+        ...(prev.achievements || []),
+      ],
+    }));
+    showToast("Added new achievement.", "success");
+  };
+
+  const handleUpdateAchievement = (id, field, value) => {
+    setResumeData((prev) => ({
+      ...prev,
+      achievements: (prev.achievements || []).map((a) =>
+        a.id === id ? { ...a, [field]: value } : a
+      ),
+    }));
+  };
+
+  const handleDeleteAchievement = (id) => {
+    setResumeData((prev) => ({
+      ...prev,
+      achievements: (prev.achievements || []).filter((a) => a.id !== id),
+    }));
+    showToast("Achievement removed.", "info");
+  };
+
+  const handleSkillChange = (category, value) => {
+    const list = value
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    setResumeData((prev) => ({
+      ...prev,
+      skills: {
+        ...(prev.skills || {}),
+        [category]: list,
+      },
+    }));
   };
 
   // Handle quick PDF test download
@@ -542,49 +755,63 @@ export default function AdminResumeBuilder() {
       {/* ── TAB 3: Edit Resume Content ── */}
       {activeTab === "editor" && (
         <div className="space-y-6">
-          <div className="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-zinc-900 border border-zinc-800 rounded-xl p-4">
             <div>
-              <h3 className="text-sm font-bold text-white">
-                Resume Data Fields
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Resume Content & Field Management</span>
+                <span className="text-[10px] font-mono uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full">
+                  Target: {activeTemplateObj.name}
+                </span>
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Customize candidate profile details. Saving persists data to the database and syncs with the approved resume.
+                Add, edit, or delete resume items. Save changes to MongoDB or immediately approve for portfolio downloads.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
-                onClick={() => setResumeData(sampleResumeData)}
+                onClick={() => {
+                  setResumeData(sampleResumeData);
+                  showToast("Loaded sample resume data.", "info");
+                }}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800 text-xs font-medium text-zinc-300 hover:bg-zinc-700 transition cursor-pointer"
               >
                 <RotateCcw size={13} />
-                <span>Reset to Sample Data</span>
+                <span>Reset Sample</span>
               </button>
               <button
                 type="button"
                 onClick={handleSaveResumeData}
                 disabled={isSaving}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-xs font-bold text-zinc-950 transition cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-200 transition cursor-pointer disabled:opacity-50"
               >
                 {isSaving ? (
-                  <>
-                    <Loader2 size={14} className="animate-spin" />
-                    <span>Saving...</span>
-                  </>
+                  <Loader2 size={13} className="animate-spin text-amber-400" />
                 ) : (
-                  <>
-                    <Save size={14} />
-                    <span>Save to Database</span>
-                  </>
+                  <Save size={13} className="text-amber-400" />
                 )}
+                <span>Save Draft</span>
+              </button>
+              <button
+                type="button"
+                onClick={handleSaveAndApprove}
+                disabled={isSaving}
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow-md shadow-emerald-950/40 transition cursor-pointer disabled:opacity-50"
+              >
+                {isSaving ? (
+                  <Loader2 size={13} className="animate-spin" />
+                ) : (
+                  <CheckCircle2 size={13} />
+                )}
+                <span>Save & Approve Live</span>
               </button>
             </div>
           </div>
 
-          {/* Personal Information Group */}
-          <AdminCard title="Personal Information">
+          {/* 1. Personal Information Group */}
+          <AdminCard title="1. Personal Information">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <FormGroup label="Full Name">
+              <FormGroup label="Full Name *">
                 <input
                   type="text"
                   className={inputCls}
@@ -602,7 +829,7 @@ export default function AdminResumeBuilder() {
                 />
               </FormGroup>
 
-              <FormGroup label="Professional Headline">
+              <FormGroup label="Professional Headline *">
                 <input
                   type="text"
                   className={inputCls}
@@ -620,7 +847,7 @@ export default function AdminResumeBuilder() {
                 />
               </FormGroup>
 
-              <FormGroup label="Email Address">
+              <FormGroup label="Email Address *">
                 <input
                   type="email"
                   className={inputCls}
@@ -634,10 +861,11 @@ export default function AdminResumeBuilder() {
                       },
                     }))
                   }
+                  placeholder="your-email@example.com"
                 />
               </FormGroup>
 
-              <FormGroup label="Phone">
+              <FormGroup label="Phone Number">
                 <input
                   type="text"
                   className={inputCls}
@@ -651,10 +879,11 @@ export default function AdminResumeBuilder() {
                       },
                     }))
                   }
+                  placeholder="+91 98765 43210"
                 />
               </FormGroup>
 
-              <FormGroup label="Location">
+              <FormGroup label="Location / City">
                 <input
                   type="text"
                   className={inputCls}
@@ -668,6 +897,7 @@ export default function AdminResumeBuilder() {
                       },
                     }))
                   }
+                  placeholder="Bengaluru, India"
                 />
               </FormGroup>
 
@@ -685,16 +915,53 @@ export default function AdminResumeBuilder() {
                       },
                     }))
                   }
+                  placeholder="https://ashishsahu.dev"
+                />
+              </FormGroup>
+
+              <FormGroup label="GitHub URL">
+                <input
+                  type="url"
+                  className={inputCls}
+                  value={resumeData?.personalInfo?.github || ""}
+                  onChange={(e) =>
+                    setResumeData((prev) => ({
+                      ...prev,
+                      personalInfo: {
+                        ...prev.personalInfo,
+                        github: e.target.value,
+                      },
+                    }))
+                  }
+                  placeholder="https://github.com/ashishsahu0107"
+                />
+              </FormGroup>
+
+              <FormGroup label="LinkedIn URL">
+                <input
+                  type="url"
+                  className={inputCls}
+                  value={resumeData?.personalInfo?.linkedin || ""}
+                  onChange={(e) =>
+                    setResumeData((prev) => ({
+                      ...prev,
+                      personalInfo: {
+                        ...prev.personalInfo,
+                        linkedin: e.target.value,
+                      },
+                    }))
+                  }
+                  placeholder="https://linkedin.com/in/ashishsahu"
                 />
               </FormGroup>
             </div>
           </AdminCard>
 
-          {/* Professional Summary */}
-          <AdminCard title="Executive Summary">
-            <FormGroup label="Resume Summary / Profile Objective">
+          {/* 2. Professional Summary */}
+          <AdminCard title="2. Executive Summary">
+            <FormGroup label="Resume Summary / Profile Objective (ATS Optimized)">
               <textarea
-                rows={4}
+                rows={3}
                 className={textareaCls}
                 value={resumeData?.summary || ""}
                 onChange={(e) =>
@@ -703,27 +970,619 @@ export default function AdminResumeBuilder() {
                     summary: e.target.value,
                   }))
                 }
+                placeholder="High-impact 2-4 sentence summary outlining your engineering expertise, core stack, and delivery track record..."
               />
             </FormGroup>
           </AdminCard>
 
-          {/* Bottom Save Action */}
-          <div className="flex justify-end pt-3">
+          {/* 3. Technical Skills Categories */}
+          <AdminCard title="3. Technical Skills (Comma-Separated)">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormGroup label="Languages (e.g. JavaScript, TypeScript, Python)">
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={(resumeData?.skills?.languages || []).join(", ")}
+                  onChange={(e) => handleSkillChange("languages", e.target.value)}
+                  placeholder="JavaScript (ES6+), TypeScript, Python, HTML5, CSS3"
+                />
+              </FormGroup>
+
+              <FormGroup label="Frontend (e.g. React.js, Next.js, Redux)">
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={(resumeData?.skills?.frontend || []).join(", ")}
+                  onChange={(e) => handleSkillChange("frontend", e.target.value)}
+                  placeholder="React 19, Next.js, Tailwind CSS, Vite, Redux Toolkit"
+                />
+              </FormGroup>
+
+              <FormGroup label="Backend & APIs (e.g. Node.js, Express, REST, GraphQL)">
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={(resumeData?.skills?.backend || []).join(", ")}
+                  onChange={(e) => handleSkillChange("backend", e.target.value)}
+                  placeholder="Node.js, Express.js, RESTful APIs, JWT Auth, WebSockets"
+                />
+              </FormGroup>
+
+              <FormGroup label="Databases & Storage (e.g. MongoDB, PostgreSQL, Redis)">
+                <input
+                  type="text"
+                  className={inputCls}
+                  value={(resumeData?.skills?.databases || []).join(", ")}
+                  onChange={(e) => handleSkillChange("databases", e.target.value)}
+                  placeholder="MongoDB, Mongoose, PostgreSQL, Redis, Cloudinary"
+                />
+              </FormGroup>
+
+              <div className="sm:col-span-2">
+                <FormGroup label="Tools, DevOps & Cloud (e.g. Docker, Git, CI/CD, AWS, Render)">
+                  <input
+                    type="text"
+                    className={inputCls}
+                    value={(resumeData?.skills?.toolsDevOps || []).join(", ")}
+                    onChange={(e) => handleSkillChange("toolsDevOps", e.target.value)}
+                    placeholder="Git, GitHub Actions, Docker, Vercel, Render, Postman, Linux"
+                  />
+                </FormGroup>
+              </div>
+            </div>
+          </AdminCard>
+
+          {/* 4. Work Experience CRUD */}
+          <AdminCard
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span className="flex items-center gap-2">
+                  <Briefcase size={16} className="text-amber-400" />
+                  <span>4. Work Experience ({resumeData?.workExperience?.length || 0})</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleAddExperience}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition cursor-pointer"
+                >
+                  <Plus size={13} />
+                  <span>Add Experience</span>
+                </button>
+              </div>
+            }
+          >
+            <div className="space-y-4">
+              {(!resumeData?.workExperience || resumeData.workExperience.length === 0) ? (
+                <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
+                  <p className="text-xs text-zinc-500">No work experience entries added.</p>
+                  <button
+                    type="button"
+                    onClick={handleAddExperience}
+                    className="mt-2 text-xs font-semibold text-blue-400 hover:underline cursor-pointer"
+                  >
+                    + Add Experience
+                  </button>
+                </div>
+              ) : (
+                resumeData.workExperience.map((exp, index) => (
+                  <div
+                    key={exp.id || index}
+                    className="p-4 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-3"
+                  >
+                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                      <span className="text-xs font-mono font-bold text-zinc-400">
+                        Entry #{index + 1}: {exp.title || "Untitled Role"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteExperience(exp.id)}
+                        className="text-zinc-500 hover:text-red-400 p-1 transition cursor-pointer"
+                        title="Delete this role"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      <FormGroup label="Job Title *">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={exp.title || ""}
+                          onChange={(e) => handleUpdateExperience(exp.id, "title", e.target.value)}
+                          placeholder="Senior Full Stack Engineer"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Company *">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={exp.company || ""}
+                          onChange={(e) => handleUpdateExperience(exp.id, "company", e.target.value)}
+                          placeholder="Tech Corp Inc."
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Location">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={exp.location || ""}
+                          onChange={(e) => handleUpdateExperience(exp.id, "location", e.target.value)}
+                          placeholder="Remote / Bengaluru"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Start Date">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={exp.startDate || ""}
+                          onChange={(e) => handleUpdateExperience(exp.id, "startDate", e.target.value)}
+                          placeholder="Jan 2023"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="End Date">
+                        <input
+                          type="text"
+                          disabled={exp.current}
+                          className={`${inputCls} ${exp.current ? "opacity-50" : ""}`}
+                          value={exp.endDate || ""}
+                          onChange={(e) => handleUpdateExperience(exp.id, "endDate", e.target.value)}
+                          placeholder={exp.current ? "Present" : "Dec 2024"}
+                        />
+                      </FormGroup>
+
+                      <div className="flex items-center pt-5">
+                        <label className="flex items-center gap-2 text-xs font-semibold text-zinc-300 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!exp.current}
+                            onChange={(e) =>
+                              handleUpdateExperience(exp.id, "current", e.target.checked)
+                            }
+                            className="size-4 rounded border-zinc-700 bg-zinc-900 text-blue-600 focus:ring-0 cursor-pointer"
+                          />
+                          <span>Currently working here</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <FormGroup label="Responsibilities & Key Achievements (bullet points supported)">
+                      <textarea
+                        rows={3}
+                        className={textareaCls}
+                        value={exp.description || ""}
+                        onChange={(e) =>
+                          handleUpdateExperience(exp.id, "description", e.target.value)
+                        }
+                        placeholder="• Architected microservices improving API throughput by 35%...&#10;• Led cross-functional team of 4 engineers delivering full-stack features..."
+                      />
+                    </FormGroup>
+                  </div>
+                ))
+              )}
+            </div>
+          </AdminCard>
+
+          {/* 5. Featured Projects CRUD */}
+          <AdminCard
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span className="flex items-center gap-2">
+                  <FolderGit2 size={16} className="text-amber-400" />
+                  <span>5. Featured Projects ({resumeData?.projects?.length || 0})</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleAddProject}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition cursor-pointer"
+                >
+                  <Plus size={13} />
+                  <span>Add Project</span>
+                </button>
+              </div>
+            }
+          >
+            <div className="space-y-4">
+              {(!resumeData?.projects || resumeData.projects.length === 0) ? (
+                <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
+                  <p className="text-xs text-zinc-500">No project entries added.</p>
+                  <button
+                    type="button"
+                    onClick={handleAddProject}
+                    className="mt-2 text-xs font-semibold text-blue-400 hover:underline cursor-pointer"
+                  >
+                    + Add Project
+                  </button>
+                </div>
+              ) : (
+                resumeData.projects.map((proj, index) => (
+                  <div
+                    key={proj.id || index}
+                    className="p-4 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-3"
+                  >
+                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                      <span className="text-xs font-mono font-bold text-zinc-400">
+                        Project #{index + 1}: {proj.name || "Untitled Project"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteProject(proj.id)}
+                        className="text-zinc-500 hover:text-red-400 p-1 transition cursor-pointer"
+                        title="Delete project"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <FormGroup label="Project Name *">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={proj.name || ""}
+                          onChange={(e) => handleUpdateProject(proj.id, "name", e.target.value)}
+                          placeholder="DevPulse - Developer Analytics Platform"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Technologies Used (e.g. React, Node.js, MongoDB)">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={proj.technologies || ""}
+                          onChange={(e) =>
+                            handleUpdateProject(proj.id, "technologies", e.target.value)
+                          }
+                          placeholder="React, Tailwind, Node.js, Express, MongoDB"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Live Demo URL">
+                        <input
+                          type="url"
+                          className={inputCls}
+                          value={proj.liveUrl || ""}
+                          onChange={(e) => handleUpdateProject(proj.id, "liveUrl", e.target.value)}
+                          placeholder="https://devpulse.io"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="GitHub Repository URL">
+                        <input
+                          type="url"
+                          className={inputCls}
+                          value={proj.githubUrl || ""}
+                          onChange={(e) => handleUpdateProject(proj.id, "githubUrl", e.target.value)}
+                          placeholder="https://github.com/ashishsahu0107/devpulse"
+                        />
+                      </FormGroup>
+                    </div>
+
+                    <FormGroup label="Project Description">
+                      <textarea
+                        rows={2}
+                        className={textareaCls}
+                        value={proj.description || ""}
+                        onChange={(e) => handleUpdateProject(proj.id, "description", e.target.value)}
+                        placeholder="Engineered high-performance real-time telemetry dashboard utilizing WebSocket streams..."
+                      />
+                    </FormGroup>
+                  </div>
+                ))
+              )}
+            </div>
+          </AdminCard>
+
+          {/* 6. Education CRUD */}
+          <AdminCard
+            title={
+              <div className="flex items-center justify-between w-full">
+                <span className="flex items-center gap-2">
+                  <GraduationCap size={16} className="text-amber-400" />
+                  <span>6. Education ({resumeData?.education?.length || 0})</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={handleAddEducation}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition cursor-pointer"
+                >
+                  <Plus size={13} />
+                  <span>Add Education</span>
+                </button>
+              </div>
+            }
+          >
+            <div className="space-y-4">
+              {(!resumeData?.education || resumeData.education.length === 0) ? (
+                <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
+                  <p className="text-xs text-zinc-500">No education entries added.</p>
+                  <button
+                    type="button"
+                    onClick={handleAddEducation}
+                    className="mt-2 text-xs font-semibold text-blue-400 hover:underline cursor-pointer"
+                  >
+                    + Add Education
+                  </button>
+                </div>
+              ) : (
+                resumeData.education.map((edu, index) => (
+                  <div
+                    key={edu.id || index}
+                    className="p-4 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-3"
+                  >
+                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2">
+                      <span className="text-xs font-mono font-bold text-zinc-400">
+                        Degree #{index + 1}: {edu.degree || "Untitled Degree"}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteEducation(edu.id)}
+                        className="text-zinc-500 hover:text-red-400 p-1 transition cursor-pointer"
+                        title="Delete education entry"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                      <FormGroup label="Degree / Diploma *">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.degree || ""}
+                          onChange={(e) => handleUpdateEducation(edu.id, "degree", e.target.value)}
+                          placeholder="B.Tech in Computer Science & Engineering"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Institution / University *">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.institution || ""}
+                          onChange={(e) =>
+                            handleUpdateEducation(edu.id, "institution", e.target.value)
+                          }
+                          placeholder="ABC Institute of Technology"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Location">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.location || ""}
+                          onChange={(e) => handleUpdateEducation(edu.id, "location", e.target.value)}
+                          placeholder="Bengaluru, India"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Graduation Year">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.graduationYear || ""}
+                          onChange={(e) =>
+                            handleUpdateEducation(edu.id, "graduationYear", e.target.value)
+                          }
+                          placeholder="2024"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="GPA / Percentage">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.gradeGpa || ""}
+                          onChange={(e) => handleUpdateEducation(edu.id, "gradeGpa", e.target.value)}
+                          placeholder="8.8 / 10 CGPA"
+                        />
+                      </FormGroup>
+
+                      <FormGroup label="Relevant Coursework / Details">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={edu.details || ""}
+                          onChange={(e) => handleUpdateEducation(edu.id, "details", e.target.value)}
+                          placeholder="DSA, DBMS, OS, Computer Networks"
+                        />
+                      </FormGroup>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </AdminCard>
+
+          {/* 7. Certifications & Achievements */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* Certifications */}
+            <AdminCard
+              title={
+                <div className="flex items-center justify-between w-full">
+                  <span className="flex items-center gap-2">
+                    <Award size={16} className="text-amber-400" />
+                    <span>7. Certifications ({resumeData?.certifications?.length || 0})</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleAddCertification}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition cursor-pointer"
+                  >
+                    <Plus size={12} />
+                    <span>Add</span>
+                  </button>
+                </div>
+              }
+            >
+              <div className="space-y-3">
+                {(!resumeData?.certifications || resumeData.certifications.length === 0) ? (
+                  <p className="text-xs text-zinc-500 text-center py-4">No certifications added.</p>
+                ) : (
+                  resumeData.certifications.map((cert, index) => (
+                    <div
+                      key={cert.id || index}
+                      className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-2.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-white">{cert.name || `Certification #${index + 1}`}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteCertification(cert.id)}
+                          className="text-zinc-500 hover:text-red-400 p-1 cursor-pointer"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={cert.name || ""}
+                          onChange={(e) => handleUpdateCertification(cert.id, "name", e.target.value)}
+                          placeholder="Cert Name (e.g. AWS Solutions Architect)"
+                        />
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={cert.issuer || ""}
+                          onChange={(e) => handleUpdateCertification(cert.id, "issuer", e.target.value)}
+                          placeholder="Issuer (e.g. Amazon Web Services)"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={cert.date || ""}
+                          onChange={(e) => handleUpdateCertification(cert.id, "date", e.target.value)}
+                          placeholder="Issue Date (e.g. 2024)"
+                        />
+                        <input
+                          type="url"
+                          className={inputCls}
+                          value={cert.credentialUrl || ""}
+                          onChange={(e) =>
+                            handleUpdateCertification(cert.id, "credentialUrl", e.target.value)
+                          }
+                          placeholder="Credential Verification URL"
+                        />
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </AdminCard>
+
+            {/* Achievements */}
+            <AdminCard
+              title={
+                <div className="flex items-center justify-between w-full">
+                  <span className="flex items-center gap-2">
+                    <Sparkles size={16} className="text-amber-400" />
+                    <span>8. Honors & Achievements ({resumeData?.achievements?.length || 0})</span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={handleAddAchievement}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition cursor-pointer"
+                  >
+                    <Plus size={12} />
+                    <span>Add</span>
+                  </button>
+                </div>
+              }
+            >
+              <div className="space-y-3">
+                {(!resumeData?.achievements || resumeData.achievements.length === 0) ? (
+                  <p className="text-xs text-zinc-500 text-center py-4">No achievements added.</p>
+                ) : (
+                  resumeData.achievements.map((ach, index) => (
+                    <div
+                      key={ach.id || index}
+                      className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-2.5"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-white">{ach.title || `Achievement #${index + 1}`}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteAchievement(ach.id)}
+                          className="text-zinc-500 hover:text-red-400 p-1 cursor-pointer"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={ach.title || ""}
+                          onChange={(e) => handleUpdateAchievement(ach.id, "title", e.target.value)}
+                          placeholder="Title (e.g. Winner Smart India Hackathon)"
+                        />
+                        <input
+                          type="text"
+                          className={inputCls}
+                          value={ach.issuer || ""}
+                          onChange={(e) => handleUpdateAchievement(ach.id, "issuer", e.target.value)}
+                          placeholder="Organization / Issuer"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        className={inputCls}
+                        value={ach.description || ach.year || ""}
+                        onChange={(e) => handleUpdateAchievement(ach.id, "description", e.target.value)}
+                        placeholder="Description (e.g. Ranked 1st among 2,500+ participants nationwide)"
+                      />
+                    </div>
+                  ))
+                )}
+              </div>
+            </AdminCard>
+          </div>
+
+          {/* Bottom Dual Save Actions */}
+          <div className="flex flex-wrap items-center justify-end gap-3 pt-4 border-t border-zinc-800">
             <button
               type="button"
               onClick={handleSaveResumeData}
               disabled={isSaving}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-xs font-bold text-zinc-950 transition cursor-pointer disabled:opacity-50"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-zinc-700 bg-zinc-800 hover:bg-zinc-750 text-xs font-bold text-zinc-100 transition cursor-pointer disabled:opacity-50"
             >
               {isSaving ? (
                 <>
-                  <Loader2 size={16} className="animate-spin" />
-                  <span>Saving to Database...</span>
+                  <Loader2 size={15} className="animate-spin text-amber-400" />
+                  <span>Saving...</span>
                 </>
               ) : (
                 <>
-                  <Save size={16} />
-                  <span>Save Resume & Sync Database</span>
+                  <Save size={15} className="text-amber-400" />
+                  <span>Save Draft to Database</span>
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleSaveAndApprove}
+              disabled={isSaving}
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow-lg shadow-emerald-950/40 transition cursor-pointer disabled:opacity-50"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" />
+                  <span>Processing...</span>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 size={15} />
+                  <span>Save & Approve as Portfolio Resume</span>
                 </>
               )}
             </button>

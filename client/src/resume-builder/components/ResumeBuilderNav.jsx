@@ -11,6 +11,7 @@ import {
   ShieldCheck,
   Settings,
   Loader2,
+  Save,
 } from "lucide-react";
 import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
@@ -30,6 +31,9 @@ export default function ResumeBuilderNav() {
     clearResumeData,
     isExporting,
     setIsExporting,
+    isSaving,
+    saveResume,
+    approveResume,
   } = useResume();
 
   const { user } = useAuth();
@@ -61,18 +65,29 @@ export default function ResumeBuilderNav() {
       return;
     }
     setIsApproving(true);
-    toast.loading("Approving resume template on server...", { id: "approve-resume-toast" });
     try {
-      await resumeApi.approve(activeTemplate, resumeData);
+      await approveResume(activeTemplate, resumeData);
       setApprovedTemplateId(activeTemplate);
       const notice = `Template approved! Only this resume is now live on your portfolio.`;
       setApprovalNotice(notice);
-      toast.success(notice, { id: "approve-resume-toast" });
       setTimeout(() => setApprovalNotice(null), 3500);
-    } catch (err) {
-      toast.error("Failed to approve template: " + (err.message || "Unknown error"), { id: "approve-resume-toast" });
+    } catch {
+      // toast already shown by approveResume in context
     } finally {
       setIsApproving(false);
+    }
+  };
+
+  const handleSaveToDatabase = async () => {
+    if (!user) {
+      showToast.info("Please sign in to save resumes to the database.");
+      navigate("/secret-login");
+      return;
+    }
+    try {
+      await saveResume(activeTemplate, resumeData);
+    } catch {
+      // toast handled in saveResume
     }
   };
 
@@ -86,7 +101,7 @@ export default function ResumeBuilderNav() {
     setIsExporting(true);
     toast.loading("Exporting resume PDF...", { id: "nav-pdf-export" });
     try {
-      await exportResumeToPdf(previewEl, resumeData.personalInfo.fullName);
+      await exportResumeToPdf(previewEl, resumeData.personalInfo?.fullName || "Resume");
       toast.success("Resume PDF downloaded successfully!", { id: "nav-pdf-export" });
     } catch (err) {
       toast.error("Failed to export PDF: " + (err.message || "Unknown error"), { id: "nav-pdf-export" });
@@ -214,6 +229,23 @@ export default function ResumeBuilderNav() {
               <Settings size={13} />
               <span className="hidden xl:inline">Admin</span>
             </Link>
+          )}
+
+          {/* Save to Database Button */}
+          {user && (
+            <button
+              onClick={handleSaveToDatabase}
+              disabled={isSaving}
+              className="inline-flex items-center gap-1.5 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-900 shadow-2xs hover:bg-amber-100 disabled:opacity-50 cursor-pointer transition"
+              title="Save current resume changes to database"
+            >
+              {isSaving ? (
+                <Loader2 size={13} className="animate-spin text-amber-600" />
+              ) : (
+                <Save size={13} className="text-amber-600" />
+              )}
+              <span className="hidden sm:inline">{isSaving ? "Saving..." : "Save Resume"}</span>
+            </button>
           )}
 
           {/* Sample Data Button */}
