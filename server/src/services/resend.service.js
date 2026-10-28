@@ -231,6 +231,45 @@ export async function sendOtpEmailViaResend({ to, name, otp, expiryMinutes = 10 
 
   if (error) {
     console.error("[Resend API Error]:", error);
+
+    // Handle Resend Free Tier Sandbox restriction gracefully:
+    // "You can only send testing emails to your own email address (xyz@gmail.com)..."
+    if (error.message?.includes("only send testing emails to your own email address")) {
+      const match = error.message.match(/your own email address \(([^)]+)\)/);
+      const ownerEmail = match ? match[1].trim().toLowerCase() : null;
+
+      if (ownerEmail && ownerEmail !== cleanTo) {
+        console.warn(
+          `[Resend Sandbox Notice] Recipient '${cleanTo}' is unverified in Resend sandbox. Dispatching verification code directly to verified owner email '${ownerEmail}'.`
+        );
+
+        const sandboxHtml = buildOtpEmailHtml({
+          name: `${name} (Sandbox for ${cleanTo})`,
+          otp: otp.trim(),
+          expiryMinutes,
+        });
+
+        const sandboxText = `Hello ${name || "Admin User"},\n\n[Resend Sandbox Test for ${cleanTo}]\nYour 6-digit verification code is: ${otp}\n\nThis code expires in ${expiryMinutes} minutes.\n\nAshish Sahu Portfolio Security`;
+
+        const fallback = await resend.emails.send({
+          from: fromEmail,
+          to: [ownerEmail],
+          subject: `${otp} is your verification code (for ${cleanTo})`,
+          html: sandboxHtml,
+          text: sandboxText,
+        });
+
+        if (!fallback.error) {
+          return {
+            success: true,
+            messageId: fallback.data?.id,
+            sandboxDeliveredTo: ownerEmail,
+            sandboxNotice: `Resend Sandbox: Code delivered to your account email (${ownerEmail}).`,
+          };
+        }
+      }
+    }
+
     let friendlyMessage = error.message;
     if (error.statusCode === 403 && error.message?.includes("domain")) {
       friendlyMessage = `Resend Sender Domain Error: ${error.message}. Please use 'Portfolio Security <onboarding@resend.dev>' or verify your custom domain on Resend.`;

@@ -31,8 +31,8 @@ async function autoSeedIfEmpty() {
     console.log(`[MongoDB Seed] Initialized ${initialResumeTemplates.length} resume templates into MongoDB.`);
   }
 
-  const userCount = await UserModel.countDocuments();
-  if (userCount > 0) {
+  const devCount = await DeveloperModel.countDocuments();
+  if (devCount > 0) {
     console.log("[MongoDB] Collections already populated. Skipping initial seed.");
     return;
   }

@@ -72,8 +72,9 @@ export async function sendRegistrationOtp(req, res, next) {
     );
 
     // Send the OTP via Resend API
+    let resendResult = null;
     try {
-      await sendOtpEmailViaResend({
+      resendResult = await sendOtpEmailViaResend({
         to: cleanEmail,
         name: name.trim(),
         otp: plainOtp,
@@ -89,10 +90,15 @@ export async function sendRegistrationOtp(req, res, next) {
       });
     }
 
+    const responseMsg = resendResult?.sandboxNotice
+      ? `A 6-digit verification code has been dispatched! (${resendResult.sandboxNotice})`
+      : "A 6-digit verification code has been dispatched via Resend to your email inbox.";
+
     return res.json({
       success: true,
-      message: "A 6-digit verification code has been dispatched via Resend to your email inbox.",
+      message: responseMsg,
       email: cleanEmail,
+      sandboxDeliveredTo: resendResult?.sandboxDeliveredTo,
       cooldownSeconds: 60,
       expiryMinutes: 10,
     });
