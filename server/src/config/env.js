@@ -14,12 +14,12 @@ export const config = {
   mongodbUri: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT_SECRET || "fallback_super_secret_jwt_key_2026",
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "24h",
-  smtp: {
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT, 10) || 587,
-    secure: process.env.SMTP_SECURE === "true",
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || "",
-    from: process.env.SMTP_FROM || `"Ashish Portfolio Security" <${process.env.SMTP_USER || "no-reply@ashish.dev"}>`,
+  get resend() {
+    dotenv.config({ path: path.resolve(__dirname, "../../.env") });
+    return {
+      apiKey: (process.env.RESEND_API_KEY || "").trim(),
+      fromEmail: process.env.RESEND_FROM_EMAIL || "Portfolio Security <onboarding@resend.dev>",
+    };
   },
 };
+

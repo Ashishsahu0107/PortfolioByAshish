@@ -71,7 +71,7 @@ export default function HangingLamp({
   const lampDragRef = useRef({ startX: 0, startY: 0, origX: 0, origY: 0 });
 
   const BASE_CORD_LENGTH = 75; // Cord length from shade aperture
-  const TRIGGER_THRESHOLD = 28; // Drag distance required to activate
+  const TRIGGER_THRESHOLD = 20; // Drag distance required to activate (pulling down)
 
   // Whenever lamp is lit, smoothly snap back to original resting position (x:0, y:0)!
   useEffect(() => {
@@ -155,10 +155,9 @@ export default function HangingLamp({
       e.currentTarget.releasePointerCapture(e.pointerId);
     } catch {}
 
-    const totalDrag = e.clientY - cordDragStartYRef.current;
-
-    // Trigger toggle if dragged past threshold OR quick tap/click (< 8px total movement)
-    if (hasTriggeredThisDrag || Math.abs(totalDrag) < 8) {
+    // ONLY toggle if the cord was pulled down past the trigger threshold.
+    // Clicking or tapping without pulling will NEVER activate or toggle the lamp.
+    if (hasTriggeredThisDrag) {
       const nextState = !isLightOn;
       playSwitchSound(nextState);
       onToggle();
@@ -552,10 +551,15 @@ export default function HangingLamp({
           onPointerMove={handleCordPointerMove}
           onPointerUp={handleCordPointerUp}
           onPointerCancel={handleCordPointerCancel}
+          onClick={(e) => {
+            // Explicitly prevent clicking without pulling from toggling the lamp
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           tabIndex={0}
           role="button"
-          aria-label="Desk lamp pull cord switch: Drag down or click to turn light on or off"
-          title="Pull cord down or click to switch light"
+          aria-label="Desk lamp pull cord switch: Drag down cord to illuminate"
+          title="Pull cord down to illuminate"
           className="absolute z-50 pointer-events-auto cursor-grab active:cursor-grabbing focus:outline-hidden"
           style={{
             left: `${cordOriginX * (100 / 340)}%`,
@@ -596,7 +600,7 @@ export default function HangingLamp({
                   className="size-2 rounded-full animate-ping inline-block"
                   style={{ backgroundColor: theme.glow }}
                 />
-                <span>Pull cord to illuminate</span>
+                <span>Pull cord down to illuminate</span>
               </div>
             </div>
           )}

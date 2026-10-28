@@ -22,7 +22,24 @@ import { LOGIN_THEMES } from "../components/loginThemes";
 import { useAuth } from "../auth/AuthContext";
 
 export default function Login() {
-  const [isLightOn, setIsLightOn] = useState(false);
+  const [isLightOn, setIsLightOn] = useState(() => {
+    try {
+      return (
+        sessionStorage.getItem("secret_lamp_illuminated") === "true" ||
+        localStorage.getItem("secret_lamp_illuminated") === "true"
+      );
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("secret_lamp_illuminated", String(isLightOn));
+      localStorage.setItem("secret_lamp_illuminated", String(isLightOn));
+    } catch {}
+  }, [isLightOn]);
+
   const [selectedThemeId, setSelectedThemeId] = useState(() => {
     return localStorage.getItem("secret_login_theme") || "amber";
   });

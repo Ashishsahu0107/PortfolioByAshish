@@ -17,26 +17,45 @@ import {
   Check,
   AlertCircle,
   LogIn,
+  Send,
 } from "lucide-react";
 import HangingLamp from "../components/HangingLamp";
 import { LOGIN_THEMES } from "../components/loginThemes";
 import { authApi } from "../services/api";
 
-const OTP_INITIAL_SECONDS = 300; // 5 minutes
+const DEFAULT_EXPIRY_SECONDS = 600; // 10 minutes
+const DEFAULT_COOLDOWN_SECONDS = 60; // 60 seconds
 
 export default function RegisterPage() {
-  const [isLightOn, setIsLightOn] = useState(false);
+  const [isLightOn, setIsLightOn] = useState(() => {
+    try {
+      return (
+        sessionStorage.getItem("secret_lamp_illuminated") === "true" ||
+        localStorage.getItem("secret_lamp_illuminated") === "true"
+      );
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem("secret_lamp_illuminated", String(isLightOn));
+      localStorage.setItem("secret_lamp_illuminated", String(isLightOn));
+    } catch {}
+  }, [isLightOn]);
+
   const [selectedThemeId, setSelectedThemeId] = useState(() => {
     return localStorage.getItem("secret_login_theme") || "amber";
   });
 
-  // Wizard Step State: 1 = Identity, 2 = 4-digit OTP, 3 = Password Creation
+  // Wizard Step State: 1 = Identity, 2 = 6-digit Resend OTP, 3 = Password Creation
   const [step, setStep] = useState(1);
 
   // Form Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [otpDigits, setOtpDigits] = useState(["", "", "", ""]);
+  const [otpDigits, setOtpDigits] = useState(["", "", "", "", "", ""]);
   const [verificationToken, setVerificationToken] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,11 +68,18 @@ export default function RegisterPage() {
   const [successNotice, setSuccessNotice] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
 
-  // 5-Minute OTP Timer
-  const [timerSeconds, setTimerSeconds] = useState(OTP_INITIAL_SECONDS);
-  const [canResend, setCanResend] = useState(false);
+  // Resend Timers: 10-Minute OTP Expiry & 60-Second Resend Cooldown
+  const [expirySeconds, setExpirySeconds] = useState(DEFAULT_EXPIRY_SECONDS);
+  const [cooldownSeconds, setCooldownSeconds] = useState(DEFAULT_COOLDOWN_SECONDS);
 
-  const otpInputRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+  const otpInputRefs = [
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+  ];
   const navigate = useNavigate();
 
   const currentTheme =
@@ -64,26 +90,31 @@ export default function RegisterPage() {
     localStorage.setItem("secret_login_theme", id);
   };
 
-  // Timer countdown for OTP expiry
+  // Timer countdown for 10-minute OTP expiry
   useEffect(() => {
     let interval = null;
-    if (step === 2 && timerSeconds > 0) {
+    if (step === 2 && expirySeconds > 0) {
       interval = setInterval(() => {
-        setTimerSeconds((prev) => {
-          if (prev <= 1) {
-            setCanResend(true);
-            return 0;
-          }
-          return prev - 1;
-        });
+        setExpirySeconds((prev) => (prev > 0 ? prev - 1 : 0));
       }, 1000);
-    } else if (timerSeconds === 0) {
-      setCanResend(true);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [step, timerSeconds]);
+  }, [step, expirySeconds]);
+
+  // Timer countdown for 60-second Resend cooldown
+  useEffect(() => {
+    let interval = null;
+    if (step === 2 && cooldownSeconds > 0) {
+      interval = setInterval(() => {
+        setCooldownSeconds((prev) => (prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [step, cooldownSeconds]);
 
   // Format seconds to MM:SS
   const formatTime = (seconds) => {
@@ -118,7 +149,7 @@ export default function RegisterPage() {
     setError("");
 
     // Auto-advance to next input
-    if (index < 3 && lastChar) {
+    if (index < 5 && lastChar) {
       otpInputRefs[index + 1].current?.focus();
     }
   };
@@ -133,23 +164,23 @@ export default function RegisterPage() {
   // Handle paste in OTP inputs
   const handleOtpPaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
     if (!pasted) return;
 
     const digits = pasted.split("");
-    const updated = ["", "", "", ""];
+    const updated = ["", "", "", "", "", ""];
     digits.forEach((d, i) => {
-      if (i < 4) updated[i] = d;
+      if (i < 6) updated[i] = d;
     });
     setOtpDigits(updated);
     setError("");
 
-    const targetIdx = Math.min(digits.length, 3);
+    const targetIdx = Math.min(digits.length, 5);
     otpInputRefs[targetIdx].current?.focus();
   };
 
   // -------------------------------------------------------------
-  // Step 1: Send 4-Digit OTP to User's Email
+  // Step 1: Send 6-Digit OTP to User's Email via Resend
   // -------------------------------------------------------------
   const handleSendOtp = async (e) => {
     e.preventDefault();
@@ -178,25 +209,28 @@ export default function RegisterPage() {
       const res = await authApi.sendOtp(name.trim(), email.trim().toLowerCase());
       if (res.success) {
         setStep(2);
-        setTimerSeconds(OTP_INITIAL_SECONDS);
-        setCanResend(false);
-        setOtpDigits(["", "", "", ""]);
+        setExpirySeconds((res.expiryMinutes || 10) * 60);
+        setCooldownSeconds(res.cooldownSeconds || 60);
+        setOtpDigits(["", "", "", "", "", ""]);
         setSuccessNotice(
-          res.message || "A 4-digit verification code has been dispatched to your email."
+          res.message || "A 6-digit verification code has been dispatched via Resend to your email."
         );
       } else {
-        throw new Error(res.message || "Failed to send verification code.");
+        throw new Error(res.message || "Failed to dispatch verification code via Resend.");
       }
     } catch (err) {
-      setError(err.message || "Failed to dispatch verification code. Please try again.");
+      if (err.status === 429 && err.data?.retryAfter) {
+        setCooldownSeconds(err.data.retryAfter);
+      }
+      setError(err.message || "Failed to dispatch verification code via Resend. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Resend OTP handler
+  // Resend OTP handler with 60s cooldown enforcement
   const handleResendOtp = async () => {
-    if (!canResend && timerSeconds > 0) return;
+    if (cooldownSeconds > 0 || isLoading) return;
     setIsLoading(true);
     setError("");
     setSuccessNotice("");
@@ -204,21 +238,24 @@ export default function RegisterPage() {
     try {
       const res = await authApi.sendOtp(name.trim(), email.trim().toLowerCase());
       if (res.success) {
-        setTimerSeconds(OTP_INITIAL_SECONDS);
-        setCanResend(false);
-        setOtpDigits(["", "", "", ""]);
-        setSuccessNotice("A new 4-digit verification code has been dispatched.");
+        setExpirySeconds((res.expiryMinutes || 10) * 60);
+        setCooldownSeconds(res.cooldownSeconds || 60);
+        setOtpDigits(["", "", "", "", "", ""]);
+        setSuccessNotice("A new 6-digit verification code has been dispatched via Resend.");
         otpInputRefs[0].current?.focus();
       }
     } catch (err) {
-      setError(err.message || "Failed to resend code.");
+      if (err.status === 429 && err.data?.retryAfter) {
+        setCooldownSeconds(err.data.retryAfter);
+      }
+      setError(err.message || "Failed to resend verification code via Resend.");
     } finally {
       setIsLoading(false);
     }
   };
 
   // -------------------------------------------------------------
-  // Step 2: Verify Entered 4-Digit OTP
+  // Step 2: Verify Entered 6-Digit OTP
   // -------------------------------------------------------------
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
@@ -226,8 +263,8 @@ export default function RegisterPage() {
     setSuccessNotice("");
 
     const fullOtp = otpDigits.join("");
-    if (fullOtp.length !== 4) {
-      setError("Please enter the complete 4-digit verification code.");
+    if (fullOtp.length !== 6) {
+      setError("Please enter the complete 6-digit verification code.");
       return;
     }
 
@@ -238,7 +275,7 @@ export default function RegisterPage() {
       if (res.success && res.verificationToken) {
         setVerificationToken(res.verificationToken);
         setStep(3);
-        setSuccessNotice("Identity verified successfully! Please create your secure password.");
+        setSuccessNotice("Identity verified successfully via Resend! Please create your secure password.");
       } else {
         throw new Error(res.message || "Invalid verification code.");
       }
@@ -323,6 +360,7 @@ export default function RegisterPage() {
         <div className="flex items-center gap-3">
           <Link
             to="/"
+            id="return-to-portfolio-link"
             className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3.5 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
           >
             <ArrowLeft size={14} />
@@ -330,6 +368,7 @@ export default function RegisterPage() {
           </Link>
           <Link
             to="/secret-login"
+            id="go-to-signin-link"
             className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200"
           >
             <LogIn size={13} />
@@ -423,11 +462,17 @@ export default function RegisterPage() {
 
             {/* Header Badge & Title */}
             <div className="mb-5">
-              <div
-                className={`inline-flex items-center gap-1.5 rounded-full border ${currentTheme.badge} px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider mb-2.5 shadow-2xs`}
-              >
-                <ShieldCheck size={12} className={currentTheme.badgeIcon} />
-                <span>Admin Enrollment • Step {step} of 3</span>
+              <div className="flex items-center justify-between gap-2 mb-2.5">
+                <div
+                  className={`inline-flex items-center gap-1.5 rounded-full border ${currentTheme.badge} px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shadow-2xs`}
+                >
+                  <ShieldCheck size={12} className={currentTheme.badgeIcon} />
+                  <span>Admin Enrollment • Step {step} of 3</span>
+                </div>
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/25">
+                  <Send size={10} />
+                  <span>Resend Email</span>
+                </div>
               </div>
 
               <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
@@ -466,15 +511,21 @@ export default function RegisterPage() {
 
             {/* Success Notification Banner */}
             {successNotice && (
-              <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-start gap-2">
+              <div
+                id="registration-success-banner"
+                className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-start gap-2"
+              >
                 <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
-                <span>{successNotice}</span>
+                <span className="leading-snug">{successNotice}</span>
               </div>
             )}
 
             {/* Error Banner */}
             {error && (
-              <div className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex flex-col gap-2">
+              <div
+                id="registration-error-banner"
+                className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex flex-col gap-2"
+              >
                 <div className="flex items-start gap-2">
                   <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
                   <span className="leading-snug">{error}</span>
@@ -503,7 +554,7 @@ export default function RegisterPage() {
             {step === 1 && (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <p className="text-xs text-zinc-400 leading-relaxed -mt-1">
-                  Enter your administrative name and email address. A 4-digit OTP will be dispatched to your inbox for identity verification.
+                  Enter your administrative name and email address. A 6-digit OTP will be dispatched to your inbox via Resend for identity verification.
                 </p>
 
                 {/* Name Field */}
@@ -516,6 +567,7 @@ export default function RegisterPage() {
                       <User size={15} />
                     </span>
                     <input
+                      id="register-name-input"
                       type="text"
                       value={name}
                       onChange={(e) => {
@@ -550,6 +602,7 @@ export default function RegisterPage() {
                       <Mail size={15} />
                     </span>
                     <input
+                      id="register-email-input"
                       type="email"
                       value={email}
                       onChange={(e) => {
@@ -577,18 +630,19 @@ export default function RegisterPage() {
                 {/* Submit Step 1 Button */}
                 <button
                   type="submit"
+                  id="send-otp-btn"
                   disabled={isLoading}
                   className={`w-full mt-3 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${currentTheme.buttonBg} ${currentTheme.buttonShadow} px-4 py-2.5 text-xs font-bold shadow-md active:scale-[0.99] disabled:opacity-50 cursor-pointer transition`}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      <span>Sending 4-Digit OTP...</span>
+                      <span>Sending 6-Digit OTP via Resend...</span>
                     </>
                   ) : (
                     <>
                       <Mail size={14} />
-                      <span>Send 4-Digit Verification Code</span>
+                      <span>Send 6-Digit Verification Code</span>
                     </>
                   )}
                 </button>
@@ -596,14 +650,14 @@ export default function RegisterPage() {
             )}
 
             {/* ============================================================ */}
-            {/* STEP 2: 4-DIGIT OTP VERIFICATION                             */}
+            {/* STEP 2: 6-DIGIT RESEND OTP VERIFICATION                      */}
             {/* ============================================================ */}
             {step === 2 && (
               <form onSubmit={handleVerifyOtp} className="space-y-4">
                 <div className="rounded-lg bg-zinc-950/70 border border-zinc-800 p-3 text-xs flex items-center justify-between">
                   <div className="truncate pr-2">
                     <span className="text-zinc-500 block text-[10px] uppercase font-mono">
-                      Sent to
+                      Dispatched via Resend to
                     </span>
                     <span className="font-mono text-zinc-200 truncate">{email}</span>
                   </div>
@@ -623,17 +677,18 @@ export default function RegisterPage() {
 
                 <div className="text-center py-2">
                   <label className="block text-xs font-medium text-zinc-300 mb-3">
-                    Enter the 4-digit code sent to your inbox
+                    Enter the 6-digit code sent to your inbox
                   </label>
 
-                  {/* 4 Split Digit Input Boxes */}
+                  {/* 6 Split Digit Input Boxes */}
                   <div
-                    className="flex justify-center items-center gap-3"
+                    className="grid grid-cols-6 gap-2 sm:gap-2.5 max-w-[340px] mx-auto justify-center items-center"
                     onPaste={handleOtpPaste}
                   >
                     {otpDigits.map((digit, idx) => (
                       <input
                         key={idx}
+                        id={`otp-input-${idx}`}
                         ref={otpInputRefs[idx]}
                         type="text"
                         inputMode="numeric"
@@ -641,7 +696,7 @@ export default function RegisterPage() {
                         value={digit}
                         onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(idx, e)}
-                        className={`size-14 text-center font-mono text-2xl font-bold rounded-xl border bg-zinc-950/90 text-white focus:outline-hidden transition shadow-inner ${
+                        className={`h-12 w-full text-center font-mono text-xl sm:text-2xl font-bold rounded-xl border bg-zinc-950/90 text-white focus:outline-hidden transition shadow-inner ${
                           digit
                             ? "border-amber-400/80 shadow-amber-400/10"
                             : "border-zinc-800"
@@ -653,28 +708,33 @@ export default function RegisterPage() {
                     ))}
                   </div>
 
-                  {/* 5-Minute Timer and Resend Controls */}
+                  {/* Expiry Timer and Resend Controls */}
                   <div className="mt-4 flex items-center justify-between text-xs px-2">
                     <div className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-400">
                       <span>Expires in:</span>
                       <span
                         className={`font-semibold ${
-                          timerSeconds < 60 ? "text-red-400" : "text-zinc-200"
+                          expirySeconds < 60 ? "text-red-400" : "text-zinc-200"
                         }`}
                       >
-                        {formatTime(timerSeconds)}
+                        {formatTime(expirySeconds)}
                       </span>
                     </div>
 
                     <button
                       type="button"
+                      id="resend-otp-btn"
                       onClick={handleResendOtp}
-                      disabled={!canResend || isLoading}
-                      className="inline-flex items-center gap-1 text-[11px] font-mono hover:underline disabled:opacity-40 disabled:hover:no-underline cursor-pointer transition"
-                      style={{ color: canResend ? currentTheme.glow : "#71717a" }}
+                      disabled={cooldownSeconds > 0 || isLoading}
+                      className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-md border border-zinc-800/80 bg-zinc-900/60 hover:bg-zinc-800/80 disabled:opacity-40 disabled:hover:bg-zinc-900/60 cursor-pointer transition"
+                      style={{ color: cooldownSeconds === 0 ? currentTheme.glow : "#71717a" }}
                     >
-                      <RotateCcw size={11} className={isLoading ? "animate-spin" : ""} />
-                      <span>Resend Code</span>
+                      <RotateCcw size={12} className={isLoading ? "animate-spin" : ""} />
+                      <span>
+                        {cooldownSeconds > 0
+                          ? `Resend in ${cooldownSeconds}s`
+                          : "Resend OTP"}
+                      </span>
                     </button>
                   </div>
                 </div>
@@ -682,18 +742,19 @@ export default function RegisterPage() {
                 {/* Verify OTP Button */}
                 <button
                   type="submit"
-                  disabled={isLoading || otpDigits.join("").length !== 4}
+                  id="verify-otp-btn"
+                  disabled={isLoading || otpDigits.join("").length !== 6}
                   className={`w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${currentTheme.buttonBg} ${currentTheme.buttonShadow} px-4 py-2.5 text-xs font-bold shadow-md active:scale-[0.99] disabled:opacity-50 cursor-pointer transition`}
                 >
                   {isLoading ? (
                     <>
                       <Loader2 size={14} className="animate-spin" />
-                      <span>Verifying Code...</span>
+                      <span>Verifying Code via Resend...</span>
                     </>
                   ) : (
                     <>
                       <Check size={14} />
-                      <span>Verify & Continue</span>
+                      <span>Verify 6-Digit OTP & Continue</span>
                     </>
                   )}
                 </button>
@@ -706,7 +767,7 @@ export default function RegisterPage() {
             {step === 3 && (
               <form onSubmit={handleCompleteRegistration} className="space-y-4">
                 <p className="text-xs text-zinc-400 leading-relaxed -mt-1">
-                  Create a strong password for your administrator profile. Your account will be persisted in MongoDB upon confirmation.
+                  Create a strong password for your administrator profile. Your verified account will be persisted in MongoDB upon confirmation.
                 </p>
 
                 {/* Password Input */}
@@ -719,6 +780,7 @@ export default function RegisterPage() {
                       <Lock size={15} />
                     </span>
                     <input
+                      id="register-password-input"
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => {
@@ -761,6 +823,7 @@ export default function RegisterPage() {
                       <Lock size={15} />
                     </span>
                     <input
+                      id="register-confirm-password-input"
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => {
@@ -835,6 +898,7 @@ export default function RegisterPage() {
                 {/* Complete Registration Button */}
                 <button
                   type="submit"
+                  id="complete-registration-btn"
                   disabled={isLoading}
                   className={`w-full mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r ${currentTheme.buttonBg} ${currentTheme.buttonShadow} px-4 py-2.5 text-xs font-bold shadow-md active:scale-[0.99] disabled:opacity-50 cursor-pointer transition`}
                 >
@@ -867,8 +931,8 @@ export default function RegisterPage() {
 
             {/* Security Note */}
             <div className="mt-4 pt-3 border-t border-zinc-800/60 flex items-center justify-between text-[10px] font-mono text-zinc-500">
-              <span>Bcrypt 10-Salt • JWT</span>
-              <span>5-Min OTP Expiry</span>
+              <span>Bcrypt 10-Salt • Single-Use Token</span>
+              <span>Resend 10-Min OTP</span>
             </div>
           </div>
         </div>
@@ -877,7 +941,7 @@ export default function RegisterPage() {
       {/* Footer Info */}
       <footer className="relative z-30 p-4 text-center text-xs font-mono text-zinc-600">
         <span>
-          Admin Registration Console • Pull cord to illuminate • 4-Digit OTP Verified
+          Admin Registration Console • Pull cord to illuminate • Resend 6-Digit OTP Verified
         </span>
       </footer>
     </div>

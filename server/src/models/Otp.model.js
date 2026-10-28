@@ -2,27 +2,98 @@ import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import { OtpModel as Otp } from "../db/schemas.js";
 
-const OTP_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes
-const MAX_VERIFICATION_ATTEMPTS = 3;
+const OTP_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
+const COOLDOWN_MS = 60 * 1000; // 60 seconds resend cooldown
+const MAX_VERIFICATION_ATTEMPTS = 5;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour rate limiting window
+const MAX_REQUESTS_PER_WINDOW = 5;
 
 export const OtpService = {
   /**
-   * Save a hashed OTP with a 5-minute expiration
+   * Generates a cryptographically secure 6-digit numeric OTP
    */
-  async createOtp(email, name, plainOtp) {
+  generate6DigitOtp() {
+    return String(crypto.randomInt(100000, 1000000));
+  },
+
+  /**
+   * Check rate limiting and cooldown before sending an OTP
+   */
+  async checkRateLimits(email, ip = "") {
+    const cleanEmail = email.trim().toLowerCase();
+    const existing = await Otp.findOne({ email: cleanEmail });
+
+    if (!existing) {
+      return { allowed: true };
+    }
+
+    const now = Date.now();
+
+    // 1. Resend Cooldown Check (60 seconds)
+    if (existing.cooldownUntil && new Date(existing.cooldownUntil).getTime() > now) {
+      const remainingSeconds = Math.ceil(
+        (new Date(existing.cooldownUntil).getTime() - now) / 1000
+      );
+      return {
+        allowed: false,
+        code: "COOLDOWN_ACTIVE",
+        message: `Please wait ${remainingSeconds} second${
+          remainingSeconds > 1 ? "s" : ""
+        } before requesting another OTP.`,
+        retryAfter: remainingSeconds,
+      };
+    }
+
+    // 2. Hourly Rate Limit Check (5 requests per hour)
+    const windowStart = new Date(existing.firstRequestAt || existing.createdAt || now).getTime();
+    if (now - windowStart < RATE_LIMIT_WINDOW_MS) {
+      if ((existing.requestCount || 1) >= MAX_REQUESTS_PER_WINDOW) {
+        const resetMinutes = Math.ceil((windowStart + RATE_LIMIT_WINDOW_MS - now) / 60000);
+        return {
+          allowed: false,
+          code: "RATE_LIMIT_EXCEEDED",
+          message: `Too many OTP requests for this email address. Please wait ${resetMinutes} minute${
+            resetMinutes > 1 ? "s" : ""
+          } before trying again.`,
+          retryAfterMinutes: resetMinutes,
+        };
+      }
+    }
+
+    return { allowed: true, existingDoc: existing };
+  },
+
+  /**
+   * Create and securely persist a hashed 6-digit OTP
+   */
+  async createOtp(email, name, plainOtp, ip = "", purpose = "registration") {
     if (!email || !plainOtp) {
       throw new Error("Email and OTP are required.");
     }
 
     const cleanEmail = email.trim().toLowerCase();
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + OTP_EXPIRY_MS);
+    const cooldownUntil = new Date(now.getTime() + COOLDOWN_MS);
 
-    // Invalidate any previous OTPs for this email to prevent replay attacks
-    await Otp.deleteMany({ email: cleanEmail });
-
-    // Securely hash the 4-digit OTP using bcrypt (8 rounds for high-speed sub-10ms response)
-    const otpHash = await bcrypt.hash(String(plainOtp), 8);
-    const expiresAt = new Date(Date.now() + OTP_EXPIRY_MS);
+    // Securely hash the 6-digit OTP with bcrypt
+    const otpHash = await bcrypt.hash(String(plainOtp), 10);
     const id = `otp_${Date.now()}_${crypto.randomBytes(4).toString("hex")}`;
+
+    // Calculate request count within current rolling window
+    const existing = await Otp.findOne({ email: cleanEmail });
+    let requestCount = 1;
+    let firstRequestAt = now;
+
+    if (existing) {
+      const windowStart = new Date(existing.firstRequestAt || existing.createdAt || now).getTime();
+      if (now.getTime() - windowStart < RATE_LIMIT_WINDOW_MS) {
+        requestCount = (existing.requestCount || 1) + 1;
+        firstRequestAt = existing.firstRequestAt || now;
+      }
+      // Remove previous active OTP
+      await Otp.deleteMany({ email: cleanEmail });
+    }
 
     const newOtp = await Otp.create({
       id,
@@ -33,17 +104,25 @@ export const OtpService = {
       attempts: 0,
       verified: false,
       expiresAt,
+      cooldownUntil,
+      lastSentAt: now,
+      requestCount,
+      firstRequestAt,
+      ip,
+      purpose,
     });
 
     return {
       id: newOtp.id,
       email: newOtp.email,
       expiresAt: newOtp.expiresAt,
+      cooldownSeconds: 60,
+      expiryMinutes: 10,
     };
   },
 
   /**
-   * Delete any active OTPs for this email
+   * Invalidate any active OTPs for an email
    */
   async deleteOtp(email) {
     if (!email) return;
@@ -52,13 +131,13 @@ export const OtpService = {
   },
 
   /**
-   * Verify an entered OTP against the hashed value
+   * Verify an entered 6-digit OTP against its bcrypt hash
    */
   async verifyOtp(email, enteredOtp) {
     if (!email || !enteredOtp) {
       return {
         success: false,
-        message: "Email and 4-digit verification code are required.",
+        message: "Email address and 6-digit verification code are required.",
       };
     }
 
@@ -70,11 +149,12 @@ export const OtpService = {
     if (!otpDoc) {
       return {
         success: false,
+        code: "NO_ACTIVE_OTP",
         message: "No pending verification code found. Please request a new code.",
       };
     }
 
-    // Check expiration
+    // Check expiration (10 minutes)
     if (new Date() > otpDoc.expiresAt) {
       await Otp.deleteMany({ email: cleanEmail });
       return {
@@ -84,17 +164,17 @@ export const OtpService = {
       };
     }
 
-    // Check attempt limit
+    // Check attempt limits (max 5)
     if (otpDoc.attempts >= MAX_VERIFICATION_ATTEMPTS) {
       await Otp.deleteMany({ email: cleanEmail });
       return {
         success: false,
         code: "MAX_ATTEMPTS",
-        message: "Maximum verification attempts exceeded. Please request a new code.",
+        message: "Maximum verification attempts exceeded. For security, please request a new code.",
       };
     }
 
-    // Compare with hashed OTP
+    // Compare entered code with bcrypt hash
     const isMatch = await bcrypt.compare(cleanOtp, otpDoc.otpHash);
 
     if (!isMatch) {
@@ -107,18 +187,19 @@ export const OtpService = {
         return {
           success: false,
           code: "MAX_ATTEMPTS",
-          message: "Incorrect code. Maximum attempts reached. Please request a new code.",
+          message: "Incorrect code. Maximum verification attempts reached. Please request a new code.",
         };
       }
 
       return {
         success: false,
-        code: "INVALID",
+        code: "INVALID_OTP",
         message: `Incorrect verification code. ${remaining} attempt${remaining > 1 ? "s" : ""} remaining.`,
+        remainingAttempts: remaining,
       };
     }
 
-    // Valid OTP: issue a single-use verificationToken for the final password creation step
+    // Valid OTP: issue a single-use verification token
     const verificationToken = crypto.randomBytes(32).toString("hex");
 
     await Otp.updateOne(
@@ -127,7 +208,7 @@ export const OtpService = {
         $set: {
           verified: true,
           verificationToken,
-          // Give 5 additional minutes to finish setting password
+          // Give 10 additional minutes to complete password setup / registration
           expiresAt: new Date(Date.now() + OTP_EXPIRY_MS),
         },
       }
@@ -138,7 +219,7 @@ export const OtpService = {
       verificationToken,
       name: otpDoc.name,
       email: cleanEmail,
-      message: "Verification successful. You can now set your password.",
+      message: "Identity verified successfully. You can now complete your authentication.",
     };
   },
 
@@ -155,16 +236,16 @@ export const OtpService = {
       verified: true,
     });
 
-    if (!doc) return { valid: false };
+    if (!doc) return { valid: false, reason: "Invalid verification token." };
 
     if (new Date() > doc.expiresAt) {
       await Otp.deleteMany({ email: cleanEmail });
-      return { valid: false, reason: "Session expired." };
+      return { valid: false, reason: "Verification token expired." };
     }
 
     const userName = doc.name;
 
-    // Immediately invalidate and delete OTP record so it can NEVER be reused
+    // Invalidate and delete record immediately so it can never be re-used
     await Otp.deleteMany({ email: cleanEmail });
 
     return { valid: true, name: userName };

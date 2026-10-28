@@ -186,7 +186,7 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true, strict: false }
 );
 
-// 11. OTP Verification Schema
+// 11. OTP Verification Schema (Resend Integration)
 const otpSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
@@ -197,6 +197,12 @@ const otpSchema = new mongoose.Schema(
     attempts: { type: Number, default: 0 },
     verified: { type: Boolean, default: false },
     expiresAt: { type: Date, required: true, index: { expires: 0 } },
+    cooldownUntil: { type: Date, default: null },
+    lastSentAt: { type: Date, default: Date.now },
+    requestCount: { type: Number, default: 1 },
+    firstRequestAt: { type: Date, default: Date.now },
+    ip: { type: String, default: "" },
+    purpose: { type: String, default: "registration" },
   },
   { timestamps: true }
 );

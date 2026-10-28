@@ -4,16 +4,17 @@ import jwt from "jsonwebtoken";
 import { config } from "../config/env.js";
 import { UserModel } from "../models/User.model.js";
 import { OtpService } from "../models/Otp.model.js";
-import { sendOtpEmail } from "../utils/mailer.js";
+import { sendOtpEmailViaResend } from "../services/resend.service.js";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /**
- * Step 1: Send a randomly generated 4-digit OTP to user's email
+ * Step 1: Send a cryptographically secure 6-digit OTP to user's email via Resend
  */
 export async function sendRegistrationOtp(req, res, next) {
   try {
     const { email, name } = req.body;
+    const clientIp = req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "127.0.0.1";
 
     if (!email || !email.trim()) {
       return res.status(400).json({
@@ -47,29 +48,53 @@ export async function sendRegistrationOtp(req, res, next) {
       });
     }
 
-    // Generate randomly generated 4-digit numeric OTP (1000 - 9999)
-    const otpNumber = crypto.randomInt(1000, 10000);
-    const otp = String(otpNumber);
+    // Check rate limits and resend cooldown
+    const rateCheck = await OtpService.checkRateLimits(cleanEmail, clientIp);
+    if (!rateCheck.allowed) {
+      return res.status(429).json({
+        success: false,
+        code: rateCheck.code,
+        message: rateCheck.message,
+        retryAfter: rateCheck.retryAfter || 60,
+      });
+    }
 
-    // Save hashed OTP in MongoDB with 5-minute expiry
-    await OtpService.createOtp(cleanEmail, name.trim(), otp);
+    // Generate secure 6-digit numeric OTP (100000 - 999999)
+    const plainOtp = OtpService.generate6DigitOtp();
 
-    // Send the OTP via Nodemailer SMTP
+    // Persist hashed OTP in MongoDB with 10-minute validity and 60-second cooldown
+    const created = await OtpService.createOtp(
+      cleanEmail,
+      name.trim(),
+      plainOtp,
+      clientIp,
+      "registration"
+    );
+
+    // Send the OTP via Resend API
     try {
-      await sendOtpEmail(cleanEmail, name.trim(), otp);
-    } catch (mailErr) {
-      console.error("[OTP Mail Dispatch Error]:", mailErr.message);
+      await sendOtpEmailViaResend({
+        to: cleanEmail,
+        name: name.trim(),
+        otp: plainOtp,
+        expiryMinutes: 10,
+      });
+    } catch (resendErr) {
+      console.error("[Resend OTP Dispatch Error]:", resendErr.message);
+      // Invalidate the created OTP so the user can retry without getting locked out
       await OtpService.deleteOtp(cleanEmail);
       return res.status(502).json({
         success: false,
-        message: `Failed to dispatch OTP email (${mailErr.message}). Please verify SMTP settings.`,
+        message: `Failed to dispatch OTP via Resend (${resendErr.message}). Please verify RESEND_API_KEY and verified sender settings.`,
       });
     }
 
     return res.json({
       success: true,
-      message: "A 4-digit verification code has been dispatched to your email address.",
+      message: "A 6-digit verification code has been dispatched via Resend to your email inbox.",
       email: cleanEmail,
+      cooldownSeconds: 60,
+      expiryMinutes: 10,
     });
   } catch (err) {
     next(err);
@@ -77,7 +102,7 @@ export async function sendRegistrationOtp(req, res, next) {
 }
 
 /**
- * Step 2: Verify the 4-digit OTP before allowing password creation
+ * Step 2: Verify the 6-digit OTP before allowing password creation
  */
 export async function verifyRegistrationOtp(req, res, next) {
   try {
@@ -86,17 +111,17 @@ export async function verifyRegistrationOtp(req, res, next) {
     if (!email || !otp) {
       return res.status(400).json({
         success: false,
-        message: "Email address and 4-digit OTP are required.",
+        message: "Email address and 6-digit verification code are required.",
       });
     }
 
     const cleanEmail = email.trim().toLowerCase();
     const cleanOtp = String(otp).trim();
 
-    if (!/^\d{4}$/.test(cleanOtp)) {
+    if (!/^\d{6}$/.test(cleanOtp)) {
       return res.status(400).json({
         success: false,
-        message: "Verification code must be exactly 4 digits.",
+        message: "Verification code must be exactly 6 digits.",
       });
     }
 
@@ -107,6 +132,7 @@ export async function verifyRegistrationOtp(req, res, next) {
         success: false,
         code: verificationResult.code || "INVALID_OTP",
         message: verificationResult.message,
+        remainingAttempts: verificationResult.remainingAttempts,
       });
     }
 

@@ -11,6 +11,7 @@ import ResumeBuilderPage from "./pages/ResumeBuilderPage";
 import ResumeViewPage from "./pages/ResumeViewPage";
 import SecretLoginPage from "./pages/SecretLoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import AuthPage from "./pages/AuthPage";
 import AdminDashboard from "./admin/AdminDashboard";
 import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
@@ -47,6 +48,17 @@ function AnimatedRoutes() {
       return;
     }
 
+    // Do NOT flash the screen when switching between login and register
+    const isAuthPath = (p) =>
+      p === "/login" ||
+      p === "/secret-login" ||
+      p === "/register" ||
+      p === "/secret-register";
+
+    if (isAuthPath(prev) && isAuthPath(current)) {
+      return;
+    }
+
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
       gsap.fromTo(
@@ -64,10 +76,10 @@ function AnimatedRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="/resume-builder" element={<ResumeBuilderPage />} />
         <Route path="/resume-builder/view" element={<ResumeViewPage />} />
-        <Route path="/login" element={<SecretLoginPage />} />
-        <Route path="/secret-login" element={<SecretLoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/secret-register" element={<RegisterPage />} />
+        <Route path="/login" element={<AuthPage initialMode="login" />} />
+        <Route path="/secret-login" element={<AuthPage initialMode="login" />} />
+        <Route path="/register" element={<AuthPage initialMode="register" />} />
+        <Route path="/secret-register" element={<AuthPage initialMode="register" />} />
         <Route
           path="/admin/*"
           element={
