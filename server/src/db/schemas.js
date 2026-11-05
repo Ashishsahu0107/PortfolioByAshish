@@ -233,6 +233,13 @@ const resumeSchema = new mongoose.Schema(
   { timestamps: true, strict: false }
 );
 
+// High-Performance Query Indexes
+skillCategorySchema.index({ order: 1 });
+projectSchema.index({ featured: 1, order: 1 });
+experienceSchema.index({ order: 1, type: 1 });
+sectionSchema.index({ enabled: 1, order: 1 });
+formSchema.index({ enabled: 1 });
+
 export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
 export const DeveloperModel = mongoose.models.Developer || mongoose.model("Developer", developerSchema);
 export const AboutModel = mongoose.models.About || mongoose.model("About", aboutSchema);

@@ -13,6 +13,7 @@ import {
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { useDeveloper } from "../context/DeveloperContext";
 import { contactApi, formsApi } from "../services/api";
 import { showToast, toast } from "../utils/toast";
 
@@ -24,19 +25,26 @@ const INITIAL_FORM = {
 };
 
 export default function PortfolioContact() {
+  const { developer } = useDeveloper();
   const sectionRef = useRef(null);
-  const [contactData, setContactData] = useState({
-    email: "ashishsahu01072005@gmail.com",
-    github: "https://github.com/Ashishsahu0107",
-    linkedin: "https://linkedin.com/in/ashishsahu0107",
-    location: "Bhilai, Chhattisgarh, India",
-    locationShort: "India",
-    statusPhrase: "Available for full-time & freelance projects",
-    availableForWork: true,
-    emailjsServiceId: "",
-    emailjsTemplateId: "",
-    emailjsPublicKey: "",
-  });
+  const [contactData, setContactData] = useState(() => ({
+    email: developer?.email || "ashishsahu01072005@gmail.com",
+    github: developer?.github || "https://github.com/Ashishsahu0107",
+    linkedin: developer?.linkedin || "https://linkedin.com/in/ashishsahu0107",
+    location: developer?.location || "India",
+    locationShort: developer?.locationShort || "India",
+    statusPhrase: developer?.statusPhrase || "Available for opportunities",
+    availableForWork: developer?.availableForWork ?? true,
+    emailjsServiceId: developer?.emailjsServiceId || "",
+    emailjsTemplateId: developer?.emailjsTemplateId || "",
+    emailjsPublicKey: developer?.emailjsPublicKey || "",
+  }));
+
+  useEffect(() => {
+    if (developer) {
+      setContactData((prev) => ({ ...prev, ...developer }));
+    }
+  }, [developer]);
 
   const [customForms, setCustomForms] = useState([]);
   const [formData, setFormData] = useState(INITIAL_FORM);

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect  } from "react";
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -10,10 +10,8 @@ import {
   Pause,
   Sparkles,
 } from "lucide-react";
-import { projectsApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
-import { usePortfolioData } from "../context/PortfolioDataContext";
+import { usePortfolioProjects } from "../context/PortfolioDataContext";
 import {
   contentWidth,
   eyebrow,
@@ -25,35 +23,14 @@ import {
 const AUTO_SLIDE_INTERVAL = 3800; // 3.8 seconds auto slide
 
 export default function PortfolioProjects() {
-  const { projects: cachedProjects } = usePortfolioData();
-  const [projectList, setProjectList] = useState(() => cachedProjects || []);
-  const [loading, setLoading] = useState(() => !cachedProjects || cachedProjects.length === 0);
+  const { projects: cachedProjects } = usePortfolioProjects();
+  const projectList = cachedProjects || [];
+  const loading = projectList.length === 0;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef(null);
 
   useGsapReveal(sectionRef);
-
-  const loadLiveProjects = useCallback(async () => {
-    try {
-      setLoading(true);
-      const live = await projectsApi.getAll();
-      if (Array.isArray(live)) {
-        setProjectList(live);
-      }
-    } catch (err) {
-      console.warn("[PortfolioProjects] Could not fetch live projects:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadLiveProjects();
-  }, [loadLiveProjects]);
-
-  // Real-time synchronization whenever projects are created/updated/deleted in Admin
-  usePortfolioSync(loadLiveProjects, "projects");
 
 
   const nextSlide = useCallback(() => {

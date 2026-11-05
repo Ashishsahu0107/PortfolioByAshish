@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useMemo } from "react";
 import {
   ArrowUpRight,
   Code2,
@@ -20,9 +20,7 @@ import {
   textLink,
 } from "./portfolioStyles";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
-import { aboutApi } from "../services/api";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
-import { usePortfolioData } from "../context/PortfolioDataContext";
+import { usePortfolioAbout } from "../context/PortfolioDataContext";
 
 const iconMap = {
   Code2,
@@ -37,48 +35,22 @@ const iconMap = {
 
 export default function PortfolioAbout() {
   const { developer } = useDeveloper();
-  const { about: contextAbout } = usePortfolioData();
-  const [aboutData, setAboutData] = useState(() => {
-    if (!contextAbout) return null;
-    return {
-      bio: contextAbout.bio || developer?.bio || "",
-      philosophy: contextAbout.philosophy || developer?.philosophy || "",
-      github: contextAbout.github || developer?.github || "",
-      focusAreas: Array.isArray(contextAbout.focusAreas) ? contextAbout.focusAreas : [],
-      stats: Array.isArray(contextAbout.stats) && contextAbout.stats.length > 0 ? contextAbout.stats : (developer?.stats || []),
-    };
-  });
-  const [loading, setLoading] = useState(() => !aboutData);
+  const { about: contextAbout, loading: contextLoading } = usePortfolioAbout();
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();
 
-  const loadAbout = useCallback(async () => {
-    try {
-      setLoading(true);
-      const live = await aboutApi.get();
-      if (live) {
-        setAboutData({
-          bio: live.bio || developer?.bio || "",
-          philosophy: live.philosophy || developer?.philosophy || "",
-          github: live.github || developer?.github || "",
-          focusAreas: Array.isArray(live.focusAreas) ? live.focusAreas : [],
-          stats: Array.isArray(live.stats) && live.stats.length > 0 ? live.stats : (developer?.stats || []),
-        });
-      }
-    } catch (err) {
-      console.warn("[PortfolioAbout] Could not load about data:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [developer]);
+  const aboutData = useMemo(() => {
+    return {
+      bio: contextAbout?.bio || developer?.bio || "",
+      philosophy: contextAbout?.philosophy || developer?.philosophy || "",
+      github: contextAbout?.github || developer?.github || "",
+      focusAreas: Array.isArray(contextAbout?.focusAreas) ? contextAbout.focusAreas : [],
+      stats: Array.isArray(contextAbout?.stats) && contextAbout.stats.length > 0 ? contextAbout.stats : (developer?.stats || []),
+    };
+  }, [contextAbout, developer]);
 
-  useEffect(() => {
-    loadAbout();
-  }, [loadAbout]);
-
-  // Real-time synchronization whenever about content is updated
-  usePortfolioSync(loadAbout, "about");
+  const loading = Boolean(contextLoading && !contextAbout && !developer);
 
   const bioText = aboutData?.bio || developer?.bio || "";
   const philosophyText = aboutData?.philosophy || developer?.philosophy || "";

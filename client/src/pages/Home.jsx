@@ -1,4 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
 import PortfolioHero from "../components/PortfolioHero";
 import PortfolioAbout from "../components/PortfolioAbout";
 import PortfolioSkills from "../components/PortfolioSkills";
@@ -7,7 +6,6 @@ import PortfolioProcess from "../components/PortfolioProcess";
 import PortfolioExperience from "../components/PortfolioExperience";
 import PortfolioContact from "../components/PortfolioContact";
 import PortfolioFooter from "../components/PortfolioFooter";
-import { sectionsApi } from "../services/api";
 import { contentWidth, sectionSurface, eyebrow, sectionLede } from "../components/portfolioStyles";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import { usePortfolioSections } from "../context/PortfolioDataContext";

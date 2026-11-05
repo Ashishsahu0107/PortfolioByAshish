@@ -14,38 +14,25 @@ import { useDeveloper } from "../context/DeveloperContext";
 import { contentWidth, primaryButton, outlineButton } from "./portfolioStyles";
 import heroPortrait from "../assets/hero.png";
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
-import { skillsApi } from "../services/api";
-import { useEffect, useCallback } from "react";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { usePortfolioSkills } from "../context/PortfolioDataContext";
+import { useEffect, useMemo } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function PortfolioHero() {
   const { developer } = useDeveloper();
-  const [coreStack, setCoreStack] = useState([]);
+  const { skills } = usePortfolioSkills();
   const heroRef = useRef(null);
   const [imageError, setImageError] = useState(false);
   const { openResumeModal } = useResumeModal();
 
-  const loadSkills = useCallback(async () => {
-    try {
-      const live = await skillsApi.get();
-      if (Array.isArray(live) && live.length > 0) {
-        const all = live.flatMap((cat) => cat.skills || []);
-        if (all.length > 0) {
-          setCoreStack(all.slice(0, 4));
-        }
-      }
-    } catch (err) {
-      console.warn("[PortfolioHero] Could not fetch live skills:", err.message);
+  const coreStack = useMemo(() => {
+    if (Array.isArray(skills) && skills.length > 0) {
+      const all = skills.flatMap((cat) => cat.skills || []);
+      return all.slice(0, 4);
     }
-  }, []);
-
-  useEffect(() => {
-    loadSkills();
-  }, [loadSkills]);
-
-  usePortfolioSync(loadSkills, "skills");
+    return [];
+  }, [skills]);
 
 
   useLayoutEffect(() => {

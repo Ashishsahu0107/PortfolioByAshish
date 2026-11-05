@@ -195,3 +195,35 @@ html.light {
   }
 }
 
+/* ───────────────────────────────────────────────────────────
+   SLIDER EDGE OPACITY MASK (True Alpha Fade Across Edge Boxes)
+   ─────────────────────────────────────────────────────────── */
+.skills-slider-mask {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.15) 3%,
+    rgba(0, 0, 0, 0.5) 8%,
+    rgba(0, 0, 0, 0.85) 14%,
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.85) 86%,
+    rgba(0, 0, 0, 0.5) 92%,
+    rgba(0, 0, 0, 0.15) 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.15) 3%,
+    rgba(0, 0, 0, 0.5) 8%,
+    rgba(0, 0, 0, 0.85) 14%,
+    rgba(0, 0, 0, 1) 20%,
+    rgba(0, 0, 0, 1) 80%,
+    rgba(0, 0, 0, 0.85) 86%,
+    rgba(0, 0, 0, 0.5) 92%,
+    rgba(0, 0, 0, 0.15) 97%,
+    transparent 100%
+  );
+}
+

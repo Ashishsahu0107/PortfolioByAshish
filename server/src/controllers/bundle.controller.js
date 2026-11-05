@@ -24,8 +24,17 @@ export function invalidatePortfolioCache() {
 export async function getPortfolioBundle(req, res, next) {
   try {
     const now = Date.now();
+    const etag = `W/"portfolio_${cacheTime || now}"`;
+    if (req.headers["if-none-match"] === etag && memoryCache) {
+      res.set("X-Cache", "HIT-304");
+      res.set("ETag", etag);
+      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      return res.status(304).end();
+    }
+
     if (memoryCache && now - cacheTime < CACHE_TTL_MS) {
       res.set("X-Cache", "HIT");
+      res.set("ETag", etag);
       res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
       return res.json({
         success: true,
@@ -57,6 +66,7 @@ export async function getPortfolioBundle(req, res, next) {
     cacheTime = now;
 
     res.set("X-Cache", "MISS");
+    res.set("ETag", `W/"portfolio_${now}"`);
     res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
     return res.json({
       success: true,

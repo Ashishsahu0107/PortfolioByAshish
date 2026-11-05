@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { portfolioApi } from "../services/api";
+import { BASELINE_PORTFOLIO } from "../data/baselinePortfolioData";
 
 const CACHE_KEY = "portfolio_bundle_cache_v2";
 
@@ -17,21 +18,23 @@ export const DEFAULT_BUILTIN_SECTIONS = [
 ];
 
 /**
- * Synchronously retrieves cached portfolio bundle from storage
+ * Synchronously retrieves cached portfolio bundle from storage or baseline snapshot
  */
 export function getStoredPortfolioBundle() {
-  if (typeof window === "undefined") return null;
+  if (typeof window === "undefined") return BASELINE_PORTFOLIO;
   try {
     const raw = localStorage.getItem(CACHE_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw);
-    if (parsed && typeof parsed === "object" && parsed.data) {
-      return parsed.data;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object" && parsed.data) {
+        return parsed.data;
+      }
+      if (parsed && typeof parsed === "object") {
+        return parsed;
+      }
     }
-    return parsed;
-  } catch (e) {
-    return null;
-  }
+  } catch (e) {}
+  return BASELINE_PORTFOLIO;
 }
 
 /**
@@ -53,35 +56,42 @@ export function setStoredPortfolioBundle(bundle) {
 const PortfolioDataContext = createContext(null);
 
 export function PortfolioDataProvider({ children }) {
-  // Synchronous cache hydration on frame 0
+  // Synchronous cache hydration on frame 0 (instant first paint)
   const [bundle, setBundle] = useState(() => {
     return getStoredPortfolioBundle();
   });
 
-  const [loading, setLoading] = useState(() => !bundle);
+  const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(() => Date.now());
 
-  const refreshBundle = useCallback(async (silent = false) => {
-    if (!silent && !bundle) {
-      setLoading(true);
-    }
+  const refreshBundle = useCallback(async (silent = true) => {
     try {
-      const res = await portfolioApi.getBundle();
+      let res = null;
+      // If index.html already started prefetching in <head>, consume that promise first
+      if (typeof window !== "undefined" && window.__PORTFOLIO_BUNDLE_PROMISE__) {
+        res = await window.__PORTFOLIO_BUNDLE_PROMISE__;
+        window.__PORTFOLIO_BUNDLE_PROMISE__ = null;
+      }
+
+      if (!res || !res.success) {
+        res = await portfolioApi.getBundle();
+      }
+
       if (res && res.success && res.data) {
         setBundle(res.data);
         setStoredPortfolioBundle(res.data);
         setLastUpdated(Date.now());
       }
     } catch (err) {
-      console.warn("[PortfolioDataProvider] Background bundle sync notice:", err.message);
+      console.warn("[PortfolioDataProvider] Dynamic sync notice:", err.message);
     } finally {
       setLoading(false);
     }
-  }, [bundle]);
+  }, []);
 
-  // Initial fetch on mount
+  // Background revalidation on mount
   useEffect(() => {
-    refreshBundle(!!bundle);
+    refreshBundle(true);
   }, [refreshBundle]);
 
   // Listen to real-time sync events from Admin mutations
@@ -103,16 +113,17 @@ export function PortfolioDataProvider({ children }) {
   }, [refreshBundle]);
 
   const value = useMemo(() => {
+    const currentBundle = bundle || BASELINE_PORTFOLIO;
     return {
-      bundle,
-      developer: bundle?.developer || null,
-      about: bundle?.about || null,
-      skills: bundle?.skills || [],
-      projects: bundle?.projects || [],
-      experience: bundle?.experience || [],
-      sections: bundle?.sections && bundle.sections.length > 0 ? bundle.sections : DEFAULT_BUILTIN_SECTIONS,
+      bundle: currentBundle,
+      developer: currentBundle.developer || BASELINE_PORTFOLIO.developer,
+      about: currentBundle.about || BASELINE_PORTFOLIO.about,
+      skills: currentBundle.skills || BASELINE_PORTFOLIO.skills,
+      projects: currentBundle.projects || BASELINE_PORTFOLIO.projects,
+      experience: currentBundle.experience || BASELINE_PORTFOLIO.experience,
+      sections: currentBundle.sections && currentBundle.sections.length > 0 ? currentBundle.sections : DEFAULT_BUILTIN_SECTIONS,
       loading,
-      isInstantReady: !!bundle,
+      isInstantReady: true,
       lastUpdated,
       refreshBundle,
     };
@@ -129,15 +140,15 @@ export function usePortfolioData() {
   const ctx = useContext(PortfolioDataContext);
   if (!ctx) {
     return {
-      bundle: null,
-      developer: null,
-      about: null,
-      skills: [],
-      projects: [],
-      experience: [],
+      bundle: BASELINE_PORTFOLIO,
+      developer: BASELINE_PORTFOLIO.developer,
+      about: BASELINE_PORTFOLIO.about,
+      skills: BASELINE_PORTFOLIO.skills,
+      projects: BASELINE_PORTFOLIO.projects,
+      experience: BASELINE_PORTFOLIO.experience,
       sections: DEFAULT_BUILTIN_SECTIONS,
       loading: false,
-      isInstantReady: false,
+      isInstantReady: true,
       refreshBundle: async () => {},
     };
   }
@@ -159,3 +170,17 @@ export function usePortfolioDeveloper() {
   return { developer, refreshDeveloper: refreshBundle };
 }
 
+export function usePortfolioProjects() {
+  const { projects, refreshBundle } = usePortfolioData();
+  return { projects, refreshProjects: refreshBundle };
+}
+
+export function usePortfolioExperience() {
+  const { experience, refreshBundle } = usePortfolioData();
+  return { experience, refreshExperience: refreshBundle };
+}
+
+export function usePortfolioAbout() {
+  const { about, loading, refreshBundle } = usePortfolioData();
+  return { about, loading, refreshAbout: refreshBundle };
+}

@@ -1,26 +1,14 @@
-import { useEffect, useRef, useState, useCallback, useMemo } from "react";
-import { skillsApi } from "../services/api";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { useRef, useMemo } from "react";
 import { usePortfolioSkills } from "../context/PortfolioDataContext";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import TechIcon from "./TechIcon";
-import {
-  CheckCircle2,
-  Info,
-  Wrench,
-  ArrowRight,
-  ArrowLeft,
-  Sparkles,
-  Layers,
-  Server,
-  Code2,
-} from "lucide-react";
+import { Wrench } from "lucide-react";
 import {
   contentWidth,
-  eyebrow,
-  sectionLede,
   sectionSurface,
+  eyebrow,
   sectionTitle,
+  sectionLede,
 } from "./portfolioStyles";
 
 /**
@@ -33,11 +21,10 @@ function mixBackendTechnologies(categories) {
   const toolsCat = categories.find((c) => c.id === "tools")?.skills || [];
   const otherCat = categories.find((c) => c.id === "other")?.skills || [];
 
-  // Tag each with parent category label for display
-  const taggedBackend = backendCat.map((s) => ({ ...s, categoryLabel: "Backend & API" }));
+  const taggedBackend = backendCat.map((s) => ({ ...s, categoryLabel: "Backend" }));
   const taggedDatabase = databaseCat.map((s) => ({ ...s, categoryLabel: "Database" }));
-  const taggedTools = toolsCat.map((s) => ({ ...s, categoryLabel: "DevOps & Tools" }));
-  const taggedOther = otherCat.map((s) => ({ ...s, categoryLabel: "Core & Systems" }));
+  const taggedTools = toolsCat.map((s) => ({ ...s, categoryLabel: "Tools" }));
+  const taggedOther = otherCat.map((s) => ({ ...s, categoryLabel: "Core" }));
 
   // Interleave round-robin across arrays
   const buckets = [taggedBackend, taggedDatabase, taggedTools, taggedOther];
@@ -56,7 +43,7 @@ function mixBackendTechnologies(categories) {
     index++;
   }
 
-  // Fallback if categories are custom/flat
+  // Fallback if categories are flat
   if (mixed.length === 0) {
     return categories
       .filter((c) => c.id !== "frontend")
@@ -67,109 +54,45 @@ function mixBackendTechnologies(categories) {
 }
 
 /**
- * Individual modern skill card
+ * Clean card skill badge inspired by the reference design
+ * Displays official icon and technology name (rounded-md, no percentage)
  */
-function SkillCard({ skill }) {
+function SkillPill({ skill }) {
   return (
     <div
-      className="group/card relative w-[290px] sm:w-[320px] shrink-0 select-none rounded-xl border border-border/80 bg-surface/90 p-4 backdrop-blur-md transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.01] hover:border-action/80 hover:bg-surface hover:shadow-xl hover:shadow-action/10"
+      className="group/pill inline-flex items-center gap-2.5 sm:gap-3 rounded-md border border-border bg-surface px-4 py-2 sm:px-5 sm:py-2.5 transition-all duration-300 hover:border-action hover:bg-surface-alt/90 hover:shadow-lg hover:shadow-action/10 hover:scale-[1.03] select-none cursor-default shrink-0"
       role="article"
-      aria-label={`${skill.name} - ${skill.level}% proficiency`}
+      aria-label={skill.name}
     >
-      {/* Top Header: Tech Icon, Name & Category Badge */}
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-lg border border-border bg-surface-alt/70 p-2 shadow-inner transition-transform duration-300 group-hover/card:scale-105 group-hover/card:border-action/40">
-            <TechIcon
-              name={skill.name}
-              iconKey={skill.icon}
-              size={22}
-              className="transition-transform duration-300 group-hover/card:scale-110"
-            />
-          </div>
-          <div className="min-w-0">
-            <h4 className="font-mono text-sm font-bold text-primary transition-colors group-hover/card:text-action truncate">
-              {skill.name}
-            </h4>
-            <span className="inline-block text-[10px] font-mono uppercase tracking-wider text-secondary/80">
-              {skill.categoryLabel || "Proficiency"}
-            </span>
-          </div>
-        </div>
-
-        <span className="shrink-0 rounded-full border border-border/60 bg-surface-alt/40 px-2 py-0.5 font-mono text-[9px] font-medium text-action">
-          {skill.level}%
-        </span>
+      {/* Official Technology Brand Icon */}
+      <div className="flex size-5 sm:size-6 items-center justify-center shrink-0">
+        <TechIcon
+          name={skill.name}
+          iconKey={skill.icon}
+          size={18}
+          className="transition-transform duration-300 group-hover/pill:scale-110"
+        />
       </div>
 
-      {/* Description */}
-      <p className="mt-2.5 line-clamp-2 min-h-[34px] text-xs leading-relaxed text-secondary">
-        {skill.description || "Production-grade implementation, patterns, and architectural depth."}
-      </p>
-
-      {/* Footer: Level Progress Bar & Status */}
-      <div className="mt-3.5 border-t border-border/40 pt-2.5">
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-surface-alt/80">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-action/60 to-action transition-all duration-700 ease-out"
-            style={{ width: `${Math.max(10, Math.min(100, skill.level || 80))}%` }}
-          />
-        </div>
-        <div className="mt-2 flex items-center justify-between font-mono text-[10px] text-secondary">
-          <span className="flex items-center gap-1 text-action">
-            <CheckCircle2 size={11} className="shrink-0" />
-            <span>Production Ready</span>
-          </span>
-          <span className="text-[10px] text-secondary/70">Mastery {skill.level}%</span>
-        </div>
-      </div>
+      {/* Technology Name */}
+      <span className="font-mono text-xs sm:text-sm font-semibold text-primary transition-colors group-hover/pill:text-action whitespace-nowrap">
+        {skill.name}
+      </span>
     </div>
   );
 }
 
 export default function PortfolioSkills() {
-  const { skills: initialSkills, refreshSkills } = usePortfolioSkills();
-  const [categories, setCategories] = useState(() => initialSkills || []);
-  const [loading, setLoading] = useState(() => !initialSkills || initialSkills.length === 0);
+  const { skills } = usePortfolioSkills();
+  const categories = skills || [];
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
-
-  const loadSkills = useCallback(async () => {
-    try {
-      if (!categories || categories.length === 0) {
-        setLoading(true);
-      }
-      const live = await skillsApi.get();
-      if (Array.isArray(live) && live.length > 0) {
-        setCategories(live);
-      }
-    } catch (err) {
-      console.warn("[PortfolioSkills] Live skills fetch warning:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, [categories]);
-
-  useEffect(() => {
-    loadSkills();
-  }, [loadSkills]);
-
-  // Real-time synchronization whenever skills are updated in Admin
-  usePortfolioSync(loadSkills, "skills");
-
-  // Keep synced with context
-  useEffect(() => {
-    if (Array.isArray(initialSkills) && initialSkills.length > 0) {
-      setCategories(initialSkills);
-      setLoading(false);
-    }
-  }, [initialSkills]);
 
   // Extract frontend skills
   const frontendSkills = useMemo(() => {
     const frontCat = categories.find((c) => c.id === "frontend");
     if (frontCat && Array.isArray(frontCat.skills)) {
-      return frontCat.skills.map((s) => ({ ...s, categoryLabel: "Frontend & UI" }));
+      return frontCat.skills.map((s) => ({ ...s, categoryLabel: "Frontend" }));
     }
     return [];
   }, [categories]);
@@ -179,7 +102,7 @@ export default function PortfolioSkills() {
     return mixBackendTechnologies(categories);
   }, [categories]);
 
-  // Multipliers for seamless infinite marquee loop
+  // Multipliers for seamless infinite marquee loop (no gaps or jumps)
   const ltrTrackItems = useMemo(() => {
     if (frontendSkills.length === 0) return [];
     // Duplicate 4x to ensure uninterrupted track loop
@@ -194,38 +117,42 @@ export default function PortfolioSkills() {
 
   return (
     <section
-      className={`${sectionSurface} relative overflow-hidden bg-surface-alt/30 py-20 sm:py-24`}
+      className={`${sectionSurface} relative overflow-hidden bg-canvas`}
       id="skills"
       ref={sectionRef}
       aria-labelledby="skills-title"
     >
-      <div className={contentWidth}>
-        {/* Section Heading */}
-        <div className="reveal max-w-[650px]">
+      {/* Background Blueprint Grid (Preserving Theme Identity) */}
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.035] dark:opacity-[0.05]"
+        style={{
+          backgroundImage: `radial-gradient(var(--color-primary) 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Section Header (Consistent with Portfolio Design System) */}
+      <div className={`${contentWidth} mb-12 sm:mb-16`}>
+        <div className="reveal">
           <p className={eyebrow}>
-            <span className="text-action font-mono">02</span> Tools of the Trade
+            <span className="text-action">02</span> Skills &amp; Capabilities
           </p>
-          <h2 className={sectionTitle} id="skills-title">
-            A considered <span className="italic font-normal text-action">toolkit.</span>
-          </h2>
-          <p className={sectionLede}>
-            Every technology in my workflow is chosen for reliability, developer ergonomics,
-            and end-user performance. Continuously sliding across disciplines.
-          </p>
+          <div className="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <h2 className={`${sectionTitle} max-w-[640px]`} id="skills-title">
+              Technical skills &amp;{" "}
+              <span className="italic font-normal text-action">technologies.</span>
+            </h2>
+            <p className={`${sectionLede} max-w-[420px] pb-2`}>
+              A curated stack of frontend, backend, database, and system technologies I rely on to build resilient, high-performance web applications.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Loading Skeleton */}
-      {loading && categories.length === 0 && (
-        <div className="mt-12 space-y-8 px-4">
-          <div className="h-44 w-full animate-pulse rounded-2xl border border-border bg-surface/60" />
-          <div className="h-44 w-full animate-pulse rounded-2xl border border-border bg-surface/60" />
-        </div>
-      )}
-
       {/* Empty State */}
-      {!loading && categories.length === 0 && (
-        <div className="reveal mx-auto mt-12 max-w-lg rounded-xl border border-border bg-surface p-12 text-center">
+      {categories.length === 0 && (
+        <div className="reveal mx-auto my-12 max-w-lg rounded-xl border border-border bg-surface p-12 text-center">
           <Wrench size={36} className="mx-auto mb-3 text-secondary/50" />
           <h3 className="mb-1 text-base font-semibold text-primary">No Skills Configured</h3>
           <p className="text-sm text-secondary">
@@ -234,127 +161,120 @@ export default function PortfolioSkills() {
         </div>
       )}
 
-      {/* Animated Dual-Direction Sliders */}
+      {/* Sliders Container */}
       {categories.length > 0 && (
-        <div className="mt-14 space-y-12">
+        <div className="space-y-6 sm:space-y-8">
+          {/* Top Glowing Divider Line */}
+          <div className="relative w-full max-w-5xl mx-auto px-6">
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-action/40 to-transparent" />
+            <div className="absolute inset-x-1/4 -top-1 h-2.5 bg-action/15 blur-md rounded-full pointer-events-none" />
+          </div>
+
           {/* ========================================================= */}
           {/* SLIDER 1: FRONTEND SKILLS (Continuous Left to Right - LTR) */}
           {/* ========================================================= */}
           {frontendSkills.length > 0 && (
-            <div className="reveal space-y-3.5">
-              <div className={`${contentWidth} flex flex-wrap items-center justify-between gap-3`}>
-                <div className="flex items-center gap-2.5">
-                  <span className="flex size-6 items-center justify-center rounded-md border border-action/30 bg-action/10 text-action">
-                    <Code2 size={14} />
-                  </span>
-                  <h3 className="font-serif text-lg font-bold text-primary sm:text-xl">
-                    Frontend Engineering
-                  </h3>
-                  <span className="rounded-full border border-border bg-surface px-2 py-0.5 font-mono text-[10px] text-secondary">
-                    {frontendSkills.length} Technologies
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 font-mono text-[11px] text-secondary">
-                  <span className="flex items-center gap-1.5 rounded-full border border-border/80 bg-surface/60 px-2.5 py-1">
-                    <ArrowRight size={12} className="text-action animate-pulse" />
-                    <span>Left to Right</span>
-                  </span>
-                  <span className="hidden sm:inline text-secondary/60">&bull; Hover to pause</span>
-                </div>
+            <div className="space-y-2.5">
+              {/* Slider Subtitle Label */}
+              <div className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}>
+                <span className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-action" />
+                  <span className="text-primary font-semibold">Frontend &amp; Interface</span>
+                </span>
+                <span className="text-[11px] text-secondary/70">
+                  Left &rarr; Right &bull; Hover to pause
+                </span>
               </div>
 
-              {/* Slider Viewport with Gradient Edge Masks */}
+              {/* Slider Viewport with Progressive Opacity Fade Mask */}
               <div
-                className="slider-pause-on-hover relative w-full overflow-hidden py-3"
+                className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2.5"
                 role="region"
-                aria-label="Frontend skills continuous slider"
+                aria-label="Frontend skills slider"
               >
                 {/* Left Edge Fade Mask */}
                 <div
-                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-28 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
                   aria-hidden="true"
                 />
                 {/* Right Edge Fade Mask */}
                 <div
-                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-28 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
                   aria-hidden="true"
                 />
 
-                {/* Infinite Moving Track */}
-                <div className="flex w-max gap-5 sm:gap-6 animate-skills-ltr">
+                {/* Infinite Moving Track (Left to Right) */}
+                <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-ltr">
                   {ltrTrackItems.map((skill, idx) => (
-                    <SkillCard key={`frontend-ltr-${skill.name}-${idx}`} skill={skill} />
+                    <SkillPill key={`frontend-pill-${skill.name}-${idx}`} skill={skill} />
                   ))}
                 </div>
               </div>
             </div>
           )}
 
+          {/* Middle Glowing Divider Line */}
+          <div className="relative w-full max-w-4xl mx-auto px-6">
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
+            <div className="absolute inset-x-1/3 -top-1 h-2 bg-action/10 blur-sm rounded-full pointer-events-none" />
+          </div>
+
           {/* ========================================================= */}
-          {/* SLIDER 2: BACKEND & SYSTEMS (Continuous Right to Left - RTL) */}
+          {/* SLIDER 2: BACKEND & DATABASE (Continuous Right to Left - RTL) */}
           {/* ========================================================= */}
           {mixedBackendSkills.length > 0 && (
-            <div className="reveal space-y-3.5 pt-2">
-              <div className={`${contentWidth} flex flex-wrap items-center justify-between gap-3`}>
-                <div className="flex items-center gap-2.5">
-                  <span className="flex size-6 items-center justify-center rounded-md border border-action/30 bg-action/10 text-action">
-                    <Server size={14} />
-                  </span>
-                  <h3 className="font-serif text-lg font-bold text-primary sm:text-xl">
-                    Backend, Databases & Cloud Systems
-                  </h3>
-                  <span className="rounded-full border border-border bg-surface px-2 py-0.5 font-mono text-[10px] text-secondary">
-                    {mixedBackendSkills.length} Technologies Mixed
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 font-mono text-[11px] text-secondary">
-                  <span className="flex items-center gap-1.5 rounded-full border border-border/80 bg-surface/60 px-2.5 py-1">
-                    <ArrowLeft size={12} className="text-action animate-pulse" />
-                    <span>Right to Left</span>
-                  </span>
-                  <span className="hidden sm:inline text-secondary/60">&bull; Hover to pause</span>
-                </div>
+            <div className="space-y-2.5">
+              {/* Slider Subtitle Label */}
+              <div className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}>
+                <span className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-action" />
+                  <span className="text-primary font-semibold">Backend, Databases &amp; Systems</span>
+                </span>
+                <span className="text-[11px] text-secondary/70">
+                  &larr; Right to Left &bull; Hover to pause
+                </span>
               </div>
 
-              {/* Slider Viewport with Gradient Edge Masks */}
+              {/* Slider Viewport with Progressive Opacity Fade Mask */}
               <div
-                className="slider-pause-on-hover relative w-full overflow-hidden py-3"
+                className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2.5"
                 role="region"
-                aria-label="Backend and systems skills continuous slider"
+                aria-label="Backend and database skills slider"
               >
                 {/* Left Edge Fade Mask */}
                 <div
-                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 sm:w-28 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
                   aria-hidden="true"
                 />
                 {/* Right Edge Fade Mask */}
                 <div
-                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 sm:w-28 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
                   aria-hidden="true"
                 />
 
-                {/* Infinite Moving Track */}
-                <div className="flex w-max gap-5 sm:gap-6 animate-skills-rtl">
+                {/* Infinite Moving Track (Right to Left) */}
+                <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-rtl">
                   {rtlTrackItems.map((skill, idx) => (
-                    <SkillCard key={`backend-rtl-${skill.name}-${idx}`} skill={skill} />
+                    <SkillPill key={`backend-pill-${skill.name}-${idx}`} skill={skill} />
                   ))}
                 </div>
               </div>
             </div>
           )}
+
+          {/* Bottom Glowing Divider Line */}
+          <div className="relative w-full max-w-5xl mx-auto px-6">
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-action/40 to-transparent" />
+            <div className="absolute inset-x-1/4 -top-1 h-2.5 bg-action/15 blur-md rounded-full pointer-events-none" />
+          </div>
         </div>
       )}
 
-      {/* Integrity Notice */}
-      <div className={`${contentWidth} mt-12`}>
-        <div className="reveal flex items-center gap-3 rounded-lg border border-border/70 bg-surface/70 px-4 py-3 text-[11px] text-secondary backdrop-blur-sm">
-          <Info size={16} className="shrink-0 text-action" />
-          <span>
-            <strong>Integrity Notice:</strong> Skill percentages represent comparative self-assessment and practical project depth rather than absolute mastery. Continuous dual-track integration ensures both interface aesthetics and distributed system resilience.
-          </span>
-        </div>
+      {/* Interactive Exploration Hint */}
+      <div className={`${contentWidth} mt-10 text-center`}>
+        <p className="reveal font-mono text-[11px] text-secondary/70">
+          Hover over either slider to pause motion &bull; All skills synchronize live with MongoDB database
+        </p>
       </div>
     </section>
   );

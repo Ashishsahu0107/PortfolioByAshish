@@ -224,44 +224,43 @@ export const OFFICIAL_TECH_ICONS = {
   ),
 
   "REST APIs": ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <Network size={size * 0.75} />
     </span>
   ),
 
   Authentication: ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <ShieldCheck size={size * 0.75} />
     </span>
   ),
 
   JWT: ({ size = 20, className = "" }) => (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className={className}>
-      <circle cx="12" cy="12" r="10" stroke="#D63AFF" strokeWidth="2" fill="#D63AFF" fillOpacity="0.1" />
-      <path d="M7 12l3 3 7-7" stroke="#D63AFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
+      <KeyRound size={size * 0.75} />
+    </span>
   ),
 
   "Cloud Computing": ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-sky-500/10 text-sky-400 border border-sky-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <Cloud size={size * 0.75} />
     </span>
   ),
 
   DSA: ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <Binary size={size * 0.75} />
     </span>
   ),
 
   IoT: ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-rose-500/10 text-rose-400 border border-rose-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <Radio size={size * 0.75} />
     </span>
   ),
 
   "Computer Vision": ({ size = 20, className = "" }) => (
-    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 ${className}`}>
+    <span className={`inline-flex items-center justify-center size-6 rounded-md bg-surface-alt text-action border border-border ${className}`}>
       <Eye size={size * 0.75} />
     </span>
   ),

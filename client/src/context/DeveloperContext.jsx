@@ -1,7 +1,5 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { developerApi } from "../services/api";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
-import { getStoredPortfolioBundle } from "./PortfolioDataContext";
+import { createContext, useContext, useMemo } from "react";
+import { usePortfolioData } from "./PortfolioDataContext";
 
 const DeveloperContext = createContext(null);
 
@@ -16,45 +14,16 @@ function formatDeveloper(data) {
 }
 
 export function DeveloperProvider({ children }) {
-  const [developer, setDeveloper] = useState(() => {
-    const cached = getStoredPortfolioBundle()?.developer;
-    return formatDeveloper(cached);
-  });
-  const [loading, setLoading] = useState(() => !developer);
-  const [error, setError] = useState(null);
-
-  const fetchDeveloper = useCallback(async () => {
-    try {
-      if (!developer) setLoading(true);
-      const data = await developerApi.get();
-      if (data) {
-        setDeveloper(formatDeveloper(data));
-        setError(null);
-      } else {
-        setDeveloper(null);
-      }
-    } catch (err) {
-      console.warn("[DeveloperContext] Failed to load developer profile from backend:", err.message);
-      setError(err.message || "Failed to load developer profile");
-    } finally {
-      setLoading(false);
-    }
-  }, [developer]);
-
-  useEffect(() => {
-    fetchDeveloper();
-  }, [fetchDeveloper]);
-
-  // Real-time synchronization whenever developer information is updated
-  usePortfolioSync(fetchDeveloper, "developer");
+  const { developer: rawDeveloper, refreshBundle } = usePortfolioData();
+  const developer = useMemo(() => formatDeveloper(rawDeveloper), [rawDeveloper]);
 
   return (
     <DeveloperContext.Provider
       value={{
         developer,
-        loading,
-        error,
-        refreshDeveloper: fetchDeveloper,
+        loading: !developer,
+        error: null,
+        refreshDeveloper: refreshBundle,
       }}
     >
       {children}

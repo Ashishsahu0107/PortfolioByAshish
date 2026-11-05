@@ -1,9 +1,7 @@
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef } from "react";
 import { Award, Briefcase, FolderOpen, GraduationCap } from "lucide-react";
-import { experienceApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
-import { usePortfolioSync } from "../hooks/usePortfolioSync";
-import { usePortfolioData } from "../context/PortfolioDataContext";
+import { usePortfolioExperience } from "../context/PortfolioDataContext";
 import {
   contentWidth,
   eyebrow,
@@ -41,32 +39,11 @@ const typeConfig = {
 };
 
 export default function PortfolioExperience() {
-  const { experience: cachedExperience } = usePortfolioData();
-  const [experienceList, setExperienceList] = useState(() => cachedExperience || []);
-  const [loading, setLoading] = useState(() => !cachedExperience || cachedExperience.length === 0);
+  const { experience: cachedExperience } = usePortfolioExperience();
+  const experienceList = cachedExperience || [];
+  const loading = experienceList.length === 0;
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
-
-  const loadExperience = useCallback(async () => {
-    try {
-      setLoading(true);
-      const live = await experienceApi.getAll();
-      if (Array.isArray(live)) {
-        setExperienceList(live);
-      }
-    } catch (err) {
-      console.warn("[PortfolioExperience] Failed to load experience:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadExperience();
-  }, [loadExperience]);
-
-  // Real-time synchronization whenever experience is modified in Admin
-  usePortfolioSync(loadExperience, "experience");
 
   return (
     <section
