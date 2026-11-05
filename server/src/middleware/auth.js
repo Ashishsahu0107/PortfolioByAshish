@@ -30,7 +30,8 @@ export async function authMiddleware(req, res, next) {
     }
 
     // Lookup user in persistent database (MongoDB)
-    const user = await UserModel.findById(decoded.userId);
+    const userId = decoded.userId || decoded.id;
+    const user = await UserModel.findById(userId);
 
     if (!user) {
       return res.status(401).json({
