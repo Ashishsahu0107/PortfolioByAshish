@@ -1,5 +1,6 @@
 import { AboutModel } from "../models/About.model.js";
 import { DeveloperModel } from "../models/Developer.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getAbout(req, res, next) {
   try {
@@ -27,6 +28,8 @@ export async function updateAbout(req, res, next) {
     if (Object.keys(devUpdates).length > 0) {
       await DeveloperModel.update(devUpdates);
     }
+
+    invalidatePortfolioCache();
 
     return res.json({
       success: true,

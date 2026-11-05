@@ -1,4 +1,5 @@
 import { SkillModel } from "../models/Skill.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getSkills(req, res, next) {
   try {
@@ -23,6 +24,7 @@ export async function updateSkills(req, res, next) {
     }
 
     const updated = await SkillModel.updateAll(skills);
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Skills updated successfully.",

@@ -1,5 +1,6 @@
 import { DeveloperModel } from "../models/Developer.model.js";
 import { AboutModel } from "../models/About.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getDeveloper(req, res, next) {
   try {
@@ -28,6 +29,7 @@ export async function updateDeveloper(req, res, next) {
       }
     }
 
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Developer / Hero information updated successfully.",

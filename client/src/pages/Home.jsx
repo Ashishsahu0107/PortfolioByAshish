@@ -10,6 +10,7 @@ import PortfolioFooter from "../components/PortfolioFooter";
 import { sectionsApi } from "../services/api";
 import { contentWidth, sectionSurface, eyebrow, sectionLede } from "../components/portfolioStyles";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { usePortfolioSections } from "../context/PortfolioDataContext";
 
 // Built-in section component mapping
 const SECTION_COMPONENTS = {
@@ -58,41 +59,12 @@ function DynamicCustomSection({ section }) {
 }
 
 export default function Home() {
-  const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  const loadDynamicSections = useCallback(async () => {
-    try {
-      const liveSections = await sectionsApi.getAll(false); // only enabled sections
-      if (Array.isArray(liveSections)) {
-        setSections(liveSections);
-      }
-    } catch (err) {
-      console.warn("Could not fetch sections from database:", err.message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadDynamicSections();
-  }, [loadDynamicSections]);
+  const { sections, refreshSections } = usePortfolioSections();
 
   // Real-time synchronization whenever sections are enabled, disabled, reordered, or added in Admin
-  usePortfolioSync(loadDynamicSections, "sections");
+  usePortfolioSync(refreshSections, "sections");
 
-  if (loading && sections.length === 0) {
-    return (
-      <main id="main-content" className="min-h-screen bg-canvas flex items-center justify-center p-8">
-        <div className="flex flex-col items-center gap-3">
-          <div className="size-8 rounded-full border-2 border-action border-t-transparent animate-spin" />
-          <span className="font-mono text-xs uppercase tracking-wider text-secondary">Loading Portfolio...</span>
-        </div>
-      </main>
-    );
-  }
-
-  if (!loading && sections.length === 0) {
+  if (!sections || sections.length === 0) {
     return (
       <main id="main-content" className="min-h-screen bg-canvas flex items-center justify-center p-8">
         <div className="text-center max-w-md p-8 rounded-xl border border-border bg-surface">

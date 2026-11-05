@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { FormModel as Form, cleanDoc, cleanDocs } from "../db/schemas.js";
 
 export const FormModel = {
@@ -9,14 +10,23 @@ export const FormModel = {
   async findByIdOrSlug(idOrSlug) {
     if (!idOrSlug) return null;
     const term = String(idOrSlug).toLowerCase();
+    const isObjectId = mongoose.Types.ObjectId.isValid(idOrSlug);
     const doc = await Form.findOne({
-      $or: [{ id: idOrSlug }, { slug: term }],
+      $or: [
+        { id: idOrSlug },
+        { slug: term },
+        ...(isObjectId ? [{ _id: idOrSlug }] : []),
+      ],
     }).lean();
     return cleanDoc(doc);
   },
 
   async create(data) {
-    let cleanSlug = (data.slug || data.name || "form")
+    const payload = { ...data };
+    delete payload._id;
+    delete payload.__v;
+
+    let cleanSlug = (payload.slug || payload.name || "form")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
@@ -29,20 +39,20 @@ export const FormModel = {
       cleanSlug = `${cleanSlug}-${Math.random().toString(36).substring(2, 6)}`;
     }
 
-    const id = data.id || `form_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const id = payload.id || `form_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Form.create({
       id,
-      name: (data.name || "Untitled Form").trim(),
+      name: (payload.name || "Untitled Form").trim(),
       slug: cleanSlug,
-      description: data.description || "",
-      enabled: data.enabled !== undefined ? Boolean(data.enabled) : true,
-      submitButtonText: data.submitButtonText || "Submit",
+      description: payload.description || "",
+      enabled: payload.enabled !== undefined ? Boolean(payload.enabled) : true,
+      submitButtonText: payload.submitButtonText || "Submit",
       successMessage:
-        data.successMessage ||
+        payload.successMessage ||
         "Your submission has been received successfully.",
-      fields: Array.isArray(data.fields) ? data.fields : [],
+      fields: Array.isArray(payload.fields) ? payload.fields : [],
     });
-    return cleanDoc(created.toObject());
+    return cleanDoc(created);
   },
 
   async duplicate(id) {
@@ -69,7 +79,12 @@ export const FormModel = {
   },
 
   async update(id, updates) {
+    if (!id) return null;
     const payload = { ...updates };
+    delete payload._id;
+    delete payload.__v;
+    delete payload.id;
+
     if (payload.slug) {
       payload.slug = payload.slug
         .toLowerCase()
@@ -77,8 +92,14 @@ export const FormModel = {
         .replace(/^-|-$/g, "");
     }
 
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Form.findOneAndUpdate(
-      { id },
+      {
+        $or: [
+          { id },
+          ...(isObjectId ? [{ _id: id }] : []),
+        ],
+      },
       { ...payload, updatedAt: new Date() },
       { returnDocument: "after" }
     ).lean();
@@ -86,7 +107,14 @@ export const FormModel = {
   },
 
   async delete(id) {
-    const doc = await Form.findOneAndDelete({ id }).lean();
+    if (!id) return false;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const doc = await Form.findOneAndDelete({
+      $or: [
+        { id },
+        ...(isObjectId ? [{ _id: id }] : []),
+      ],
+    }).lean();
     return !!doc;
   },
 };

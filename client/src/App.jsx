@@ -19,6 +19,7 @@ import { useScrollProgress } from "./hooks/useScrollProgress";
 import { ResumeModalProvider } from "./resume-builder/context/ResumeModalContext";
 import { AuthProvider, ProtectedRoute } from "./auth/AuthContext";
 import { DeveloperProvider } from "./context/DeveloperContext";
+import { PortfolioDataProvider } from "./context/PortfolioDataContext";
 
 function ScrollProgress() {
   const progress = useScrollProgress();
@@ -177,11 +178,13 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <DeveloperProvider>
-          <ResumeModalProvider>
-            <AppContent theme={theme} toggleTheme={toggleTheme} />
-          </ResumeModalProvider>
-        </DeveloperProvider>
+        <PortfolioDataProvider>
+          <DeveloperProvider>
+            <ResumeModalProvider>
+              <AppContent theme={theme} toggleTheme={toggleTheme} />
+            </ResumeModalProvider>
+          </DeveloperProvider>
+        </PortfolioDataProvider>
       </AuthProvider>
     </BrowserRouter>
   );

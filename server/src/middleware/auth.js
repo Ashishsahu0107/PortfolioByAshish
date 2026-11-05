@@ -30,8 +30,15 @@ export async function authMiddleware(req, res, next) {
     }
 
     // Lookup user in persistent database (MongoDB)
-    const userId = decoded.userId || decoded.id;
-    const user = await UserModel.findById(userId);
+    const userId = decoded.userId || decoded.id || decoded._id || decoded.sub;
+    let user = null;
+    if (userId) {
+      user = await UserModel.findById(userId);
+    }
+    // Fallback: If userId didn't resolve directly but email is present in token, recover user
+    if (!user && decoded.email) {
+      user = await UserModel.findByEmail(decoded.email);
+    }
 
     if (!user) {
       return res.status(401).json({
@@ -42,7 +49,7 @@ export async function authMiddleware(req, res, next) {
 
     // Attach user to request (omit password hash)
     req.user = {
-      id: user.id,
+      id: user.id || user._id?.toString(),
       email: user.email,
       name: user.name,
       role: user.role,

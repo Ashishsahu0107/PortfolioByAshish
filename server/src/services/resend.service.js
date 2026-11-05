@@ -284,7 +284,11 @@ export async function sendContactNotificationEmail({
       fromEmail = "Portfolio Inquiries <onboarding@resend.dev>";
     }
 
-    const recipient = (to || "ashishsahu01072005@gmail.com").trim().toLowerCase();
+    const recipient = (to || process.env.OWNER_EMAIL || "").trim().toLowerCase();
+    if (!recipient) {
+      console.warn("[Resend] Notification skipped: No recipient email specified.");
+      return { success: false, reason: "Missing Recipient Email" };
+    }
     const safeName = (visitorName || "Portfolio Visitor").trim();
     const safeEmail = (visitorEmail || "").trim();
     const safeSubject = (subject || "New Portfolio Enquiry").trim();

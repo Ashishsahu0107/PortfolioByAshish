@@ -36,9 +36,8 @@ async function runMongoDBSeed() {
   await mongoose.connect(uri);
   console.log("Connected to MongoDB:", mongoose.connection.name);
 
-  // Clear existing collections
+  // Clear existing collections (preserving registered users)
   await Promise.all([
-    UserModel.deleteMany({}),
     DeveloperModel.deleteMany({}),
     AboutModel.deleteMany({}),
     SkillCategoryModel.deleteMany({}),
@@ -50,11 +49,23 @@ async function runMongoDBSeed() {
     MessageModel.deleteMany({}),
     ResumeModel.deleteMany({}),
   ]);
-  console.log("[SEED] Cleared existing MongoDB collections.");
+  console.log("[SEED] Cleared existing content collections.");
 
-  // 1. Users are registered through the secure OTP registration system
-  console.log("[SEED] User accounts are registered dynamically via OTP registration.");
-  console.log("[SEED] Created default root admin into MongoDB.");
+  // 1. Ensure at least one admin account exists in MongoDB
+  const userCount = await UserModel.countDocuments();
+  if (userCount === 0) {
+    const defaultPasswordHash = await bcrypt.hash("Admin@12345", 10);
+    await UserModel.create({
+      id: "user_root_admin",
+      name: "Ashish Sahu",
+      email: "ashishsahu01072005@gmail.com",
+      password: defaultPasswordHash,
+      role: "admin",
+    });
+    console.log("[SEED] Created default root admin into MongoDB (ashishsahu01072005@gmail.com).");
+  } else {
+    console.log(`[SEED] Preserved ${userCount} existing registered admin user(s).`);
+  }
 
   // 2. Developer profile
   await DeveloperModel.create(initialDeveloper);

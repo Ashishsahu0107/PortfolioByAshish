@@ -7,9 +7,13 @@ export const AboutModel = {
   },
 
   async update(updates) {
+    const payload = { ...updates };
+    delete payload._id;
+    delete payload.__v;
+
     const updated = await About.findOneAndUpdate(
       {},
-      { ...updates, updatedAt: new Date() },
+      { ...payload, updatedAt: new Date() },
       { returnDocument: "after", upsert: true }
     ).lean();
     return cleanDoc(updated);

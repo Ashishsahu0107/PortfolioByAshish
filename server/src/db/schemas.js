@@ -4,6 +4,10 @@ import mongoose from "mongoose";
 export function cleanDoc(doc) {
   if (!doc) return null;
   const obj = typeof doc.toObject === "function" ? doc.toObject() : { ...doc };
+  const rawId = doc._id || obj._id;
+  if (!obj.id && rawId) {
+    obj.id = rawId.toString();
+  }
   delete obj._id;
   delete obj.__v;
   return obj;

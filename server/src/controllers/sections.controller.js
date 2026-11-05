@@ -1,4 +1,5 @@
 import { SectionModel } from "../models/Section.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getSections(req, res, next) {
   try {
@@ -48,6 +49,7 @@ export async function createSection(req, res, next) {
     }
 
     const newSection = await SectionModel.create(req.body);
+    invalidatePortfolioCache();
     return res.status(201).json({
       success: true,
       message: "Custom section created successfully.",
@@ -64,6 +66,7 @@ export async function updateSection(req, res, next) {
     if (!updated) {
       return res.status(404).json({ success: false, message: "Section not found." });
     }
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Section updated successfully.",
@@ -84,6 +87,7 @@ export async function bulkUpdateSections(req, res, next) {
     }
 
     const saved = await SectionModel.bulkSave(req.body);
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Sections layout saved successfully.",
@@ -109,6 +113,7 @@ export async function deleteSection(req, res, next) {
     }
 
     await SectionModel.delete(req.params.id);
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: `Section "${section.name}" removed successfully.`,

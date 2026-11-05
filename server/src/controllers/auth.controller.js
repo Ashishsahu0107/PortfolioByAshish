@@ -13,17 +13,28 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  */
 export async function sendRegistrationOtp(req, res, next) {
   try {
-    const { email, name } = req.body;
-    const clientIp = req.headers["x-forwarded-for"] || req.socket?.remoteAddress || "127.0.0.1";
+    let rawEmail = req.body.email || req.body.userEmail || req.body.to || "";
+    let rawName = req.body.name || req.body.fullName || req.body.userName || "";
 
-    if (!email || !email.trim()) {
+    // Self-healing check if email and name were accidentally passed swapped
+    if (typeof rawName === "string" && rawName.includes("@") && !String(rawEmail).includes("@")) {
+      const temp = rawEmail;
+      rawEmail = rawName;
+      rawName = temp;
+    }
+
+    const xForwardedFor = req.headers["x-forwarded-for"];
+    const forwardIp = Array.isArray(xForwardedFor) ? xForwardedFor[0] : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
+    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
+
+    if (!rawEmail || !String(rawEmail).trim()) {
       return res.status(400).json({
         success: false,
         message: "Email address is required.",
       });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = String(rawEmail).trim().toLowerCase();
 
     if (!EMAIL_REGEX.test(cleanEmail)) {
       return res.status(400).json({
@@ -32,7 +43,8 @@ export async function sendRegistrationOtp(req, res, next) {
       });
     }
 
-    if (!name || name.trim().length < 2) {
+    const cleanName = String(rawName || "").trim();
+    if (!cleanName || cleanName.length < 2) {
       return res.status(400).json({
         success: false,
         message: "Please provide your full name (minimum 2 characters).",
@@ -62,40 +74,60 @@ export async function sendRegistrationOtp(req, res, next) {
     // Generate secure 6-digit numeric OTP (100000 - 999999)
     const plainOtp = OtpService.generate6DigitOtp();
 
-    // Persist hashed OTP in MongoDB with 10-minute validity and 60-second cooldown
-    const created = await OtpService.createOtp(
+    // Persist hashed OTP in MongoDB under this exact recipient email
+    await OtpService.createOtp(
       cleanEmail,
-      name.trim(),
+      cleanName,
       plainOtp,
       clientIp,
       "registration"
     );
 
-    // Send the OTP via Resend API
+    // Send the OTP via Resend API dynamically to the user's entered email
     let resendResult = null;
+    let sandboxNotice = null;
+
     try {
+      console.log(`[Resend OTP Dispatch] Dispatching 6-digit OTP to recipient: "${cleanEmail}" (from: "${config.resend.fromEmail}")`);
       resendResult = await sendOtpEmailViaResend({
         to: cleanEmail,
-        name: name.trim(),
+        name: cleanName,
         otp: plainOtp,
         expiryMinutes: 10,
       });
+      console.log(`[Resend OTP Dispatch] Successfully dispatched OTP to ${cleanEmail}. Resend message ID: ${resendResult.messageId}`);
     } catch (resendErr) {
-      console.error("[Resend OTP Dispatch Error]:", resendErr.message);
-      // Invalidate the created OTP so the user can retry without getting locked out
-      await OtpService.deleteOtp(cleanEmail);
-      return res.status(502).json({
-        success: false,
-        message: `Failed to dispatch OTP via Resend (${resendErr.message}). Please verify RESEND_API_KEY and verified sender settings.`,
-      });
+      console.warn(`[Resend OTP Dispatch Warning for ${cleanEmail}]:`, resendErr.message);
+
+      const isSandboxRestriction =
+        resendErr.resendError?.statusCode === 403 &&
+        (resendErr.message?.includes("only send testing emails") || resendErr.message?.includes("domain"));
+
+      if (config.nodeEnv === "development" && isSandboxRestriction) {
+        console.warn(`[Resend Sandbox Notice] Resend test domain (${config.resend.fromEmail}) requires custom domain verification to deliver to external inboxes.`);
+        console.log(`====================================================`);
+        console.log(`[DEV OTP CODE] Recipient: ${cleanEmail} | OTP: ${plainOtp}`);
+        console.log(`====================================================`);
+        sandboxNotice = `Resend sandbox active: custom domain verification needed to deliver to external inboxes. In dev mode, check backend console for OTP: ${plainOtp}`;
+      } else {
+        // Invalidate the created OTP so the user can retry without getting locked out
+        await OtpService.deleteOtp(cleanEmail);
+        return res.status(502).json({
+          success: false,
+          message: `Failed to dispatch OTP via Resend (${resendErr.message}).`,
+        });
+      }
     }
 
     return res.json({
       success: true,
-      message: `A 6-digit verification code has been dispatched via Resend to ${cleanEmail}.`,
+      message: sandboxNotice
+        ? `Verification code generated for ${cleanEmail}. ${sandboxNotice}`
+        : `A 6-digit verification code has been dispatched via Resend to ${cleanEmail}.`,
       email: cleanEmail,
       cooldownSeconds: 60,
       expiryMinutes: 10,
+      ...(config.nodeEnv === "development" && sandboxNotice ? { devOtp: plainOtp } : {}),
     });
   } catch (err) {
     next(err);
@@ -107,17 +139,18 @@ export async function sendRegistrationOtp(req, res, next) {
  */
 export async function verifyRegistrationOtp(req, res, next) {
   try {
-    const { email, otp } = req.body;
+    const rawEmail = req.body.email || req.body.userEmail;
+    const rawOtp = req.body.otp || req.body.code;
 
-    if (!email || !otp) {
+    if (!rawEmail || !rawOtp) {
       return res.status(400).json({
         success: false,
         message: "Email address and 6-digit verification code are required.",
       });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanOtp = String(otp).trim();
+    const cleanEmail = String(rawEmail).trim().toLowerCase();
+    const cleanOtp = String(rawOtp).trim();
 
     if (!/^\d{6}$/.test(cleanOtp)) {
       return res.status(400).json({
@@ -154,16 +187,17 @@ export async function verifyRegistrationOtp(req, res, next) {
  */
 export async function completeRegistration(req, res, next) {
   try {
-    const { email, name, password, confirmPassword, verificationToken } = req.body;
+    const rawEmail = req.body.email || req.body.userEmail;
+    const { name, password, confirmPassword, verificationToken } = req.body;
 
-    if (!email || !password || !verificationToken) {
+    if (!rawEmail || !password || !verificationToken) {
       return res.status(400).json({
         success: false,
         message: "Email, password, and verification token are required.",
       });
     }
 
-    const cleanEmail = email.trim().toLowerCase();
+    const cleanEmail = String(rawEmail).trim().toLowerCase();
 
     if (password.length < 8) {
       return res.status(400).json({
@@ -255,9 +289,11 @@ export async function login(req, res, next) {
       });
     }
 
+    const userId = user.id || user._id?.toString();
+
     // Sign JWT
     const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
+      { userId, email: user.email, role: user.role },
       config.jwtSecret,
       { expiresIn: config.jwtExpiresIn }
     );
@@ -267,7 +303,7 @@ export async function login(req, res, next) {
       message: "Authentication successful.",
       token,
       user: {
-        id: user.id,
+        id: userId,
         email: user.email,
         name: user.name,
         role: user.role,

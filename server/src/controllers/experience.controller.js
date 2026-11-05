@@ -1,4 +1,5 @@
 import { ExperienceModel } from "../models/Experience.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getExperience(req, res, next) {
   try {
@@ -35,6 +36,7 @@ export async function createExperience(req, res, next) {
     }
 
     const newItem = await ExperienceModel.create(req.body);
+    invalidatePortfolioCache();
     return res.status(201).json({
       success: true,
       message: "Experience entry created successfully.",
@@ -51,6 +53,7 @@ export async function updateExperience(req, res, next) {
     if (!updated) {
       return res.status(404).json({ success: false, message: "Experience entry not found." });
     }
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Experience entry updated successfully.",
@@ -71,6 +74,7 @@ export async function bulkUpdateExperience(req, res, next) {
     }
 
     const saved = await ExperienceModel.bulkSave(req.body);
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Experience records updated successfully.",
@@ -87,6 +91,7 @@ export async function deleteExperience(req, res, next) {
     if (!wasRemoved) {
       return res.status(404).json({ success: false, message: "Experience entry not found." });
     }
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Experience entry deleted successfully.",

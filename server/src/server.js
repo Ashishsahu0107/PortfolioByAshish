@@ -20,6 +20,16 @@ async function startServer() {
       console.log("-----------------------------------------");
     });
 
+    server.on("error", (err) => {
+      if (err.code === "EADDRINUSE") {
+        console.error(`\n[Server Error]: Port ${config.port} is already in use by another running process.`);
+        console.error(`Please terminate the existing process or set a different PORT in server/.env.\n`);
+      } else {
+        console.error("Server runtime error:", err);
+      }
+      process.exit(1);
+    });
+
     const shutdown = async (signal) => {
       console.log(`\nReceived ${signal}. Shutting down server gracefully...`);
       server.close(async () => {

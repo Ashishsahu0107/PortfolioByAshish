@@ -18,6 +18,9 @@ export const DeveloperModel = {
 
   async update(updates) {
     const payload = { ...updates };
+    delete payload._id;
+    delete payload.__v;
+
     if (payload.name) {
       const parts = payload.name.trim().split(/\s+/);
       payload.firstName = parts[0] || "";

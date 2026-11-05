@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { ResumeModel as Resume, cleanDoc, cleanDocs } from "../db/schemas.js";
 import { initialResumeTemplates, initialResumeData } from "../db/seedData.js";
 import { DeveloperModel } from "./Developer.model.js";
@@ -19,7 +20,10 @@ export const ResumeModelService = {
       if (!approved) {
         await Resume.findOneAndUpdate(
           { templateId: "modern" },
-          { isApproved: true, status: "approved", approvedAt: new Date() },
+          {
+            $set: { isApproved: true, status: "approved", approvedAt: new Date() },
+            $setOnInsert: { id: "resume_modern" },
+          },
           { upsert: true }
         );
       }
@@ -57,8 +61,14 @@ export const ResumeModelService = {
    */
   async getById(idOrTemplateId) {
     await this.ensureInitialResumes();
+    if (!idOrTemplateId) return null;
+    const isObjectId = mongoose.Types.ObjectId.isValid(idOrTemplateId);
     const resume = await Resume.findOne({
-      $or: [{ id: idOrTemplateId }, { templateId: idOrTemplateId }],
+      $or: [
+        { id: idOrTemplateId },
+        { templateId: idOrTemplateId },
+        ...(isObjectId ? [{ _id: idOrTemplateId }] : []),
+      ],
     }).lean();
     return cleanDoc(resume);
   },
@@ -93,7 +103,10 @@ export const ResumeModelService = {
     // 3. Mark the selected template as approved
     let approved = await Resume.findOneAndUpdate(
       { templateId },
-      { $set: updatePayload },
+      {
+        $set: updatePayload,
+        $setOnInsert: { id: `resume_${templateId}` },
+      },
       { returnDocument: "after", upsert: true }
     ).lean();
 
@@ -134,7 +147,10 @@ export const ResumeModelService = {
 
     const updated = await Resume.findOneAndUpdate(
       { templateId },
-      { $set: payload },
+      {
+        $set: payload,
+        $setOnInsert: { id: `resume_${templateId}` },
+      },
       { returnDocument: "after", upsert: true }
     ).lean();
 

@@ -10,14 +10,19 @@ export const SkillModel = {
     if (!Array.isArray(categories)) {
       throw new Error("Categories payload must be an array");
     }
+    const sanitized = categories.map((c, idx) => {
+      const copy = { ...c };
+      delete copy._id;
+      delete copy.__v;
+      return {
+        ...copy,
+        id: copy.id || `skill_${idx}`,
+        order: copy.order !== undefined ? copy.order : idx,
+      };
+    });
+
     await SkillCategory.deleteMany({});
-    const inserted = await SkillCategory.insertMany(
-      categories.map((c, idx) => ({
-        ...c,
-        id: c.id || `skill_${idx}`,
-        order: c.order !== undefined ? c.order : idx,
-      }))
-    );
-    return cleanDocs(inserted.map((s) => s.toObject()));
+    const inserted = await SkillCategory.insertMany(sanitized);
+    return cleanDocs(inserted);
   },
 };

@@ -1,4 +1,5 @@
 import { ProjectModel } from "../models/Project.model.js";
+import { invalidatePortfolioCache } from "./bundle.controller.js";
 
 export async function getProjects(req, res, next) {
   try {
@@ -35,6 +36,7 @@ export async function createProject(req, res, next) {
     }
 
     const newProject = await ProjectModel.create(req.body);
+    invalidatePortfolioCache();
     return res.status(201).json({
       success: true,
       message: "Project created successfully.",
@@ -51,6 +53,7 @@ export async function updateProject(req, res, next) {
     if (!updated) {
       return res.status(404).json({ success: false, message: "Project not found." });
     }
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Project updated successfully.",
@@ -71,6 +74,7 @@ export async function bulkUpdateProjects(req, res, next) {
     }
 
     const saved = await ProjectModel.bulkSave(req.body);
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "All projects saved successfully.",
@@ -87,6 +91,7 @@ export async function deleteProject(req, res, next) {
     if (!wasRemoved) {
       return res.status(404).json({ success: false, message: "Project not found." });
     }
+    invalidatePortfolioCache();
     return res.json({
       success: true,
       message: "Project deleted successfully.",

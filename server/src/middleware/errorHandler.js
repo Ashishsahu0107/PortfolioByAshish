@@ -1,7 +1,10 @@
 export function errorHandler(err, req, res, next) {
   console.error("API Server Error:", err);
 
-  const statusCode = err.statusCode || 500;
+  const statusCode =
+    err.statusCode ||
+    err.status ||
+    (err.name === "MulterError" || err.name === "ValidationError" ? 400 : 500);
   const message = err.message || "Internal Server Error";
 
   res.status(statusCode).json({

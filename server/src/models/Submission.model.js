@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { SubmissionModel as Submission, cleanDoc, cleanDocs } from "../db/schemas.js";
 
 export const SubmissionModel = {
@@ -18,17 +19,28 @@ export const SubmissionModel = {
   },
 
   async create(data) {
-    const id = data.id || `sub_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const payload = { ...data };
+    delete payload._id;
+    delete payload.__v;
+
+    const id = payload.id || `sub_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Submission.create({
-      ...data,
+      ...payload,
       id,
       submittedAt: new Date(),
     });
-    return cleanDoc(created.toObject());
+    return cleanDoc(created);
   },
 
   async delete(id) {
-    const doc = await Submission.findOneAndDelete({ id }).lean();
+    if (!id) return false;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const doc = await Submission.findOneAndDelete({
+      $or: [
+        { id },
+        ...(isObjectId ? [{ _id: id }] : []),
+      ],
+    }).lean();
     return !!doc;
   },
 };

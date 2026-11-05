@@ -210,7 +210,7 @@ export default function RegisterPage() {
     toast.loading(`Sending verification code to ${targetEmail}...`, { id: "reg-page-otp-send" });
 
     try {
-      const res = await authApi.sendOtp(name.trim(), targetEmail);
+      const res = await authApi.sendOtp({ email: targetEmail, name: name.trim() });
       if (res.success) {
         setStep(2);
         setExpirySeconds((res.expiryMinutes || 10) * 60);
@@ -218,7 +218,11 @@ export default function RegisterPage() {
         setOtpDigits(["", "", "", "", "", ""]);
         const notice = res.message || `A 6-digit verification code has been dispatched via Resend to ${targetEmail}.`;
         setSuccessNotice(notice);
-        toast.success(notice, { id: "reg-page-otp-send" });
+        if (res.devOtp) {
+          toast.success(`Verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`, { id: "reg-page-otp-send", duration: 8000 });
+        } else {
+          toast.success(notice, { id: "reg-page-otp-send" });
+        }
       } else {
         throw new Error(res.message || "Failed to dispatch verification code via Resend.");
       }
@@ -244,14 +248,18 @@ export default function RegisterPage() {
     toast.loading(`Resending verification code to ${targetEmail}...`, { id: "reg-page-otp-resend" });
 
     try {
-      const res = await authApi.sendOtp(name.trim(), targetEmail);
+      const res = await authApi.sendOtp({ email: targetEmail, name: name.trim() });
       if (res.success) {
         setExpirySeconds((res.expiryMinutes || 10) * 60);
         setCooldownSeconds(res.cooldownSeconds || 60);
         setOtpDigits(["", "", "", "", "", ""]);
         const notice = res.message || `A new 6-digit verification code has been dispatched to ${targetEmail}.`;
         setSuccessNotice(notice);
-        toast.success(notice, { id: "reg-page-otp-resend" });
+        if (res.devOtp) {
+          toast.success(`New verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`, { id: "reg-page-otp-resend", duration: 8000 });
+        } else {
+          toast.success(notice, { id: "reg-page-otp-resend" });
+        }
         otpInputRefs[0].current?.focus();
       }
     } catch (err) {

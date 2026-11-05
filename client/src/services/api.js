@@ -79,23 +79,34 @@ async function request(endpoint, options = {}) {
 // Authentication API
 // -------------------------------------------------------------
 export const authApi = {
-  sendOtp: async (nameOrPayload, maybeEmail) => {
+  sendOtp: async (arg1, arg2) => {
     let name = "";
     let email = "";
-    if (typeof nameOrPayload === "object" && nameOrPayload !== null) {
-      name = nameOrPayload.name || "";
-      email = nameOrPayload.email || "";
-    } else if (typeof maybeEmail === "string") {
-      name = nameOrPayload;
-      email = maybeEmail;
+
+    if (typeof arg1 === "object" && arg1 !== null) {
+      email = arg1.email || arg1.userEmail || arg1.to || "";
+      name = arg1.name || arg1.fullName || "";
+    } else if (typeof arg1 === "string" && arg1.includes("@")) {
+      // First arg is email: sendOtp(email, name)
+      email = arg1;
+      name = typeof arg2 === "string" ? arg2 : "";
+    } else if (typeof arg2 === "string" && arg2.includes("@")) {
+      // Second arg is email: sendOtp(name, email)
+      name = typeof arg1 === "string" ? arg1 : "";
+      email = arg2;
     } else {
-      email = nameOrPayload;
+      email = typeof arg1 === "string" ? arg1 : (typeof arg2 === "string" ? arg2 : "");
+      name = typeof arg2 === "string" ? arg2 : "";
     }
+
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    const cleanName = String(name || "").trim();
+
     return request("/auth/send-otp", {
       method: "POST",
       body: JSON.stringify({
-        name: typeof name === "string" ? name.trim() : "",
-        email: typeof email === "string" ? email.trim().toLowerCase() : "",
+        email: cleanEmail,
+        name: cleanName,
       }),
     });
   },
@@ -103,7 +114,7 @@ export const authApi = {
     let email = "";
     let otp = "";
     if (typeof emailOrPayload === "object" && emailOrPayload !== null) {
-      email = emailOrPayload.email || "";
+      email = emailOrPayload.email || emailOrPayload.userEmail || "";
       otp = emailOrPayload.otp || "";
     } else {
       email = emailOrPayload;
@@ -472,4 +483,14 @@ export const resumeApi = {
     return `${API_BASE}/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`;
   },
 };
+
+// -------------------------------------------------------------
+// Combined Instant Portfolio Bundle API
+// -------------------------------------------------------------
+export const portfolioApi = {
+  getBundle: async () => {
+    return request("/portfolio-bundle");
+  },
+};
+
 

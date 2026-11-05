@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { MessageModel as Message, cleanDoc, cleanDocs } from "../db/schemas.js";
 
 export const MessageModel = {
@@ -7,28 +8,46 @@ export const MessageModel = {
   },
 
   async findById(id) {
-    const doc = await Message.findOne({ id }).lean();
+    if (!id) return null;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const doc = await Message.findOne({
+      $or: [
+        { id },
+        ...(isObjectId ? [{ _id: id }] : []),
+      ],
+    }).lean();
     return cleanDoc(doc);
   },
 
   async create(data) {
-    const id = data.id || `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const payload = { ...data };
+    delete payload._id;
+    delete payload.__v;
+
+    const id = payload.id || `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Message.create({
       id,
-      name: data.name ? data.name.trim() : "",
-      email: data.email ? data.email.trim().toLowerCase() : "",
-      subject: data.subject ? data.subject.trim() : "Portfolio Contact Inquiry",
-      message: data.message ? data.message.trim() : "",
+      name: payload.name ? payload.name.trim() : "",
+      email: payload.email ? payload.email.trim().toLowerCase() : "",
+      subject: payload.subject ? payload.subject.trim() : "Portfolio Contact Inquiry",
+      message: payload.message ? payload.message.trim() : "",
       read: false,
-      ip: data.ip || "127.0.0.1",
+      ip: String(payload.ip || "127.0.0.1"),
       receivedAt: new Date(),
     });
-    return cleanDoc(created.toObject());
+    return cleanDoc(created);
   },
 
   async markRead(id, readStatus = true) {
+    if (!id) return null;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Message.findOneAndUpdate(
-      { id },
+      {
+        $or: [
+          { id },
+          ...(isObjectId ? [{ _id: id }] : []),
+        ],
+      },
       { read: readStatus },
       { returnDocument: "after" }
     ).lean();
@@ -36,7 +55,14 @@ export const MessageModel = {
   },
 
   async delete(id) {
-    const doc = await Message.findOneAndDelete({ id }).lean();
+    if (!id) return false;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const doc = await Message.findOneAndDelete({
+      $or: [
+        { id },
+        ...(isObjectId ? [{ _id: id }] : []),
+      ],
+    }).lean();
     return !!doc;
   },
 };

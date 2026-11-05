@@ -41,8 +41,19 @@ async function autoSeedIfEmpty() {
   console.log("[MongoDB] Empty database detected. Seeding initial data into MongoDB...");
   console.log("==========================================");
 
-  // 1. Users are registered through the secure OTP registration system
-  console.log("[MongoDB Seed] Admin accounts are created dynamically via OTP registration.");
+  // 1. Ensure root admin exists
+  const userCount = await UserModel.countDocuments();
+  if (userCount === 0) {
+    const defaultPasswordHash = await bcrypt.hash("Admin@12345", 10);
+    await UserModel.create({
+      id: "user_root_admin",
+      name: "Ashish Sahu",
+      email: "ashishsahu01072005@gmail.com",
+      password: defaultPasswordHash,
+      role: "admin",
+    });
+    console.log("[MongoDB Seed] Created default admin account (ashishsahu01072005@gmail.com).");
+  }
 
   // 2. Developer
   await DeveloperModel.create(initialDeveloper);

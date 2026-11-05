@@ -241,11 +241,11 @@ export async function submitForm(req, res, next) {
       });
     }
 
-    const clientIp =
-      req.ip ||
-      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-      req.socket?.remoteAddress ||
-      "127.0.0.1";
+    const xForwardedFor = req.headers["x-forwarded-for"];
+    const forwardIp = Array.isArray(xForwardedFor)
+      ? xForwardedFor[0]
+      : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
+    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
 
     const submission = await SubmissionModel.create({
       formId: form.id,
@@ -259,7 +259,7 @@ export async function submitForm(req, res, next) {
     // Fire email notification to owner if notification is enabled
     try {
       const dev = await DeveloperModel.get().catch(() => null);
-      const ownerEmail = dev?.email || "ashishsahu01072005@gmail.com";
+      const ownerEmail = dev?.email || process.env.OWNER_EMAIL || "";
       const visitorName = payload.name || payload.fullName || payload.username || "Form Visitor";
       const visitorEmail = payload.email || "";
 
@@ -268,13 +268,15 @@ export async function submitForm(req, res, next) {
         .map(([k, v]) => `${k}: ${v}`)
         .join("\n");
 
-      sendContactNotificationEmail({
-        to: ownerEmail,
-        visitorName,
-        visitorEmail: visitorEmail || "noreply@portfolio.com",
-        subject: `[Form Response] ${form.name}`,
-        message: `New response received on form "${form.name}" (/${form.slug}):\n\n${summaryText}`,
-      }).catch(() => {});
+      if (ownerEmail) {
+        sendContactNotificationEmail({
+          to: ownerEmail,
+          visitorName,
+          visitorEmail: visitorEmail || "noreply@portfolio.com",
+          subject: `[Form Response] ${form.name}`,
+          message: `New response received on form "${form.name}" (/${form.slug}):\n\n${summaryText}`,
+        }).catch(() => {});
+      }
     } catch {
       // Non-blocking notification dispatch
     }

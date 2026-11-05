@@ -3,6 +3,7 @@ import { Award, Briefcase, FolderOpen, GraduationCap } from "lucide-react";
 import { experienceApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { usePortfolioData } from "../context/PortfolioDataContext";
 import {
   contentWidth,
   eyebrow,
@@ -40,8 +41,9 @@ const typeConfig = {
 };
 
 export default function PortfolioExperience() {
-  const [experienceList, setExperienceList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { experience: cachedExperience } = usePortfolioData();
+  const [experienceList, setExperienceList] = useState(() => cachedExperience || []);
+  const [loading, setLoading] = useState(() => !cachedExperience || cachedExperience.length === 0);
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
 

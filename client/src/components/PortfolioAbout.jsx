@@ -22,6 +22,7 @@ import {
 import { useResumeModal } from "../resume-builder/context/ResumeModalContext";
 import { aboutApi } from "../services/api";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { usePortfolioData } from "../context/PortfolioDataContext";
 
 const iconMap = {
   Code2,
@@ -36,8 +37,18 @@ const iconMap = {
 
 export default function PortfolioAbout() {
   const { developer } = useDeveloper();
-  const [aboutData, setAboutData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { about: contextAbout } = usePortfolioData();
+  const [aboutData, setAboutData] = useState(() => {
+    if (!contextAbout) return null;
+    return {
+      bio: contextAbout.bio || developer?.bio || "",
+      philosophy: contextAbout.philosophy || developer?.philosophy || "",
+      github: contextAbout.github || developer?.github || "",
+      focusAreas: Array.isArray(contextAbout.focusAreas) ? contextAbout.focusAreas : [],
+      stats: Array.isArray(contextAbout.stats) && contextAbout.stats.length > 0 ? contextAbout.stats : (developer?.stats || []),
+    };
+  });
+  const [loading, setLoading] = useState(() => !aboutData);
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
   const { openResumeModal } = useResumeModal();

@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { UserModel as User, cleanDoc, cleanDocs } from "../db/schemas.js";
 
 export const UserModel = {
@@ -14,14 +15,30 @@ export const UserModel = {
   },
 
   async findById(id) {
-    const user = await User.findOne({ id }).lean();
+    if (!id) return null;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const user = await User.findOne({
+      $or: [
+        { id },
+        ...(isObjectId ? [{ _id: id }] : []),
+        ...(typeof id === "string" && id.includes("@") ? [{ email: id.toLowerCase().trim() }] : []),
+      ],
+    }).lean();
     return cleanDoc(user);
   },
 
   async updatePassword(id, newHashedPassword) {
+    if (!id) return null;
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await User.findOneAndUpdate(
-      { id },
-      { password: newHashedPassword },
+      {
+        $or: [
+          { id },
+          ...(isObjectId ? [{ _id: id }] : []),
+          ...(typeof id === "string" && id.includes("@") ? [{ email: id.toLowerCase().trim() }] : []),
+        ],
+      },
+      { password: newHashedPassword, updatedAt: new Date() },
       { returnDocument: "after" }
     ).lean();
     return cleanDoc(updated);

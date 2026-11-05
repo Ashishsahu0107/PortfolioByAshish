@@ -104,11 +104,11 @@ export async function sendMessage(req, res, next) {
       });
     }
 
-    const clientIp =
-      req.ip ||
-      req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
-      req.socket?.remoteAddress ||
-      "127.0.0.1";
+    const xForwardedFor = req.headers["x-forwarded-for"];
+    const forwardIp = Array.isArray(xForwardedFor)
+      ? xForwardedFor[0]
+      : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
+    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
 
     const newMessage = await MessageModel.create({
       name: cleanName,
@@ -121,16 +121,18 @@ export async function sendMessage(req, res, next) {
     // Fire non-blocking email notification to portfolio owner
     try {
       const dev = await DeveloperModel.get().catch(() => null);
-      const ownerEmail = dev?.email || "ashishsahu01072005@gmail.com";
-      sendContactNotificationEmail({
-        to: ownerEmail,
-        visitorName: cleanName,
-        visitorEmail: cleanEmail,
-        subject: cleanSubject,
-        message: cleanMessage,
-      }).catch((emailErr) => {
-        console.warn("[Contact Controller] Resend notification delivery failed:", emailErr?.message);
-      });
+      const ownerEmail = dev?.email || process.env.OWNER_EMAIL || "";
+      if (ownerEmail) {
+        sendContactNotificationEmail({
+          to: ownerEmail,
+          visitorName: cleanName,
+          visitorEmail: cleanEmail,
+          subject: cleanSubject,
+          message: cleanMessage,
+        }).catch((emailErr) => {
+          console.warn("[Contact Controller] Resend notification delivery failed:", emailErr?.message);
+        });
+      }
     } catch (dispatchErr) {
       console.warn("[Contact Controller] Resend notification dispatch failed:", dispatchErr?.message);
     }

@@ -13,6 +13,7 @@ import {
 import { projectsApi } from "../services/api";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
+import { usePortfolioData } from "../context/PortfolioDataContext";
 import {
   contentWidth,
   eyebrow,
@@ -24,8 +25,9 @@ import {
 const AUTO_SLIDE_INTERVAL = 3800; // 3.8 seconds auto slide
 
 export default function PortfolioProjects() {
-  const [projectList, setProjectList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { projects: cachedProjects } = usePortfolioData();
+  const [projectList, setProjectList] = useState(() => cachedProjects || []);
+  const [loading, setLoading] = useState(() => !cachedProjects || cachedProjects.length === 0);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef(null);
