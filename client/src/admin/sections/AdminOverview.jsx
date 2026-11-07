@@ -272,46 +272,112 @@ export default function AdminOverview() {
 
       {/* Projects table */}
       <AdminCard title="Recent Projects from Database" icon={Layers}>
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
-          <table className="w-full border-collapse text-sm">
+        {/* Mobile View: Clean Stacked Cards */}
+        <div className="block md:hidden space-y-3">
+          {recentProjects.length === 0 ? (
+            <div className="p-6 text-center text-sm text-zinc-500">
+              No recent projects found.
+            </div>
+          ) : (
+            recentProjects.map((p) => (
+              <div
+                key={p.id}
+                className="bg-zinc-950/70 border border-zinc-800/90 rounded-xl p-3.5 space-y-2"
+              >
+                <div className="flex items-center justify-between gap-2 border-b border-zinc-800/60 pb-2">
+                  <span className="font-mono text-xs font-bold text-zinc-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">
+                    #{p.number || "—"}
+                  </span>
+                  {p.year && (
+                    <span className="text-xs font-mono text-zinc-400 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800">
+                      {p.year}
+                    </span>
+                  )}
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-zinc-100 m-0">
+                    {p.title}
+                  </h4>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  {p.category && (
+                    <span className={badgeBlue}>{p.category}</span>
+                  )}
+                  {(p.tags || []).slice(0, 3).map((tag) => (
+                    <span key={tag} className={badgePurple}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Protected Min-width Table */}
+        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800/90 bg-zinc-950/60">
+          <table className="w-full min-w-[640px] border-collapse text-sm text-left">
             <thead>
-              <tr>
-                {["#", "Title", "Category", "Year", "Technologies"].map((h) => (
-                  <th
-                    key={h}
-                    className="bg-gray-50 text-gray-600 font-semibold px-4 py-2.5 text-left border-b border-gray-200 whitespace-nowrap"
-                  >
-                    {h}
-                  </th>
-                ))}
+              <tr className="border-b border-zinc-800 bg-zinc-900/90">
+                <th className="w-12 px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  #
+                </th>
+                <th className="min-w-[200px] px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Title
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Year
+                </th>
+                <th className="min-w-[180px] px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Technologies
+                </th>
               </tr>
             </thead>
-            <tbody>
-              {recentProjects.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-400 font-semibold">
-                    {p.number}
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100 font-semibold text-gray-900">
-                    {p.title}
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <span className={badgeBlue}>{p.category}</span>
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-700">
-                    {p.year}
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <div className="flex gap-1 flex-wrap">
-                      {(p.tags || []).slice(0, 3).map((tag) => (
-                        <span key={tag} className={badgePurple}>
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+            <tbody className="divide-y divide-zinc-800/60">
+              {recentProjects.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="px-4 py-6 text-center text-zinc-500"
+                  >
+                    No recent projects.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                recentProjects.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="hover:bg-zinc-850/50 transition-colors"
+                  >
+                    <td className="px-4 py-3 text-zinc-500 font-mono text-xs font-semibold">
+                      {p.number || "—"}
+                    </td>
+                    <td className="px-4 py-3 font-semibold text-zinc-100">
+                      {p.title}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={badgeBlue}>{p.category}</span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-zinc-400 font-mono text-xs">
+                      {p.year}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1.5 flex-wrap">
+                        {(p.tags || []).slice(0, 3).map((tag) => (
+                          <span key={tag} className={badgePurple}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

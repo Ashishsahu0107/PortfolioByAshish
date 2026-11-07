@@ -230,24 +230,24 @@ function FormModal({ form, onSave, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs"
+      className="fixed inset-0 bg-black/75 z-[500] flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
+        className="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-zinc-800 bg-zinc-950/80">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+            <div className="p-2 rounded-lg bg-zinc-800 text-cyan-400">
               {form.id ? <Pencil size={18} /> : <Plus size={18} />}
             </div>
             <div>
-              <h3 className="text-base font-bold text-gray-900 m-0">
+              <h3 className="text-base font-bold text-zinc-100 m-0">
                 {form.id ? `Edit: ${form.name}` : "Create Custom Form"}
               </h3>
-              <p className="text-xs text-gray-500 m-0 mt-0.5">
+              <p className="text-xs text-zinc-400 m-0 mt-0.5">
                 Configure field types, validation constraints, and public URL
                 slug.
               </p>
@@ -255,7 +255,7 @@ function FormModal({ form, onSave, onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X size={18} />
@@ -563,7 +563,7 @@ function FormModal({ form, onSave, onClose }) {
           </div>
 
           {/* Modal Footer Actions */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100 flex-wrap gap-2">
+          <div className="flex items-center justify-between pt-4 border-t border-zinc-800 flex-wrap gap-2">
             <button
               type="button"
               onClick={() => setShowPreview(!showPreview)}
@@ -1055,8 +1055,8 @@ export default function AdminFormBuilder() {
       desc="Create custom interactive forms, manage field schemas, share public links, and view visitor responses."
     >
       {/* Navigation Tabs */}
-      <div className="flex items-center justify-between gap-3 mb-6 flex-wrap">
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+        <div className="flex items-center gap-2 flex-wrap">
           <button
             type="button"
             onClick={() => setActiveTab("templates")}
@@ -1064,7 +1064,7 @@ export default function AdminFormBuilder() {
               "px-3.5 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all flex items-center gap-1.5",
               activeTab === "templates"
                 ? "bg-gradient-to-br from-indigo-600 to-blue-500 text-white border-transparent shadow-[0_3px_10px_rgba(79,70,229,0.3)]"
-                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50",
+                : "bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white",
             ].join(" ")}
           >
             <Layers size={13} />
@@ -1077,7 +1077,7 @@ export default function AdminFormBuilder() {
               "px-3.5 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer transition-all flex items-center gap-1.5",
               activeTab === "submissions"
                 ? "bg-gradient-to-br from-indigo-600 to-blue-500 text-white border-transparent shadow-[0_3px_10px_rgba(79,70,229,0.3)]"
-                : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50",
+                : "bg-zinc-900 text-zinc-300 border-zinc-800 hover:bg-zinc-800 hover:text-white",
             ].join(" ")}
           >
             <Inbox size={13} />
@@ -1088,7 +1088,7 @@ export default function AdminFormBuilder() {
         {activeTab === "templates" && (
           <button
             type="button"
-            className={`${btnPrimary} !px-3 !py-1.5 !text-xs cursor-pointer`}
+            className={`${btnPrimary} !px-3 !py-1.5 !text-xs cursor-pointer w-full sm:w-auto`}
             onClick={() => editModal.open({ ...EMPTY_FORM })}
           >
             <Plus size={13} />
@@ -1101,11 +1101,11 @@ export default function AdminFormBuilder() {
         /* Form Templates List */
         <div className="flex flex-col gap-4">
           {forms.length === 0 ? (
-            <div className="p-12 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-white">
-              <h3 className="text-base font-bold text-gray-800 mb-1">
+            <div className="p-12 text-center border-2 border-dashed border-zinc-800 rounded-2xl bg-zinc-950/60">
+              <h3 className="text-base font-bold text-zinc-200 mb-1">
                 No Custom Forms Yet
               </h3>
-              <p className="text-xs text-gray-500 max-w-sm mx-auto mb-5">
+              <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-5">
                 Create custom forms with text, email, phone, dropdowns, and file
                 upload fields to share with visitors.
               </p>
@@ -1125,41 +1125,41 @@ export default function AdminFormBuilder() {
               ).length;
 
               return (
-                <AdminCard key={f.id}>
-                  <div className="flex items-start justify-between gap-4 flex-wrap">
-                    <div className="flex-1 min-w-0">
+                <AdminCard
+                  key={f.id}
+                  className="transition-all hover:border-zinc-700/80"
+                >
+                  <div className="flex flex-col gap-3">
+                    {/* Header info */}
+                    <div>
                       {/* Title & Status Badges */}
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="text-base font-bold text-gray-900 m-0">
+                      <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                        <h3 className="text-base font-bold text-zinc-100 m-0">
                           {f.name}
                         </h3>
-                        <span className="font-mono text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
+                        <span className="font-mono text-xs text-zinc-400 bg-zinc-950 px-2 py-0.5 rounded border border-zinc-800">
                           slug: #{f.slug}
                         </span>
                         <button
                           type="button"
                           onClick={() => handleTogglePublish(f)}
-                          className={`text-xs px-2.5 py-0.5 rounded-full font-semibold cursor-pointer transition-all border ${
-                            f.enabled
-                              ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
-                              : "bg-gray-100 text-gray-600 border-gray-300 hover:bg-gray-200"
-                          }`}
+                          className={f.enabled ? badgeGreen : badgeOrange}
                           title="Click to toggle publish status"
                         >
                           {f.enabled ? "Live / Accepting" : "Draft / Paused"}
                         </button>
-                        <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 font-semibold">
+                        <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-zinc-950 text-zinc-400 border border-zinc-800 font-semibold">
                           {formSubmissionsCount} submissions
                         </span>
                       </div>
 
-                      <p className="text-xs text-gray-500 m-0 mb-3">
+                      <p className="text-xs text-zinc-400 m-0 mb-3 leading-relaxed">
                         {f.description || "Interactive portfolio custom form"}
                       </p>
 
                       {/* Fields Chips */}
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-xs font-semibold text-gray-400">
+                        <span className="text-xs font-semibold text-zinc-400">
                           Fields ({f.fields?.length || 0}):
                         </span>
                         {(f.fields || []).map((field, i) => (
@@ -1171,8 +1171,8 @@ export default function AdminFormBuilder() {
                       </div>
                     </div>
 
-                    {/* Actions Toolbar */}
-                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
+                    {/* Actions Toolbar - Sits at bottom, 100% width, cleanly wrapping pills */}
+                    <div className="pt-3 border-t border-zinc-800/80 flex items-center gap-2 flex-wrap">
                       <button
                         type="button"
                         onClick={() => copyShareLink(f.slug)}
@@ -1187,7 +1187,7 @@ export default function AdminFormBuilder() {
                         href={`/form/${f.slug}`}
                         target="_blank"
                         rel="noreferrer"
-                        className={`${btnSecondary} !px-2.5 !py-1 !text-xs cursor-pointer no-underline text-gray-700 hover:text-indigo-600`}
+                        className={`${btnSecondary} !px-2.5 !py-1 !text-xs cursor-pointer no-underline`}
                         title="Open in new tab"
                       >
                         <ExternalLink size={13} />
@@ -1244,10 +1244,10 @@ export default function AdminFormBuilder() {
         /* Submissions Management Tab */
         <AdminCard title="Form Submissions Inbox" icon={Inbox}>
           {/* Submissions Filter & Export Controls */}
-          <div className="flex items-center justify-between gap-3 mb-5 flex-wrap border-b border-gray-100 pb-4">
-            <div className="flex items-center gap-2 flex-wrap flex-1 min-w-[280px]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 border-b border-zinc-800 pb-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 flex-1 w-full flex-wrap">
               {/* Form Filter Selector */}
-              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-400">
                 <Filter size={13} />
                 <select
                   className={`${selectCls} !py-1 !text-xs`}
@@ -1267,7 +1267,7 @@ export default function AdminFormBuilder() {
               <div className="relative flex-1 min-w-[160px]">
                 <Search
                   size={13}
-                  className="absolute left-2.5 top-2.5 text-gray-400"
+                  className="absolute left-2.5 top-2.5 text-zinc-500"
                 />
                 <input
                   type="text"
@@ -1280,7 +1280,7 @@ export default function AdminFormBuilder() {
 
               {/* Sort Order */}
               <select
-                className={`${selectCls} !py-1 !text-xs`}
+                className={`${selectCls} !py-1 !text-xs sm:w-auto`}
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
               >
@@ -1290,7 +1290,7 @@ export default function AdminFormBuilder() {
             </div>
 
             {/* Export Buttons */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-end w-full sm:w-auto">
               <button
                 type="button"
                 onClick={exportToCsv}
@@ -1313,12 +1313,12 @@ export default function AdminFormBuilder() {
           </div>
 
           {filteredSubmissions.length === 0 ? (
-            <div className="py-12 text-center text-gray-400 text-sm">
-              <Inbox size={32} className="mx-auto mb-2 text-gray-300" />
+            <div className="py-12 text-center text-zinc-500 text-sm">
+              <Inbox size={32} className="mx-auto mb-2 text-zinc-600" />
               <p className="m-0">
                 No submissions matching current filter criteria.
               </p>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-zinc-500">
                 Visitor responses will be listed here automatically.
               </span>
             </div>
@@ -1327,19 +1327,19 @@ export default function AdminFormBuilder() {
               {filteredSubmissions.map((sub) => (
                 <div
                   key={sub.id}
-                  className="p-4 rounded-xl border border-gray-200 bg-white hover:border-indigo-200 transition-all shadow-xs"
+                  className="p-4 rounded-xl border border-zinc-800/90 bg-zinc-950/70 hover:border-zinc-700/80 transition-all shadow-xs space-y-3"
                 >
-                  <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
+                  <div className="flex items-start justify-between gap-2 border-b border-zinc-800/60 pb-2.5 flex-wrap">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className={badgePurple}>
                         {sub.formName || sub.formSlug}
                       </span>
-                      <span className="text-xs font-mono text-gray-500">
+                      <span className="text-xs font-mono text-zinc-400">
                         {new Date(
                           sub.submittedAt || sub.createdAt,
                         ).toLocaleString()}
                       </span>
-                      <span className="text-[10px] text-gray-400 font-mono">
+                      <span className="text-[10px] text-zinc-500 font-mono">
                         IP: {sub.ip}
                       </span>
                     </div>
@@ -1348,7 +1348,7 @@ export default function AdminFormBuilder() {
                       <button
                         type="button"
                         onClick={() => viewSubModal.open(sub)}
-                        className={`${btnSecondary} !px-2 !py-1 !text-xs cursor-pointer`}
+                        className={`${btnSecondary} !px-2.5 !py-1 !text-xs cursor-pointer`}
                         title="View Full Details"
                       >
                         <Eye size={12} />
@@ -1367,13 +1367,13 @@ export default function AdminFormBuilder() {
                   </div>
 
                   {/* Submission Fields Grid */}
-                  <div className="bg-gray-50/80 rounded-lg p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="bg-zinc-900/80 border border-zinc-800/60 rounded-lg p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {Object.entries(sub.data || {}).map(([key, val]) => (
                       <div key={key} className="flex gap-2 min-w-0">
-                        <strong className="text-gray-500 capitalize w-28 shrink-0">
+                        <strong className="text-zinc-400 capitalize w-28 shrink-0">
                           {key}:
                         </strong>
-                        <span className="text-gray-800 break-all">
+                        <span className="text-zinc-200 break-all">
                           {String(val)}
                         </span>
                       </div>
@@ -1382,8 +1382,8 @@ export default function AdminFormBuilder() {
 
                   {/* File Upload Attachments */}
                   {Array.isArray(sub.files) && sub.files.length > 0 && (
-                    <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-semibold text-gray-500 flex items-center gap-1">
+                    <div className="mt-3 pt-2.5 border-t border-zinc-800/80 flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-semibold text-zinc-400 flex items-center gap-1">
                         <Paperclip size={13} />
                         <span>Attached Files:</span>
                       </span>
@@ -1393,11 +1393,11 @@ export default function AdminFormBuilder() {
                           href={file.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-50 border border-indigo-200 text-xs font-mono font-medium text-indigo-700 hover:bg-indigo-100 transition-colors no-underline"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-zinc-900 border border-zinc-700 text-xs font-mono font-medium text-cyan-300 hover:bg-zinc-800 transition-colors no-underline"
                         >
                           <Download size={11} />
                           <span>{file.originalName || file.filename}</span>
-                          <span className="text-[10px] text-indigo-400">
+                          <span className="text-[10px] text-zinc-500">
                             ({(file.size / 1024).toFixed(1)} KB)
                           </span>
                         </a>
@@ -1451,54 +1451,60 @@ export default function AdminFormBuilder() {
       {/* View Full Submission Modal */}
       {viewSubModal.modal && (
         <div
-          className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs"
+          className="fixed inset-0 bg-black/75 z-[500] flex items-center justify-center p-3 sm:p-4 backdrop-blur-xs"
           onClick={viewSubModal.close}
         >
           <div
-            className="bg-white rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
+            className="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-zinc-800 bg-zinc-950/80">
               <div>
-                <h3 className="text-base font-bold text-gray-900 m-0">
+                <h3 className="text-base font-bold text-zinc-100 m-0">
                   Submission Record
                 </h3>
-                <span className="text-xs font-mono text-gray-500">
+                <span className="text-xs font-mono text-zinc-400">
                   ID: {viewSubModal.modal.id}
                 </span>
               </div>
               <button
                 onClick={viewSubModal.close}
-                className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200 cursor-pointer"
+                className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 cursor-pointer"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto space-y-4">
-              <div className="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-3 rounded-lg border border-gray-200">
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-4">
+              <div className="grid grid-cols-2 gap-2 text-xs bg-zinc-950/80 p-3 rounded-lg border border-zinc-800">
                 <div>
-                  <strong className="text-gray-500">Form:</strong>{" "}
-                  {viewSubModal.modal.formName}
+                  <strong className="text-zinc-400">Form:</strong>{" "}
+                  <span className="text-zinc-200">
+                    {viewSubModal.modal.formName}
+                  </span>
                 </div>
                 <div>
-                  <strong className="text-gray-500">Slug:</strong> #
-                  {viewSubModal.modal.formSlug}
+                  <strong className="text-zinc-400">Slug:</strong>{" "}
+                  <span className="text-zinc-200">
+                    #{viewSubModal.modal.formSlug}
+                  </span>
                 </div>
                 <div>
-                  <strong className="text-gray-500">Date:</strong>{" "}
-                  {new Date(
-                    viewSubModal.modal.submittedAt ||
-                      viewSubModal.modal.createdAt,
-                  ).toLocaleString()}
+                  <strong className="text-zinc-400">Date:</strong>{" "}
+                  <span className="text-zinc-200">
+                    {new Date(
+                      viewSubModal.modal.submittedAt ||
+                        viewSubModal.modal.createdAt,
+                    ).toLocaleString()}
+                  </span>
                 </div>
                 <div>
-                  <strong className="text-gray-500">IP Address:</strong>{" "}
-                  {viewSubModal.modal.ip}
+                  <strong className="text-zinc-400">IP Address:</strong>{" "}
+                  <span className="text-zinc-200">{viewSubModal.modal.ip}</span>
                 </div>
               </div>
 
               <div>
-                <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
                   Response Payload:
                 </h4>
                 <div className="space-y-2">
@@ -1506,12 +1512,12 @@ export default function AdminFormBuilder() {
                     ([k, v]) => (
                       <div
                         key={k}
-                        className="p-2.5 rounded bg-white border border-gray-200 text-xs"
+                        className="p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs"
                       >
-                        <div className="font-semibold text-indigo-700 capitalize mb-0.5">
+                        <div className="font-semibold text-cyan-400 capitalize mb-0.5">
                           {k}:
                         </div>
-                        <div className="text-gray-800 whitespace-pre-wrap">
+                        <div className="text-zinc-200 whitespace-pre-wrap">
                           {String(v)}
                         </div>
                       </div>
@@ -1523,7 +1529,7 @@ export default function AdminFormBuilder() {
               {Array.isArray(viewSubModal.modal.files) &&
                 viewSubModal.modal.files.length > 0 && (
                   <div>
-                    <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                    <h4 className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-2">
                       Uploaded Files:
                     </h4>
                     <div className="space-y-2">
@@ -1533,12 +1539,12 @@ export default function AdminFormBuilder() {
                           href={file.url}
                           target="_blank"
                           rel="noreferrer"
-                          className="flex items-center justify-between p-2.5 rounded bg-indigo-50/60 border border-indigo-200 text-xs text-indigo-800 hover:bg-indigo-100 transition-colors no-underline"
+                          className="flex items-center justify-between p-2.5 rounded-lg bg-zinc-950 border border-zinc-800 text-xs text-cyan-300 hover:bg-zinc-800 transition-colors no-underline"
                         >
                           <span className="font-mono font-medium truncate">
                             {file.originalName || file.filename}
                           </span>
-                          <span className="shrink-0 font-mono text-[10px] text-indigo-500 flex items-center gap-1">
+                          <span className="shrink-0 font-mono text-[10px] text-zinc-400 flex items-center gap-1">
                             <Download size={11} /> Download
                           </span>
                         </a>
@@ -1547,7 +1553,7 @@ export default function AdminFormBuilder() {
                   </div>
                 )}
             </div>
-            <div className="px-6 py-3 border-t border-gray-100 flex justify-end bg-gray-50">
+            <div className="px-5 sm:px-6 py-3 border-t border-zinc-800 flex justify-end bg-zinc-950/80">
               <button
                 type="button"
                 className={btnSecondary}

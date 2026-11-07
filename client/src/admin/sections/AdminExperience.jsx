@@ -70,27 +70,27 @@ function ExperienceModal({ entry, onSave, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/45 z-[500] flex items-center justify-center p-5"
+      className="fixed inset-0 bg-black/75 z-[500] backdrop-blur-xs flex items-center justify-center p-3 sm:p-5"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-7 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl p-4 sm:p-7 w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2 text-gray-900">
+        <div className="flex items-center justify-between mb-5 border-b border-zinc-800/80 pb-3">
+          <div className="flex items-center gap-2 text-zinc-100">
             {entry.id ? (
-              <Pencil size={18} className="text-indigo-600 shrink-0" />
+              <Pencil size={18} className="text-cyan-400 shrink-0" />
             ) : (
-              <Plus size={18} className="text-indigo-600 shrink-0" />
+              <Plus size={18} className="text-cyan-400 shrink-0" />
             )}
-            <h3 className="text-lg font-bold m-0">
+            <h3 className="text-base sm:text-lg font-bold m-0 text-zinc-100">
               {entry.id ? "Edit Entry" : "Add Entry"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="bg-gray-100 hover:bg-gray-200 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-gray-500 transition-colors"
+            className="bg-zinc-800 hover:bg-zinc-700 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors"
             aria-label="Close"
           >
             <X size={16} />
@@ -175,7 +175,7 @@ function ExperienceModal({ entry, onSave, onClose }) {
               />
             </FormGroup>
           </div>
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-800/80">
             <button
               type="button"
               className={btnSecondary}
@@ -264,8 +264,8 @@ export default function AdminExperience() {
         title="Experience"
         desc="Loading experience data from backend server..."
       >
-        <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
-          <Loader2 size={20} className="animate-spin text-indigo-600" />
+        <div className="flex items-center justify-center p-12 text-zinc-500 gap-2">
+          <Loader2 size={20} className="animate-spin text-cyan-500" />
           <span>Connecting to database...</span>
         </div>
       </AdminSection>
@@ -277,9 +277,10 @@ export default function AdminExperience() {
       title="Experience"
       desc="Manage education, work, projects, and certifications with persistent storage."
     >
-      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-        <p className="m-0 text-sm text-gray-500">
-          {entries.length} entr{entries.length !== 1 ? "ies" : "y"}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <p className="m-0 text-xs sm:text-sm text-zinc-400">
+          <span className="font-semibold text-zinc-200">{entries.length}</span>{" "}
+          entr{entries.length !== 1 ? "ies" : "y"}
         </p>
         <button
           className={`${btnPrimary} !px-3 !py-1.5 !text-xs`}
@@ -291,60 +292,81 @@ export default function AdminExperience() {
       </div>
 
       <div className="flex flex-col gap-3">
-        {entries.map((entry) => (
-          <div
-            key={entry.id}
-            className="flex gap-3 p-4 bg-white border border-gray-200 rounded-xl hover:border-indigo-200 transition-colors shadow-sm"
-          >
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
-                <span className={TYPE_BADGE[entry.type] || badgeBlue}>
-                  {entry.type}
-                </span>
-                <strong className="text-sm text-gray-900">{entry.title}</strong>
-                {entry.status && (
-                  <span className={badgeGreen}>{entry.status}</span>
+        {entries.length === 0 ? (
+          <div className="p-8 text-center text-sm text-zinc-500 bg-zinc-950/50 rounded-xl border border-zinc-800">
+            No experience entries added yet.
+          </div>
+        ) : (
+          entries.map((entry) => (
+            <div
+              key={entry.id}
+              className="p-4 sm:p-5 bg-zinc-950/70 border border-zinc-800/90 rounded-xl hover:border-zinc-700/80 transition-all shadow-sm space-y-3"
+            >
+              {/* Top row: Badges + Action Buttons (Fixed height, never stretched!) */}
+              <div className="flex items-center justify-between gap-2 border-b border-zinc-800/60 pb-2.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className={TYPE_BADGE[entry.type] || badgeBlue}>
+                    {entry.type}
+                  </span>
+                  {entry.status && (
+                    <span className={badgeGreen}>{entry.status}</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    className={`${btnSecondary} !px-2.5 !py-1 !text-xs inline-flex items-center gap-1.5`}
+                    onClick={() => editModal.open({ ...entry })}
+                    title="Edit entry"
+                    aria-label="Edit entry"
+                  >
+                    <Pencil size={12} />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    className={`${btnDanger} !px-2 !py-1 !text-xs inline-flex items-center justify-center`}
+                    onClick={() => deleteModal.open(entry)}
+                    title="Delete entry"
+                    aria-label="Delete entry"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content Body */}
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-zinc-100 m-0 leading-snug">
+                  {entry.title}
+                </h3>
+                {(entry.organization || entry.location || entry.period) && (
+                  <p className="m-0 mt-1 text-xs text-zinc-400 font-medium">
+                    {[entry.organization, entry.location, entry.period]
+                      .filter(Boolean)
+                      .join(" · ")}
+                  </p>
+                )}
+                {entry.description && (
+                  <p className="m-0 mt-2 text-xs text-zinc-300 leading-relaxed">
+                    {entry.description}
+                  </p>
+                )}
+                {(entry.highlights || []).length > 0 && (
+                  <ul className="m-0 mt-2 pl-4 text-xs text-zinc-400 list-disc space-y-1">
+                    {entry.highlights.slice(0, 3).map((h, i) => (
+                      <li key={i}>{h}</li>
+                    ))}
+                    {entry.highlights.length > 3 && (
+                      <li className="text-zinc-500 italic">
+                        +{entry.highlights.length - 3} more…
+                      </li>
+                    )}
+                  </ul>
                 )}
               </div>
-              <p className="m-0 mb-1 text-sm text-gray-700">
-                {entry.organization} · {entry.location} · {entry.period}
-              </p>
-              <p className="m-0 mb-2 text-xs text-gray-500">
-                {entry.description}
-              </p>
-              {(entry.highlights || []).length > 0 && (
-                <ul className="m-0 pl-4 text-xs text-gray-500 list-disc">
-                  {entry.highlights.slice(0, 2).map((h, i) => (
-                    <li key={i}>{h}</li>
-                  ))}
-                  {entry.highlights.length > 2 && (
-                    <li className="text-gray-400">
-                      +{entry.highlights.length - 2} more…
-                    </li>
-                  )}
-                </ul>
-              )}
             </div>
-            <div className="flex gap-2 shrink-0">
-              <button
-                className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
-                onClick={() => editModal.open({ ...entry })}
-                title="Edit entry"
-                aria-label="Edit entry"
-              >
-                <Pencil size={13} />
-              </button>
-              <button
-                className={`${btnDanger} !px-2 !py-1 !text-xs`}
-                onClick={() => deleteModal.open(entry)}
-                title="Delete entry"
-                aria-label="Delete entry"
-              >
-                <Trash2 size={13} />
-              </button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {editModal.modal && (

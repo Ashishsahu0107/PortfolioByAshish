@@ -81,27 +81,27 @@ function ProjectModal({ project, onSave, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/45 z-[500] flex items-center justify-center p-5"
+      className="fixed inset-0 bg-black/75 z-[500] backdrop-blur-xs flex items-center justify-center p-3 sm:p-5"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-7 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl p-4 sm:p-7 w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2 text-gray-900">
+        <div className="flex items-center justify-between mb-5 border-b border-zinc-800/80 pb-3">
+          <div className="flex items-center gap-2 text-zinc-100">
             {project.id ? (
-              <Pencil size={18} className="text-indigo-600 shrink-0" />
+              <Pencil size={18} className="text-cyan-400 shrink-0" />
             ) : (
-              <Plus size={18} className="text-indigo-600 shrink-0" />
+              <Plus size={18} className="text-cyan-400 shrink-0" />
             )}
-            <h3 className="text-lg font-bold m-0">
+            <h3 className="text-base sm:text-lg font-bold m-0 text-zinc-100">
               {project.id ? `Edit: ${project.title}` : "New Project"}
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="bg-gray-100 hover:bg-gray-200 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-gray-500 transition-colors"
+            className="bg-zinc-800 hover:bg-zinc-700 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors"
             aria-label="Close"
           >
             <X size={16} />
@@ -150,7 +150,7 @@ function ProjectModal({ project, onSave, onClose }) {
                   onChange={(e) =>
                     setForm((p) => ({ ...p, color: e.target.value }))
                   }
-                  className="w-10 h-9 border border-gray-200 rounded-lg p-0.5 cursor-pointer"
+                  className="w-10 h-9 border border-zinc-800 rounded-lg p-0.5 cursor-pointer bg-zinc-950"
                 />
                 <input
                   className={`${inputCls} flex-1`}
@@ -163,7 +163,7 @@ function ProjectModal({ project, onSave, onClose }) {
             <div className="flex items-center gap-2 pt-5">
               <input
                 type="checkbox"
-                className="w-4 h-4 accent-indigo-600"
+                className="w-4 h-4 accent-cyan-500 rounded cursor-pointer"
                 name="featured"
                 id="featured"
                 checked={Boolean(form.featured)}
@@ -171,7 +171,7 @@ function ProjectModal({ project, onSave, onClose }) {
               />
               <label
                 htmlFor="featured"
-                className="text-xs font-semibold text-gray-600 cursor-pointer"
+                className="text-xs font-semibold text-zinc-300 cursor-pointer"
               >
                 Featured Project
               </label>
@@ -250,7 +250,7 @@ function ProjectModal({ project, onSave, onClose }) {
               />
             </FormGroup>
           </div>
-          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-800/80">
             <button
               type="button"
               className={btnSecondary}
@@ -371,11 +371,12 @@ export default function AdminProjects() {
       title="Work / Projects"
       desc="Add, edit, or remove portfolio projects with persistent storage."
     >
-      <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-        <p className="m-0 text-sm text-gray-500">
-          {projects.length} project{projects.length !== 1 ? "s" : ""} total
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        <p className="m-0 text-xs sm:text-sm text-zinc-400">
+          <span className="font-semibold text-zinc-200">{projects.length}</span>{" "}
+          project{projects.length !== 1 ? "s" : ""} total
         </p>
-        <div className="flex gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
           <button
             className={`${btnPrimary} !px-3 !py-1.5 !text-xs`}
             onClick={() => editModal.open({ ...EMPTY_PROJECT })}
@@ -404,89 +405,203 @@ export default function AdminProjects() {
       </div>
 
       <AdminCard>
-        <div className="overflow-x-auto rounded-lg border border-gray-200">
-          <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr>
-                {[
-                  "#",
-                  "Title",
-                  "Category",
-                  "Year",
-                  "Tags",
-                  "Featured",
-                  "Actions",
-                ].map((h) => (
-                  <th
-                    key={h}
-                    className="bg-gray-50 text-gray-600 font-semibold px-4 py-2.5 text-left border-b border-gray-200 whitespace-nowrap"
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {projects.map((p) => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-400 font-semibold">
-                    {p.number}
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <div className="font-semibold text-gray-900">{p.title}</div>
-                    <div className="text-xs text-gray-400">{p.subtitle}</div>
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <span className={badgeBlue}>{p.category}</span>
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-700">
-                    {p.year}
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <div className="flex gap-1 flex-wrap">
-                      {(Array.isArray(p.tags) ? p.tags : [])
-                        .slice(0, 3)
-                        .map((tag) => (
-                          <span key={tag} className={badgePurple}>
-                            {tag}
-                          </span>
-                        ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
+        {/* Mobile View: Clean, Stacked Card List (Block on mobile < md, hidden on md+) */}
+        <div className="block md:hidden space-y-3">
+          {projects.length === 0 ? (
+            <div className="p-6 text-center text-sm text-zinc-500">
+              No projects added yet. Click &quot;Add Project&quot; above to
+              create one.
+            </div>
+          ) : (
+            projects.map((p) => (
+              <div
+                key={p.id}
+                className="bg-zinc-950/70 border border-zinc-800/90 rounded-xl p-3.5 space-y-2.5 transition-all hover:border-zinc-700/80"
+              >
+                {/* Top Row: # Index, Featured status & Action buttons */}
+                <div className="flex items-center justify-between gap-2 border-b border-zinc-800/60 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-zinc-400 px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800">
+                      #{p.number || "—"}
+                    </span>
                     <span className={p.featured ? badgeGreen : badgeOrange}>
                       {p.featured ? (
                         <span className="inline-flex items-center gap-1">
                           <Check size={11} />
-                          <span>Yes</span>
+                          <span>Featured</span>
                         </span>
                       ) : (
-                        "No"
+                        "Standard"
                       )}
                     </span>
-                  </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100">
-                    <div className="flex gap-2">
-                      <button
-                        className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
-                        onClick={() => editModal.open({ ...p })}
-                        title="Edit project"
-                      >
-                        <Pencil size={13} />
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        className={`${btnDanger} !px-2 !py-1 !text-xs`}
-                        onClick={() => deleteModal.open(p)}
-                        title="Delete project"
-                        aria-label="Delete project"
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
+                      onClick={() => editModal.open({ ...p })}
+                      title="Edit project"
+                    >
+                      <Pencil size={12} />
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      className={`${btnDanger} !px-2 !py-1 !text-xs`}
+                      onClick={() => deleteModal.open(p)}
+                      title="Delete project"
+                      aria-label="Delete project"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Title and year */}
+                <div>
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="text-sm font-bold text-zinc-100 m-0 leading-snug">
+                      {p.title}
+                    </h4>
+                    {p.year && (
+                      <span className="text-xs font-mono text-zinc-400 shrink-0 bg-zinc-900 px-1.5 py-0.5 rounded border border-zinc-800/80">
+                        {p.year}
+                      </span>
+                    )}
+                  </div>
+                  {p.subtitle && (
+                    <p className="text-xs text-zinc-400 mt-1 mb-0 leading-relaxed">
+                      {p.subtitle}
+                    </p>
+                  )}
+                </div>
+
+                {/* Category & Tags */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  {p.category && (
+                    <span className={badgeBlue}>{p.category}</span>
+                  )}
+                  {(Array.isArray(p.tags) ? p.tags : [])
+                    .slice(0, 4)
+                    .map((tag) => (
+                      <span key={tag} className={badgePurple}>
+                        {tag}
+                      </span>
+                    ))}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop View: Full Spacious Table with horizontal min-width guarantee (Hidden on mobile < md, visible on md+) */}
+        <div className="hidden md:block overflow-x-auto rounded-xl border border-zinc-800/90 bg-zinc-950/60">
+          <table className="w-full min-w-[760px] border-collapse text-sm text-left">
+            <thead>
+              <tr className="border-b border-zinc-800 bg-zinc-900/90">
+                <th className="w-12 px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  #
+                </th>
+                <th className="min-w-[220px] px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Title
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Category
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Year
+                </th>
+                <th className="min-w-[180px] px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Tags
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Featured
+                </th>
+                <th className="whitespace-nowrap px-4 py-3 text-right text-zinc-400 font-semibold text-xs uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/60">
+              {projects.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-4 py-8 text-center text-zinc-500"
+                  >
+                    No projects found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                projects.map((p) => (
+                  <tr
+                    key={p.id}
+                    className="hover:bg-zinc-850/50 transition-colors"
+                  >
+                    <td className="px-4 py-3 text-zinc-500 font-mono text-xs font-semibold">
+                      {p.number || "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="font-semibold text-zinc-100">
+                        {p.title}
+                      </div>
+                      {p.subtitle && (
+                        <div className="text-xs text-zinc-400 line-clamp-1">
+                          {p.subtitle}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={badgeBlue}>{p.category}</span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-zinc-400 font-mono text-xs">
+                      {p.year}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex gap-1.5 flex-wrap">
+                        {(Array.isArray(p.tags) ? p.tags : [])
+                          .slice(0, 3)
+                          .map((tag) => (
+                            <span key={tag} className={badgePurple}>
+                              {tag}
+                            </span>
+                          ))}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap">
+                      <span className={p.featured ? badgeGreen : badgeOrange}>
+                        {p.featured ? (
+                          <span className="inline-flex items-center gap-1">
+                            <Check size={11} />
+                            <span>Yes</span>
+                          </span>
+                        ) : (
+                          "No"
+                        )}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-right">
+                      <div className="inline-flex items-center gap-2">
+                        <button
+                          className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
+                          onClick={() => editModal.open({ ...p })}
+                          title="Edit project"
+                        >
+                          <Pencil size={13} />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          className={`${btnDanger} !px-2 !py-1 !text-xs`}
+                          onClick={() => deleteModal.open(p)}
+                          title="Delete project"
+                          aria-label="Delete project"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
