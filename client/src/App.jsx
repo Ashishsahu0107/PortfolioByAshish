@@ -4,7 +4,6 @@ import { gsap } from "gsap";
 import { Toaster } from "sonner";
 
 import Navbar from "./components/PortfolioNavbar";
-import CustomCursor from "./components/CustomCursor";
 import ScrollToTop from "./components/ScrollToTop";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -127,7 +126,6 @@ function AppContent({ theme, toggleTheme }) {
           },
         }}
       />
-      <CustomCursor />
       {!isStandalone && <ScrollProgress />}
 
       {!isStandalone && (

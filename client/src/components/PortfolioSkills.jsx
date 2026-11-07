@@ -1,8 +1,8 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import { usePortfolioSkills } from "../context/PortfolioDataContext";
 import { useGsapReveal } from "../hooks/useGsapReveal";
 import TechIcon from "./TechIcon";
-import { Wrench } from "lucide-react";
+import { Wrench, Layers, Sparkles } from "lucide-react";
 import {
   contentWidth,
   sectionSurface,
@@ -10,6 +10,7 @@ import {
   sectionTitle,
   sectionLede,
 } from "./portfolioStyles";
+import AllSkillsModal from "./AllSkillsModal";
 
 /**
  * Natural technology interleaver: mixes backend, databases, tools, and devops
@@ -67,13 +68,17 @@ function mixBackendTechnologies(categories) {
 /**
  * Clean card skill badge inspired by the reference design
  * Displays official icon and technology name (rounded-md, no percentage)
+ * Clicking opens the complete stack modal
  */
-function SkillPill({ skill }) {
+function SkillPill({ skill, onClick }) {
   return (
-    <div
-      className="group/pill inline-flex items-center gap-2.5 sm:gap-3 rounded-md border border-border bg-surface px-4 py-2 sm:px-5 sm:py-2.5 transition-all duration-300 hover:border-action hover:bg-surface-alt/90 hover:shadow-lg hover:shadow-action/10 hover:scale-[1.03] select-none cursor-default shrink-0"
-      role="article"
-      aria-label={skill.name}
+    <button
+      type="button"
+      onClick={onClick}
+      className="group/pill inline-flex items-center gap-2.5 sm:gap-3 rounded-md border border-border bg-surface px-4 py-2 sm:px-5 sm:py-2.5 transition-all duration-300 hover:border-action hover:bg-surface-alt hover:shadow-lg hover:shadow-action/10 hover:scale-[1.04] select-none cursor-pointer shrink-0 text-left focus:outline-hidden"
+      role="button"
+      aria-label={`${skill.name} - Click to view all skills`}
+      title={`${skill.name} (Click to view full stack breakdown)`}
     >
       {/* Official Technology Brand Icon */}
       <div className="flex size-5 sm:size-6 items-center justify-center shrink-0">
@@ -86,10 +91,10 @@ function SkillPill({ skill }) {
       </div>
 
       {/* Technology Name */}
-      <span className="font-mono text-xs sm:text-sm font-semibold text-primary transition-colors group-hover/pill:text-action whitespace-nowrap">
+      <span className="text-xs sm:text-sm font-semibold text-primary transition-colors group-hover/pill:text-action whitespace-nowrap">
         {skill.name}
       </span>
-    </div>
+    </button>
   );
 }
 
@@ -98,6 +103,16 @@ export default function PortfolioSkills() {
   const categories = skills || [];
   const sectionRef = useRef(null);
   useGsapReveal(sectionRef);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Total count of all technologies across categories
+  const totalSkillsCount = useMemo(() => {
+    return categories.reduce(
+      (sum, cat) => sum + (Array.isArray(cat.skills) ? cat.skills.length : 0),
+      0
+    );
+  }, [categories]);
 
   // Extract frontend skills
   const frontendSkills = useMemo(() => {
@@ -165,11 +180,21 @@ export default function PortfolioSkills() {
                 technologies.
               </span>
             </h2>
-            <p className={`${sectionLede} max-w-[420px] pb-2`}>
-              A curated stack of frontend, backend, database, and system
-              technologies I rely on to build resilient, high-performance web
-              applications.
-            </p>
+            <div className="flex flex-col items-start md:items-end gap-2 pb-2">
+              <p className={`${sectionLede} max-w-[420px]`}>
+                A curated stack of frontend, backend, database, and system
+                technologies I rely on to build resilient, high-performance web
+                applications.
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-xs font-medium text-secondary hover:border-action hover:text-action hover:bg-surface-alt transition-all cursor-pointer shadow-xs"
+              >
+                <Layers size={13} className="text-action" />
+                <span>View All Skills ({totalSkillsCount})</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -190,134 +215,93 @@ export default function PortfolioSkills() {
 
       {/* Sliders Container */}
       {categories.length > 0 && (
-        <div className="space-y-6 sm:space-y-8">
-          {/* Top Glowing Divider Line */}
-          <div className="relative w-full max-w-5xl mx-auto px-6">
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-action/40 to-transparent" />
-            <div className="absolute inset-x-1/4 -top-1 h-2.5 bg-action/15 blur-md rounded-full pointer-events-none" />
-          </div>
-
+        <div className="space-y-4 sm:space-y-5">
           {/* ========================================================= */}
           {/* SLIDER 1: FRONTEND SKILLS (Continuous Left to Right - LTR) */}
           {/* ========================================================= */}
           {frontendSkills.length > 0 && (
-            <div className="space-y-2.5">
-              {/* Slider Subtitle Label */}
+            <div
+              className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2"
+              role="region"
+              aria-label="Frontend skills slider"
+            >
+              {/* Left Edge Fade Mask */}
               <div
-                className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}
-              >
-                <span className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-action" />
-                  <span className="text-primary font-semibold">
-                    Frontend &amp; Interface
-                  </span>
-                </span>
-                <span className="text-[11px] text-secondary/70">
-                  Left &rarr; Right &bull; Hover to pause
-                </span>
-              </div>
-
-              {/* Slider Viewport with Progressive Opacity Fade Mask */}
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                aria-hidden="true"
+              />
+              {/* Right Edge Fade Mask */}
               <div
-                className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2.5"
-                role="region"
-                aria-label="Frontend skills slider"
-              >
-                {/* Left Edge Fade Mask */}
-                <div
-                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
-                  aria-hidden="true"
-                />
-                {/* Right Edge Fade Mask */}
-                <div
-                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
-                  aria-hidden="true"
-                />
+                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                aria-hidden="true"
+              />
 
-                {/* Infinite Moving Track (Left to Right) */}
-                <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-ltr">
-                  {ltrTrackItems.map((skill, idx) => (
-                    <SkillPill
-                      key={`frontend-pill-${skill.name}-${idx}`}
-                      skill={skill}
-                    />
-                  ))}
-                </div>
+              {/* Infinite Moving Track (Left to Right) */}
+              <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-ltr">
+                {ltrTrackItems.map((skill, idx) => (
+                  <SkillPill
+                    key={`frontend-pill-${skill.name}-${idx}`}
+                    skill={skill}
+                    onClick={() => setIsModalOpen(true)}
+                  />
+                ))}
               </div>
             </div>
           )}
-
-          {/* Middle Glowing Divider Line */}
-          <div className="relative w-full max-w-4xl mx-auto px-6">
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-border to-transparent" />
-            <div className="absolute inset-x-1/3 -top-1 h-2 bg-action/10 blur-sm rounded-full pointer-events-none" />
-          </div>
 
           {/* ========================================================= */}
           {/* SLIDER 2: BACKEND & DATABASE (Continuous Right to Left - RTL) */}
           {/* ========================================================= */}
           {mixedBackendSkills.length > 0 && (
-            <div className="space-y-2.5">
-              {/* Slider Subtitle Label */}
+            <div
+              className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2"
+              role="region"
+              aria-label="Backend and database skills slider"
+            >
+              {/* Left Edge Fade Mask */}
               <div
-                className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}
-              >
-                <span className="flex items-center gap-2">
-                  <span className="size-1.5 rounded-full bg-action" />
-                  <span className="text-primary font-semibold">
-                    Backend, Databases &amp; Systems
-                  </span>
-                </span>
-                <span className="text-[11px] text-secondary/70">
-                  &larr; Right to Left &bull; Hover to pause
-                </span>
-              </div>
-
-              {/* Slider Viewport with Progressive Opacity Fade Mask */}
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                aria-hidden="true"
+              />
+              {/* Right Edge Fade Mask */}
               <div
-                className="skills-slider-mask slider-pause-on-hover relative w-full overflow-hidden py-2.5"
-                role="region"
-                aria-label="Backend and database skills slider"
-              >
-                {/* Left Edge Fade Mask */}
-                <div
-                  className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
-                  aria-hidden="true"
-                />
-                {/* Right Edge Fade Mask */}
-                <div
-                  className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
-                  aria-hidden="true"
-                />
+                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                aria-hidden="true"
+              />
 
-                {/* Infinite Moving Track (Right to Left) */}
-                <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-rtl">
-                  {rtlTrackItems.map((skill, idx) => (
-                    <SkillPill
-                      key={`backend-pill-${skill.name}-${idx}`}
-                      skill={skill}
-                    />
-                  ))}
-                </div>
+              {/* Infinite Moving Track (Right to Left) */}
+              <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-rtl">
+                {rtlTrackItems.map((skill, idx) => (
+                  <SkillPill
+                    key={`backend-pill-${skill.name}-${idx}`}
+                    skill={skill}
+                    onClick={() => setIsModalOpen(true)}
+                  />
+                ))}
               </div>
             </div>
           )}
-
-          {/* Bottom Glowing Divider Line */}
-          <div className="relative w-full max-w-5xl mx-auto px-6">
-            <div className="h-px w-full bg-gradient-to-r from-transparent via-action/40 to-transparent" />
-            <div className="absolute inset-x-1/4 -top-1 h-2.5 bg-action/15 blur-md rounded-full pointer-events-none" />
-          </div>
         </div>
       )}
 
       {/* Interactive Exploration Hint */}
       <div className={`${contentWidth} mt-10 text-center`}>
-        <p className="reveal font-mono text-[11px] text-secondary/70">
-          Hover over either slider to pause motion &bull; All skills synchronize
-          live with MongoDB database
-        </p>
+        <button
+          type="button"
+          onClick={() => setIsModalOpen(true)}
+          className="reveal inline-flex items-center gap-2 text-xs text-secondary/75 hover:text-action transition-colors cursor-pointer"
+        >
+          <Sparkles size={13} className="text-action" />
+          <span>Click any skill card to view full frontend, backend &amp; database breakdown</span>
+        </button>
       </div>
+
+      {/* All Skills Modal Dialog */}
+      <AllSkillsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        categories={categories}
+      />
     </section>
   );
 }

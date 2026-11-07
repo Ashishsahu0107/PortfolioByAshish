@@ -42,7 +42,6 @@ export const sampleResumeData = {
       "Mongoose",
       "MongoDB Atlas",
       "MySQL",
-      "Redis (Basic)",
     ],
     toolsDevOps: [
       "Git",

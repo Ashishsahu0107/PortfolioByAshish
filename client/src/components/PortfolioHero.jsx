@@ -150,7 +150,7 @@ export default function PortfolioHero() {
 
   return (
     <section
-      className="relative flex min-h-svh flex-col justify-between overflow-hidden bg-canvas pb-6 pt-[92px] text-primary"
+      className="relative flex min-h-svh flex-col justify-between overflow-hidden bg-canvas pb-6 pt-[76px] sm:pt-[82px] text-primary"
       id="home"
       ref={heroRef}
       aria-labelledby="hero-title"
