@@ -221,35 +221,35 @@ export default function PortfolioProcess() {
                     key={item.step || index}
                     id={`process-step-${index + 1}`}
                     onMouseEnter={() => setActiveStep(index)}
-                    className="reveal group flex items-stretch gap-4 sm:gap-6 md:gap-8"
+                    className="reveal group flex items-stretch gap-3 sm:gap-6 md:gap-8"
                   >
                     {/* Left Rail: 100% Mathematically Centered Stepper Node + Connecting Line */}
-                    <div className="relative flex flex-col items-center shrink-0 w-10 sm:w-12">
+                    <div className="relative flex flex-col items-center shrink-0 w-8 sm:w-10 md:w-12">
                       {/* Continuous Connecting Line to Next Step (Zero Gap, seamless connection) */}
                       {!isLast && (
                         <div
-                          className="pointer-events-none absolute top-5 sm:top-6 -bottom-5 sm:-bottom-6 w-0.5 bg-gradient-to-b from-action via-action to-action/50"
+                          className="pointer-events-none absolute top-4 sm:top-5 md:top-6 -bottom-4 sm:-bottom-5 md:-bottom-6 w-0.5 bg-gradient-to-b from-action via-action to-action/50"
                           aria-hidden="true"
                         />
                       )}
 
                       {/* Step Number Circle (Centered, sitting directly on top of line with z-10) */}
-                      <div className="relative z-10 flex size-10 sm:size-12 items-center justify-center rounded-full border-2 border-action bg-canvas shadow-md transition-all duration-300 group-hover:border-action-hover group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-action/15">
-                        <span className="font-mono text-xs sm:text-sm font-bold text-action">
+                      <div className="relative z-10 flex size-8 sm:size-10 md:size-12 items-center justify-center rounded-full border-2 border-action bg-canvas shadow-md transition-all duration-300 group-hover:border-action-hover group-hover:scale-105 group-hover:shadow-lg group-hover:shadow-action/15">
+                        <span className="font-mono text-[11px] sm:text-xs md:text-sm font-bold text-action">
                           {stepNum}
                         </span>
-                        <span className="absolute -top-0.5 -right-0.5 size-2 rounded-full bg-action animate-pulse" />
+                        <span className="absolute -top-0.5 -right-0.5 size-1.5 sm:size-2 rounded-full bg-action animate-pulse" />
                       </div>
                     </div>
 
                     {/* Right Rail: Professional & Unique Stage Card */}
-                    <div className="flex-1 pb-8 sm:pb-12">
-                      <div className="group/card relative rounded-2xl border border-border bg-surface p-6 sm:p-8 transition-all duration-300 hover:border-action/80 hover:bg-surface-alt/40 hover:shadow-xl hover:shadow-action/5">
+                    <div className="flex-1 pb-6 sm:pb-12 min-w-0">
+                      <div className="group/card relative rounded-xl sm:rounded-2xl border border-border bg-surface p-4 sm:p-6 md:p-8 transition-all duration-300 hover:border-action/80 hover:bg-surface-alt/40 hover:shadow-xl hover:shadow-action/5">
                         {/* Card Top Header: Step Badge + Phase Category + Progress Badge */}
-                        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 pb-4 mb-6">
-                          <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border/70 pb-3 sm:pb-4 mb-4 sm:mb-6">
+                          <div className="flex items-center gap-2 sm:gap-3">
                             {/* Phase Badge */}
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-action/30 bg-action/10 px-3 py-1 font-mono text-[10px] sm:text-[11px] font-bold text-action">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-action/30 bg-action/10 px-2.5 py-0.5 sm:px-3 sm:py-1 font-mono text-[9px] sm:text-[11px] font-bold text-action">
                               <span className="size-1.5 rounded-full bg-action animate-pulse" />
                               <span>
                                 STAGE {stepNum} OF{" "}
@@ -258,15 +258,15 @@ export default function PortfolioProcess() {
                             </span>
 
                             {/* Stage Category */}
-                            <span className="font-mono text-[11px] text-secondary font-medium hidden min-[480px]:inline">
+                            <span className="font-mono text-[10px] sm:text-[11px] text-secondary font-medium hidden min-[480px]:inline">
                               {stepStageLabels[index] || "Lifecycle"}
                             </span>
                           </div>
 
                           {/* Progress Badge + Stage Icon */}
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2 sm:gap-3">
                             {/* Progress Pill Badge */}
-                            <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-canvas/80 px-2.5 py-1 font-mono text-[10px] sm:text-[11px] font-semibold text-secondary shadow-2xs">
+                            <span className="inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-border bg-canvas/80 px-2 sm:px-2.5 py-0.5 sm:py-1 font-mono text-[9px] sm:text-[11px] font-semibold text-secondary shadow-2xs">
                               <span>Progress:</span>
                               <span className="text-action font-bold">
                                 {Math.round(((index + 1) / steps.length) * 100)}
@@ -275,11 +275,11 @@ export default function PortfolioProcess() {
                             </span>
 
                             {/* Stage Icon */}
-                            <div className="flex items-center gap-2 font-mono text-[11px] text-secondary">
-                              <div className="grid size-7 place-items-center rounded-lg border border-border bg-canvas text-action transition-transform duration-300 group-hover/card:scale-110">
-                                <StepIcon size={14} />
+                            <div className="flex items-center gap-1.5 sm:gap-2 font-mono text-[11px] text-secondary">
+                              <div className="grid size-6 sm:size-7 place-items-center rounded-lg border border-border bg-canvas text-action transition-transform duration-300 group-hover/card:scale-110">
+                                <StepIcon size={13} />
                               </div>
-                              <span className="font-medium text-primary hidden sm:inline">
+                              <span className="font-medium text-primary hidden min-[540px]:inline">
                                 {item.phase}
                               </span>
                             </div>
@@ -287,11 +287,11 @@ export default function PortfolioProcess() {
                         </div>
 
                         {/* Main Content 2-Column Grid */}
-                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
+                        <div className="grid grid-cols-1 gap-5 lg:grid-cols-12 lg:gap-8 items-start">
                           {/* Left Column: Heading, Tagline & Detailed Narrative */}
-                          <div className="lg:col-span-7 space-y-3.5">
+                          <div className="lg:col-span-7 space-y-3">
                             <div>
-                              <h3 className="text-xl sm:text-2xl font-bold text-primary tracking-tight">
+                              <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-primary tracking-tight">
                                 {item.phase}
                               </h3>
                               {item.tagline && (

@@ -24,6 +24,7 @@ import {
   FileSpreadsheet,
   Palette,
   FileText,
+  X,
 } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { AdminThemeProvider, useAdminTheme } from "./AdminThemeContext";
@@ -121,7 +122,9 @@ function AdminDashboardContent() {
         className={[
           "fixed top-0 left-0 h-full bg-zinc-950/95 border-r border-zinc-800/80 flex flex-col z-[200] shadow-2xl backdrop-blur-xl transition-all duration-250 overflow-hidden",
           sidebarOpen ? "w-60" : "w-[68px]",
-          mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
+          mobileOpen
+            ? "translate-x-0 !w-64"
+            : "-translate-x-full lg:translate-x-0",
         ].join(" ")}
       >
         {/* Brand */}
@@ -133,7 +136,7 @@ function AdminDashboardContent() {
             >
               <Zap size={18} />
             </div>
-            {sidebarOpen && (
+            {(sidebarOpen || mobileOpen) && (
               <span className="text-sm font-bold text-white whitespace-nowrap tracking-tight flex items-center gap-1.5">
                 <span>Portfolio Admin</span>
                 <span
@@ -143,6 +146,15 @@ function AdminDashboardContent() {
               </span>
             )}
           </div>
+          {/* Mobile close button */}
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="flex lg:hidden bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg w-7 h-7 items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors shrink-0"
+            aria-label="Close sidebar"
+          >
+            <X size={16} />
+          </button>
+          {/* Desktop collapse button */}
           <button
             onClick={() => setSidebarOpen((v) => !v)}
             className="hidden lg:flex bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg w-7 h-7 items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors shrink-0"
@@ -185,7 +197,7 @@ function AdminDashboardContent() {
                 }
               >
                 <Icon size={18} className="shrink-0" />
-                {sidebarOpen && (
+                {(sidebarOpen || mobileOpen) && (
                   <span className="flex-1 truncate">{item.label}</span>
                 )}
               </NavLink>
@@ -195,7 +207,7 @@ function AdminDashboardContent() {
 
         {/* Footer info & Logout */}
         <div className="p-3 border-t border-zinc-800/80 flex flex-col gap-2">
-          {sidebarOpen && user && (
+          {(sidebarOpen || mobileOpen) && user && (
             <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-zinc-900/80 border border-zinc-800/80 overflow-hidden">
               <div
                 className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center shrink-0 shadow-xs transition-all duration-300"
@@ -226,7 +238,7 @@ function AdminDashboardContent() {
             ].join(" ")}
           >
             <LogOut size={16} className="shrink-0" />
-            {sidebarOpen && (
+            {(sidebarOpen || mobileOpen) && (
               <span>{logoutConfirm ? "Confirm Logout" : "Logout"}</span>
             )}
           </button>
@@ -235,35 +247,43 @@ function AdminDashboardContent() {
 
       {/* ── Main View Area ── */}
       <div
-        className="flex-1 flex flex-col min-w-0 transition-[margin] duration-250 bg-zinc-950"
-        style={{ marginLeft: sidebarOpen ? "240px" : "68px" }}
+        className={`flex-1 flex flex-col min-w-0 transition-all duration-250 bg-zinc-950 ml-0 ${
+          sidebarOpen ? "lg:ml-60" : "lg:ml-[68px]"
+        }`}
       >
         {/* Topbar */}
-        <header className="h-16 bg-zinc-950/90 border-b border-zinc-800/80 flex items-center justify-between px-6 sticky top-0 z-[100] gap-4 backdrop-blur-xl">
-          <div className="flex items-center gap-3.5">
+        <header className="h-16 bg-zinc-950/90 border-b border-zinc-800/80 flex items-center justify-between px-3 sm:px-6 sticky top-0 z-[100] gap-2 sm:gap-4 backdrop-blur-xl">
+          <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
             {/* Mobile hamburger */}
             <button
-              className="lg:hidden bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg w-9 h-9 flex items-center justify-center cursor-pointer text-zinc-300"
+              className="lg:hidden bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg size-8 sm:size-9 flex items-center justify-center cursor-pointer text-zinc-300 shrink-0"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label="Toggle menu"
             >
               <Menu size={18} />
             </button>
-            <div className="flex items-center gap-1.5 text-sm">
-              <span className="text-zinc-500 font-medium">Console</span>
-              <span className="text-zinc-700">/</span>
-              <span className="font-semibold text-white">{currentLabel}</span>
+            <div className="flex items-center gap-1.5 text-xs sm:text-sm min-w-0 truncate">
+              <span className="text-zinc-500 font-medium hidden sm:inline">
+                Console
+              </span>
+              <span className="text-zinc-700 hidden sm:inline">/</span>
+              <span className="font-semibold text-white truncate">
+                {currentLabel}
+              </span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
             {/* 5-Color Theme Switcher */}
-            <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/90 px-3 py-1.5 backdrop-blur-md shadow-lg">
-              <Palette size={13} className="text-zinc-400 mr-0.5" />
-              <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">
+            <div className="flex items-center gap-1.5 sm:gap-2 rounded-full border border-zinc-800 bg-zinc-900/90 px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-md shadow-lg">
+              <Palette
+                size={12}
+                className="text-zinc-400 mr-0.5 hidden xs:inline"
+              />
+              <span className="text-[11px] font-mono text-zinc-400 hidden md:inline">
                 Theme:
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {themes.map((t) => {
                   const isSelected = t.id === themeId;
                   return (
@@ -273,10 +293,10 @@ function AdminDashboardContent() {
                       type="button"
                       onClick={() => setTheme(t.id)}
                       title={`${t.name} (${t.label})`}
-                      className={`group relative size-5 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer ${
+                      className={`group relative size-4 sm:size-5 rounded-full transition-all duration-300 flex items-center justify-center cursor-pointer ${
                         isSelected
-                          ? "scale-125 ring-2 ring-white/95 shadow-lg"
-                          : "hover:scale-115 opacity-70 hover:opacity-100"
+                          ? "scale-115 ring-2 ring-white/95 shadow-lg"
+                          : "hover:scale-110 opacity-70 hover:opacity-100"
                       }`}
                       style={{
                         backgroundColor: t.accent,
@@ -285,14 +305,14 @@ function AdminDashboardContent() {
                       aria-label={`Select ${t.name} theme`}
                     >
                       {isSelected && (
-                        <span className="size-1.5 rounded-full bg-white shadow-xs" />
+                        <span className="size-1 sm:size-1.5 rounded-full bg-white shadow-xs" />
                       )}
                     </button>
                   );
                 })}
               </div>
               <span
-                className="text-[11px] font-mono font-semibold hidden md:inline ml-1 transition-colors duration-300"
+                className="text-[11px] font-mono font-semibold hidden lg:inline ml-1 transition-colors duration-300"
                 style={{ color: currentTheme.glow }}
               >
                 {currentTheme.name}
@@ -304,20 +324,20 @@ function AdminDashboardContent() {
               href="/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/90 text-zinc-300 text-xs font-semibold no-underline hover:border-zinc-700 hover:text-white hover:bg-zinc-850 transition-all whitespace-nowrap shadow-xs"
+              className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/90 text-zinc-300 text-xs font-semibold no-underline hover:border-zinc-700 hover:text-white hover:bg-zinc-850 transition-all whitespace-nowrap shadow-xs"
             >
               <Globe
                 size={13}
                 style={{ color: currentTheme.glow }}
-                className="transition-colors duration-300"
+                className="transition-colors duration-300 shrink-0"
               />
-              <span>Live Site</span>
+              <span className="hidden min-[400px]:inline">Live Site</span>
             </a>
 
             {/* User Avatar */}
             <div
               title={user?.name}
-              className="w-8 h-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center cursor-pointer shadow-md transition-all duration-300"
+              className="size-7 sm:size-8 rounded-full text-zinc-950 font-extrabold text-xs flex items-center justify-center cursor-pointer shadow-md transition-all duration-300 shrink-0"
               style={{
                 background: `linear-gradient(135deg, ${currentTheme.accent}, ${currentTheme.glow})`,
                 boxShadow: `0 0 10px rgba(${currentThemeRgb}, 0.3)`,
@@ -331,7 +351,7 @@ function AdminDashboardContent() {
         {/* Content Router */}
         <main
           key={location.pathname}
-          className="flex-1 p-6 sm:p-8 max-w-[1400px] w-full admin-tab-content"
+          className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-[1400px] w-full admin-tab-content overflow-x-hidden"
         >
           <Routes>
             <Route index element={<AdminOverview />} />

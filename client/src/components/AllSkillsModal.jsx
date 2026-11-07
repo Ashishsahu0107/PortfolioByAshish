@@ -76,10 +76,10 @@ export default function AllSkillsModal({ isOpen, onClose, categories = [] }) {
       {/* Modal Dialog Content */}
       <div className="relative z-10 w-full max-w-4xl rounded-2xl border border-border bg-canvas shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         {/* Modal Top Header */}
-        <div className="flex items-start justify-between border-b border-border p-5 sm:p-6 bg-surface/40">
+        <div className="flex items-start justify-between border-b border-border p-4 sm:p-6 bg-surface/40">
           <div>
             <h2
-              className="text-xl sm:text-2xl font-bold text-primary"
+              className="text-lg sm:text-2xl font-bold text-primary"
               id="all-skills-title"
             >
               All Skills &amp; Technologies
@@ -93,15 +93,15 @@ export default function AllSkillsModal({ isOpen, onClose, categories = [] }) {
           <button
             type="button"
             onClick={onClose}
-            className="grid size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-all hover:border-action hover:text-action hover:scale-105 cursor-pointer shrink-0 ml-4"
+            className="grid size-8 sm:size-9 place-items-center rounded-full border border-border bg-surface text-secondary transition-all hover:border-action hover:text-action hover:scale-105 cursor-pointer shrink-0 ml-3"
             aria-label="Close modal"
           >
-            <X size={18} />
+            <X size={16} />
           </button>
         </div>
 
         {/* Modal Scrollable Body (Directly Displaying All Skills) */}
-        <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-7">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-7">
           {validCategories.map((category) => {
             const IconComp = categoryIconMap[category.id] || Layers;
             const categorySkills = category.skills || [];
@@ -127,7 +127,7 @@ export default function AllSkillsModal({ isOpen, onClose, categories = [] }) {
                 </div>
 
                 {/* Skills Grid */}
-                <div className="grid grid-cols-1 min-[440px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
+                <div className="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
                   {categorySkills.map((skill, idx) => (
                     <div
                       key={`${category.id}-${skill.name}-${idx}`}
@@ -160,7 +160,7 @@ export default function AllSkillsModal({ isOpen, onClose, categories = [] }) {
         </div>
 
         {/* Modal Bottom Footer */}
-        <div className="flex items-center justify-between border-t border-border px-5 py-3.5 sm:px-6 bg-surface/30">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border px-4 py-3 sm:px-6 bg-surface/30">
           <div className="flex items-center gap-2 text-xs text-secondary">
             <CheckCircle2 size={14} className="text-action" />
             <span>Dynamic MongoDB live synchronization</span>

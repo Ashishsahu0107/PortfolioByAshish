@@ -45,7 +45,9 @@ export default function AdminResumeBuilder() {
   const [selectedTemplateId, setSelectedTemplateId] = useState("modern");
   const [activeTab, setActiveTab] = useState("gallery"); // 'gallery' | 'preview' | 'editor'
   const [resumeData, setResumeData] = useState(sampleResumeData);
-  const [zoom, setZoom] = useState(85);
+  const [zoom, setZoom] = useState(() =>
+    typeof window !== "undefined" && window.innerWidth < 640 ? 42 : 85,
+  );
   const [isExporting, setIsExporting] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -496,7 +498,7 @@ export default function AdminResumeBuilder() {
       </div>
 
       {/* Main Tabs: Template Gallery / Live Preview / Content Editor */}
-      <div className="flex items-center gap-2 border-b border-zinc-800 pb-3">
+      <div className="flex items-center gap-1.5 sm:gap-2 border-b border-zinc-800 pb-3 overflow-x-auto whitespace-nowrap">
         <button
           type="button"
           onClick={() => setActiveTab("gallery")}

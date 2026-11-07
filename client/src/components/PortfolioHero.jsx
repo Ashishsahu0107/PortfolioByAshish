@@ -200,7 +200,7 @@ export default function PortfolioHero() {
 
           {/* Split Editorial Typography */}
           <h1
-            className="mb-3 font-serif text-[clamp(52px,7.5vw,94px)] font-bold tracking-tight text-primary leading-[0.94]"
+            className="mb-3 font-serif text-[clamp(34px,11vw,94px)] font-bold tracking-tight text-primary leading-[0.98] sm:leading-[0.94] break-words"
             id="hero-title"
           >
             <span className="hero-title-first block">
@@ -216,14 +216,14 @@ export default function PortfolioHero() {
           </h1>
 
           {/* Monospaced Subheading Bar */}
-          <div className="hero-role-bar mb-4 flex items-center gap-3 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase text-primary">
+          <div className="hero-role-bar mb-4 flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-[10px] sm:text-[11px] font-semibold tracking-[0.14em] uppercase text-primary">
             <span>
               {developer?.role
                 ? developer.role.toUpperCase()
                 : "FULL STACK DEVELOPER"}
             </span>
-            <span className="h-px w-12 bg-action/60" />
-            <span className="text-[10px] text-secondary">
+            <span className="hidden sm:inline-block h-px w-8 bg-action/60" />
+            <span className="text-[9px] sm:text-[10px] text-secondary font-normal sm:font-semibold">
               {developer?.degree
                 ? `${developer.degree} · ${developer?.graduatingYear || ""}`.trim()
                 : `CSE ${developer?.graduatingYear || "2026"}`}
@@ -299,9 +299,9 @@ export default function PortfolioHero() {
         </div>
 
         {/* Right Column: Visual Composition with Cutout Portrait & Code Card */}
-        <div className="relative flex flex-col items-center justify-center lg:items-end">
+        <div className="relative flex flex-col items-center justify-center lg:items-end w-full">
           {/* Main Portrait Frame with Orbital Ring */}
-          <div className="hero-profile-container relative w-full max-w-[370px] aspect-square">
+          <div className="hero-profile-container relative w-full max-w-[270px] sm:max-w-[330px] lg:max-w-[370px] aspect-square mx-auto lg:mx-0">
             {/* Orbital Halo */}
             <div
               className="hero-portrait-orbit pointer-events-none absolute -inset-3 -z-10 rounded-full border border-action/40 shadow-[0_0_35px_color-mix(in_srgb,var(--color-accent)_25%,transparent)]"
@@ -333,22 +333,24 @@ export default function PortfolioHero() {
             </div>
 
             {/* Floating Handwritten Annotation Note */}
-            <div className="absolute -top-4 -right-2 z-20 flex items-center gap-1.5 rounded-md border border-border bg-surface/95 px-3 py-1.5 font-handwriting text-[15px] font-semibold text-action shadow-lg backdrop-blur-xs max-sm:text-[13px]">
-              <Sparkles size={14} className="text-action" />
-              <span>Turning Ideas into Products</span>
+            <div className="absolute -top-3 -right-1 sm:-top-4 sm:-right-2 z-20 flex items-center gap-1.5 rounded-md border border-border bg-surface/95 px-2.5 py-1 sm:px-3 sm:py-1.5 font-handwriting text-[12px] sm:text-[15px] font-semibold text-action shadow-lg backdrop-blur-xs max-w-[190px] sm:max-w-none">
+              <Sparkles size={13} className="text-action shrink-0" />
+              <span className="truncate sm:whitespace-normal">
+                Turning Ideas into Products
+              </span>
             </div>
 
             {/* Floating Syntax Highlighted Code Card (`developer.ts`) */}
-            <div className="hero-floating-code absolute -bottom-6 -left-6 z-20 w-[230px] rounded-lg border border-border bg-canvas/95 p-3.5 shadow-xl backdrop-blur-md max-sm:w-[200px] max-sm:-left-2">
-              <div className="mb-2 flex items-center gap-1.5 border-b border-border/60 pb-1.5">
-                <span className="size-2 rounded-full bg-red-500/70" />
-                <span className="size-2 rounded-full bg-yellow-500/70" />
-                <span className="size-2 rounded-full bg-green-500/70" />
+            <div className="hero-floating-code absolute -bottom-4 -left-3 sm:-bottom-6 sm:-left-6 z-20 w-[190px] sm:w-[230px] rounded-lg border border-border bg-canvas/95 p-2.5 sm:p-3.5 shadow-xl backdrop-blur-md">
+              <div className="mb-1.5 sm:mb-2 flex items-center gap-1.5 border-b border-border/60 pb-1 sm:pb-1.5">
+                <span className="size-1.5 sm:size-2 rounded-full bg-red-500/70" />
+                <span className="size-1.5 sm:size-2 rounded-full bg-yellow-500/70" />
+                <span className="size-1.5 sm:size-2 rounded-full bg-green-500/70" />
                 <span className="ml-auto font-mono text-[8px] text-secondary">
                   developer.ts
                 </span>
               </div>
-              <pre className="font-mono text-[9px] leading-relaxed text-secondary overflow-hidden">
+              <pre className="font-mono text-[8px] sm:text-[9px] leading-relaxed text-secondary overflow-hidden">
                 <code>
                   <span className="text-action font-semibold">const</span>{" "}
                   engineer = {"{\n"}
@@ -422,18 +424,22 @@ export default function PortfolioHero() {
           </div>
 
           {/* Graduation Milestone Timeline Chip */}
-          <div className="flex items-center gap-3 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-[10px] text-secondary">
-            <GraduationCap size={15} className="text-action" />
-            <span>
-              <strong className="text-primary font-semibold">2022</strong>{" "}
-              B.Tech Start
-            </span>
-            <span className="h-2 w-px bg-border" />
-            <Flag size={14} className="text-action" />
-            <span>
-              <strong className="text-primary font-semibold">2026</strong>{" "}
-              Graduation Ready
-            </span>
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3 rounded-full border border-border bg-surface px-3 sm:px-4 py-1.5 font-mono text-[9px] sm:text-[10px] text-secondary">
+            <div className="flex items-center gap-1.5">
+              <GraduationCap size={14} className="text-action shrink-0" />
+              <span>
+                <strong className="text-primary font-semibold">2022</strong>{" "}
+                B.Tech Start
+              </span>
+            </div>
+            <span className="hidden sm:inline h-2 w-px bg-border" />
+            <div className="flex items-center gap-1.5">
+              <Flag size={13} className="text-action shrink-0" />
+              <span>
+                <strong className="text-primary font-semibold">2026</strong>{" "}
+                Graduation Ready
+              </span>
+            </div>
           </div>
 
           {/* Smooth Scroll Down Indicator */}

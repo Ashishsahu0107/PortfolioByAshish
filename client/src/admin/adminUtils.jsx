@@ -46,11 +46,11 @@ export function Toast() {
 export function ConfirmModal({ title, message, onConfirm, onCancel }) {
   return (
     <div
-      className="fixed inset-0 bg-black/70 z-[500] backdrop-blur-xs flex items-center justify-center p-5"
+      className="fixed inset-0 bg-black/70 z-[500] backdrop-blur-xs flex items-center justify-center p-3 sm:p-5"
       onClick={onCancel}
     >
       <div
-        className="bg-zinc-900 border border-zinc-800 rounded-2xl p-7 w-full max-w-sm shadow-2xl text-zinc-100 animate-[scaleIn_0.2s_ease]"
+        className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 sm:p-7 w-full max-w-sm shadow-2xl text-zinc-100 animate-[scaleIn_0.2s_ease]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-3">
@@ -86,9 +86,11 @@ export function ConfirmModal({ title, message, onConfirm, onCancel }) {
 export function AdminSection({ title, desc, children }) {
   return (
     <div className="animate-[fadeUp_0.3s_ease]">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-zinc-100 m-0 mb-1">{title}</h1>
-        {desc && <p className="text-sm text-zinc-400 m-0">{desc}</p>}
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold text-zinc-100 m-0 mb-1">
+          {title}
+        </h1>
+        {desc && <p className="text-xs sm:text-sm text-zinc-400 m-0">{desc}</p>}
       </div>
       {children}
     </div>
@@ -105,7 +107,7 @@ export function AdminCard({
 }) {
   return (
     <div
-      className={`bg-zinc-900/85 border border-zinc-800/90 rounded-2xl p-6 shadow-xl backdrop-blur-xl transition-all ${className}`}
+      className={`bg-zinc-900/85 border border-zinc-800/90 rounded-2xl p-4 sm:p-6 shadow-xl backdrop-blur-xl transition-all ${className}`}
     >
       {title && (
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800/80 flex-wrap gap-2">

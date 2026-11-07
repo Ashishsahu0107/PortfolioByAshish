@@ -242,7 +242,7 @@ export default function PortfolioContact() {
               <span className="text-action">06</span> Start a Conversation
             </p>
             <h2
-              className="mb-4 mt-6 font-serif text-[clamp(42px,5.5vw,72px)] font-bold leading-[1.02] text-primary"
+              className="mb-3 sm:mb-4 mt-4 sm:mt-6 font-serif text-[clamp(28px,7.5vw,72px)] sm:text-[clamp(42px,5.5vw,72px)] font-bold leading-[1.08] sm:leading-[1.02] text-primary break-words"
               id="contact-title"
             >
               Have a project
@@ -257,11 +257,13 @@ export default function PortfolioContact() {
 
             {/* Direct Email Link */}
             <a
-              className="mt-8 inline-flex max-w-full items-center gap-2.5 border-b border-action pb-2 font-mono text-[14px] text-primary no-underline transition-colors hover:text-action max-sm:text-[13px]"
+              className="mt-6 sm:mt-8 inline-flex max-w-full items-center gap-2 sm:gap-2.5 border-b border-action pb-2 font-mono text-[12px] sm:text-[14px] text-primary no-underline transition-colors hover:text-action"
               href={`mailto:${contactData.email}`}
             >
               <Mail size={16} className="text-action shrink-0" />
-              <span>{contactData.email}</span>
+              <span className="break-all sm:break-normal">
+                {contactData.email}
+              </span>
               <ArrowUpRight className="shrink-0 text-action" size={16} />
             </a>
 
@@ -327,7 +329,7 @@ export default function PortfolioContact() {
           </div>
 
           {/* Right Column: Reactive Contact Form */}
-          <div className="reveal rounded-lg border border-border bg-surface p-6 sm:p-8 shadow-xs">
+          <div className="reveal rounded-lg border border-border bg-surface p-4 sm:p-8 shadow-xs">
             {submitSuccess ? (
               <div className="py-8 text-center animate-in fade-in zoom-in-95 duration-200">
                 <span className="mx-auto mb-4 grid size-14 place-items-center rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">

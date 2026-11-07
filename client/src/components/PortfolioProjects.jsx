@@ -28,9 +28,20 @@ export default function PortfolioProjects() {
   const loading = projectList.length === 0;
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 640,
+  );
   const sectionRef = useRef(null);
 
   useGsapReveal(sectionRef);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const nextSlide = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % projectList.length);
@@ -66,12 +77,20 @@ export default function PortfolioProjects() {
     const isCenter = offset === 0;
     const absOffset = Math.abs(offset);
 
-    // Dynamic horizontal spacing per card offset
-    const stepX = 230; // pixels
+    // Dynamic horizontal spacing per card offset (responsive stepX)
+    const stepX = isMobile ? 155 : 230; // pixels
     const translateX = offset * stepX;
 
-    // Scale: center card is enlarged (1.15x), immediate neighbors (0.88x), far neighbors (0.76x)
-    const scale = isCenter ? 1.15 : absOffset === 1 ? 0.88 : 0.74;
+    // Scale: center card is enlarged, immediate neighbors stepped down
+    const scale = isCenter
+      ? isMobile
+        ? 1.05
+        : 1.15
+      : absOffset === 1
+        ? isMobile
+          ? 0.82
+          : 0.88
+        : 0.72;
 
     // Opacity: center card is 1, near neighbors 0.75, far neighbors 0.4
     const opacity = isCenter
@@ -217,7 +236,7 @@ export default function PortfolioProjects() {
           - When mouse leaves, isPaused = false (sliding resumes).
         */}
             <div
-              className="reveal relative mt-10 h-[430px] w-full max-w-full overflow-hidden sm:h-[480px]"
+              className="reveal relative mt-6 sm:mt-10 h-[380px] w-full max-w-full overflow-hidden sm:h-[480px]"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
@@ -230,7 +249,7 @@ export default function PortfolioProjects() {
                     key={project.id}
                     onClick={() => setActiveIndex(index)}
                     style={cardStyle}
-                    className="absolute left-1/2 top-1/2 w-[250px] h-[370px] sm:w-[280px] sm:h-[410px] select-none rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer overflow-hidden flex flex-col justify-between"
+                    className="absolute left-1/2 top-1/2 w-[215px] h-[335px] sm:w-[280px] sm:h-[410px] select-none rounded-2xl border transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer overflow-hidden flex flex-col justify-between"
                     aria-label={`Project: ${project.title}`}
                   >
                     {/* Card Background / Artwork Container */}
@@ -361,14 +380,14 @@ export default function PortfolioProjects() {
           - Tech stack pills
           - 1-click GitHub source & Live Showcase buttons
         */}
-            <div className="reveal mt-12 rounded-xl border border-border bg-surface p-6 sm:p-9 shadow-md">
+            <div className="reveal mt-8 sm:mt-12 rounded-xl border border-border bg-surface p-4 sm:p-9 shadow-md">
               <div className="flex flex-col justify-between gap-4 border-b border-border/80 pb-6 sm:flex-row sm:items-center">
                 <div>
                   <div className="flex items-center gap-2 font-mono text-[11px] text-action uppercase tracking-wider">
                     <Layers size={14} />
                     <span>Featured Project Deep Dive</span>
                   </div>
-                  <h3 className="mt-1 font-serif text-2xl font-bold text-primary sm:text-3xl">
+                  <h3 className="mt-1 font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-primary">
                     {activeProject.title}
                   </h3>
                   <p className="mt-1 font-mono text-xs text-secondary">
@@ -377,12 +396,12 @@ export default function PortfolioProjects() {
                 </div>
 
                 {/* Live CTAs */}
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
                   <a
                     href={activeProject.github}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm border border-border bg-canvas px-4 py-2 font-mono text-[11px] text-secondary no-underline transition-colors hover:border-action hover:text-action"
+                    className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-sm border border-border bg-canvas px-4 py-2 font-mono text-[11px] text-secondary no-underline transition-colors hover:border-action hover:text-action"
                   >
                     <FolderGit2 size={15} className="text-action" />
                     <span>View Source Code</span>
@@ -393,7 +412,7 @@ export default function PortfolioProjects() {
                       href={activeProject.live}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-2 rounded-sm bg-action px-4 py-2 font-mono text-[11px] font-semibold text-canvas no-underline transition-all hover:bg-action-hover shadow-xs"
+                      className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-sm bg-action px-4 py-2 font-mono text-[11px] font-semibold text-canvas no-underline transition-all hover:bg-action-hover shadow-xs"
                     >
                       <span>Launch Live Demo</span>
                       <ArrowUpRight size={15} />

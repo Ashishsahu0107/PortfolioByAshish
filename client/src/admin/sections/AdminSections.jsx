@@ -84,21 +84,21 @@ function SectionModal({ section, onSave, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/45 z-[500] flex items-center justify-center p-5"
+      className="fixed inset-0 bg-black/70 z-[500] backdrop-blur-xs flex items-center justify-center p-3 sm:p-5"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl p-7 w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl"
+        className="bg-zinc-900 border border-zinc-800 text-zinc-100 rounded-2xl p-4 sm:p-7 w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-2 text-gray-900">
+        <div className="flex items-center justify-between mb-5 border-b border-zinc-800 pb-3">
+          <div className="flex items-center gap-2 text-zinc-100">
             {section.id ? (
-              <Pencil size={18} className="text-indigo-600 shrink-0" />
+              <Pencil size={18} className="text-amber-400 shrink-0" />
             ) : (
-              <Plus size={18} className="text-indigo-600 shrink-0" />
+              <Plus size={18} className="text-amber-400 shrink-0" />
             )}
-            <h3 className="text-lg font-bold m-0">
+            <h3 className="text-base sm:text-lg font-bold m-0">
               {section.id
                 ? `Edit Section: ${section.name}`
                 : "Create Dynamic Section"}
@@ -106,7 +106,7 @@ function SectionModal({ section, onSave, onClose }) {
           </div>
           <button
             onClick={onClose}
-            className="bg-gray-100 hover:bg-gray-200 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-gray-500 transition-colors"
+            className="bg-zinc-800 hover:bg-zinc-700 border-none rounded-lg w-8 h-8 flex items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors"
             aria-label="Close"
           >
             <X size={16} />
@@ -538,20 +538,21 @@ export default function AdminSections() {
           {sections.map((sec, idx) => (
             <div
               key={sec.id}
-              className={`flex items-center justify-between gap-4 p-4 rounded-xl border transition-all ${
+              className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 p-3.5 sm:p-4 rounded-xl border transition-all ${
                 sec.enabled
-                  ? "bg-white border-gray-200 shadow-xs"
-                  : "bg-gray-50/70 border-gray-200 opacity-60"
+                  ? "bg-zinc-900/90 border-zinc-800 shadow-xs hover:border-zinc-700"
+                  : "bg-zinc-950/70 border-zinc-800/60 opacity-60"
               }`}
             >
               {/* Order Controls & Info */}
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="flex flex-col gap-0.5">
+              <div className="flex items-start sm:items-center gap-3 min-w-0 flex-1">
+                {/* Reorder Arrows */}
+                <div className="flex flex-col gap-0.5 shrink-0 pt-0.5 sm:pt-0">
                   <button
                     type="button"
                     disabled={idx === 0}
                     onClick={() => moveOrder(idx, -1)}
-                    className="p-1 text-gray-400 hover:text-indigo-600 disabled:opacity-20 cursor-pointer"
+                    className="p-1 text-zinc-400 hover:text-white disabled:opacity-20 cursor-pointer rounded hover:bg-zinc-800 transition-colors"
                     title="Move up"
                   >
                     <MoveUp size={13} />
@@ -560,23 +561,34 @@ export default function AdminSections() {
                     type="button"
                     disabled={idx === sections.length - 1}
                     onClick={() => moveOrder(idx, 1)}
-                    className="p-1 text-gray-400 hover:text-indigo-600 disabled:opacity-20 cursor-pointer"
+                    className="p-1 text-zinc-400 hover:text-white disabled:opacity-20 cursor-pointer rounded hover:bg-zinc-800 transition-colors"
                     title="Move down"
                   >
                     <MoveDown size={13} />
                   </button>
                 </div>
 
-                <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 font-bold text-xs flex items-center justify-center shrink-0">
+                {/* Order Number Badge */}
+                <div
+                  className="size-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 font-mono shadow-xs border"
+                  style={{
+                    backgroundColor:
+                      "rgba(var(--admin-accent-rgb, 245, 158, 11), 0.15)",
+                    color: "var(--admin-glow, #f59e0b)",
+                    borderColor:
+                      "rgba(var(--admin-accent-rgb, 245, 158, 11), 0.35)",
+                  }}
+                >
                   {sec.order || idx + 1}
                 </div>
 
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-sm text-gray-900">
+                {/* Section Title, Badges & Description */}
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap mb-1">
+                    <span className="font-bold text-sm sm:text-base text-zinc-100">
                       {sec.name}
                     </span>
-                    <span className="font-mono text-xs text-gray-400">
+                    <span className="font-mono text-xs text-zinc-400">
                       #{sec.slug}
                     </span>
                     <span
@@ -590,30 +602,30 @@ export default function AdminSections() {
                       {sec.enabled ? "Active" : "Disabled"}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 m-0 mt-0.5 truncate">
+                  <p className="text-xs text-zinc-400 m-0 line-clamp-2 sm:line-clamp-1">
                     {sec.desc || "Configured section"}
                   </p>
                 </div>
               </div>
 
-              {/* Actions */}
-              <div className="flex items-center gap-2 shrink-0">
+              {/* Actions Toolbar */}
+              <div className="flex items-center gap-2 shrink-0 pt-2 sm:pt-0 border-t border-zinc-800/80 sm:border-t-0 w-full sm:w-auto justify-end">
                 <button
                   type="button"
                   onClick={() => handleToggle(sec)}
-                  className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
+                  className={`${btnSecondary} !px-3 !py-1.5 !text-xs flex-1 sm:flex-initial justify-center`}
                   title={
                     sec.enabled ? "Disable on portfolio" : "Enable on portfolio"
                   }
                 >
                   {sec.enabled ? (
                     <>
-                      <EyeOff size={13} className="text-gray-400" />
+                      <EyeOff size={13} className="text-zinc-400" />
                       <span>Hide</span>
                     </>
                   ) : (
                     <>
-                      <Eye size={13} className="text-indigo-600" />
+                      <Eye size={13} className="text-emerald-400" />
                       <span>Show</span>
                     </>
                   )}
@@ -622,7 +634,7 @@ export default function AdminSections() {
                 <button
                   type="button"
                   onClick={() => editModal.open(sec)}
-                  className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
+                  className={`${btnSecondary} !px-3 !py-1.5 !text-xs flex-1 sm:flex-initial justify-center`}
                   title="Edit section"
                 >
                   <Pencil size={13} />
@@ -633,7 +645,7 @@ export default function AdminSections() {
                   <button
                     type="button"
                     onClick={() => deleteModal.open(sec)}
-                    className={`${btnDanger} !px-2 !py-1 !text-xs`}
+                    className={`${btnDanger} !px-2.5 !py-1.5 !text-xs shrink-0`}
                     title="Delete custom section"
                     aria-label="Delete section"
                   >

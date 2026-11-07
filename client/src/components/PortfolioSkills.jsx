@@ -75,18 +75,18 @@ function SkillPill({ skill, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="group/pill inline-flex items-center gap-2.5 sm:gap-3 rounded-md border border-border bg-surface px-4 py-2 sm:px-5 sm:py-2.5 transition-all duration-300 hover:border-action hover:bg-surface-alt hover:shadow-lg hover:shadow-action/10 hover:scale-[1.04] select-none cursor-pointer shrink-0 text-left focus:outline-hidden"
+      className="group/pill inline-flex items-center gap-2 sm:gap-3 rounded-md border border-border bg-surface px-3.5 py-1.5 sm:px-5 sm:py-2.5 transition-all duration-300 hover:border-action hover:bg-surface-alt hover:shadow-lg hover:shadow-action/10 hover:scale-[1.04] select-none cursor-pointer shrink-0 text-left focus:outline-hidden"
       role="button"
       aria-label={`${skill.name} - Click to view all skills`}
       title={`${skill.name} (Click to view full stack breakdown)`}
     >
       {/* Official Technology Brand Icon */}
-      <div className="flex size-5 sm:size-6 items-center justify-center shrink-0">
+      <div className="flex size-4.5 sm:size-6 items-center justify-center shrink-0">
         <TechIcon
           name={skill.name}
           iconKey={skill.icon}
-          size={18}
-          className="transition-transform duration-300 group-hover/pill:scale-110"
+          size={16}
+          className="transition-transform duration-300 group-hover/pill:scale-110 sm:scale-110"
         />
       </div>
 
@@ -227,12 +227,12 @@ export default function PortfolioSkills() {
             >
               {/* Left Edge Fade Mask */}
               <div
-                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-24 md:w-48 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
                 aria-hidden="true"
               />
               {/* Right Edge Fade Mask */}
               <div
-                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-24 md:w-48 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
                 aria-hidden="true"
               />
 
@@ -260,12 +260,12 @@ export default function PortfolioSkills() {
             >
               {/* Left Edge Fade Mask */}
               <div
-                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
+                className="pointer-events-none absolute inset-y-0 left-0 z-10 w-8 sm:w-24 md:w-48 lg:w-72 bg-gradient-to-r from-canvas via-canvas/80 to-transparent"
                 aria-hidden="true"
               />
               {/* Right Edge Fade Mask */}
               <div
-                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-28 sm:w-48 md:w-60 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
+                className="pointer-events-none absolute inset-y-0 right-0 z-10 w-8 sm:w-24 md:w-48 lg:w-72 bg-gradient-to-l from-canvas via-canvas/80 to-transparent"
                 aria-hidden="true"
               />
 

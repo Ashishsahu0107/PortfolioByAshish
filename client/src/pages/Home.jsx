@@ -40,7 +40,7 @@ function DynamicCustomSection({ section }) {
           <span className="text-action font-mono">0{section.order || 8}</span>{" "}
           {section.name}
         </p>
-        <h2 className="mb-4 mt-6 font-serif text-[clamp(36px,4.5vw,56px)] font-bold text-primary">
+        <h2 className="mb-3 sm:mb-4 mt-4 sm:mt-6 font-serif text-[clamp(28px,7.5vw,56px)] font-bold text-primary break-words">
           {content.heading || section.name}
         </h2>
         {content.subheading && (

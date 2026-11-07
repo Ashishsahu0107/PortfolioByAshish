@@ -83,7 +83,7 @@ export default function PortfolioAbout() {
           {/* Left Column (7 cols): Editorial Headline & Narrative */}
           <div className="reveal lg:col-span-7">
             <h2
-              className="mb-6 font-serif text-[clamp(36px,4.5vw,60px)] font-bold leading-[1.08] text-primary"
+              className="mb-4 sm:mb-6 font-serif text-[clamp(26px,6.5vw,60px)] sm:text-[clamp(36px,4.5vw,60px)] font-bold leading-[1.12] sm:leading-[1.08] text-primary break-words"
               id="about-title"
             >
               {philosophyText ? (
@@ -134,7 +134,7 @@ export default function PortfolioAbout() {
           </div>
 
           {/* Right Column (5 cols): Core Engineering Focus Areas */}
-          <div className="reveal lg:col-span-5 flex flex-col gap-3 rounded-lg border border-border bg-surface p-6 shadow-xs">
+          <div className="reveal lg:col-span-5 flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 sm:p-6 shadow-xs">
             <div className="mb-2 flex items-center justify-between border-b border-border pb-3">
               <span className="font-mono text-[10px] uppercase tracking-wider text-secondary">
                 Core Competencies
@@ -198,16 +198,16 @@ export default function PortfolioAbout() {
             {stats.map((stat, index) => (
               <div
                 key={stat.label || index}
-                className={`flex flex-col justify-center gap-1.5 p-6 sm:p-7 ${
+                className={`flex flex-col justify-center gap-1 sm:gap-1.5 p-3.5 sm:p-7 ${
                   index !== stats.length - 1
                     ? "border-r border-border max-sm:odd:border-r max-sm:even:border-r-0"
                     : ""
                 } ${index < 2 ? "max-sm:border-b max-sm:border-border" : ""}`}
               >
-                <strong className="font-serif text-3xl font-bold text-action sm:text-4xl">
+                <strong className="font-serif text-2xl sm:text-3xl lg:text-4xl font-bold text-action">
                   {stat.value}
                 </strong>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-secondary">
+                <span className="font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-secondary">
                   {stat.label}
                 </span>
               </div>

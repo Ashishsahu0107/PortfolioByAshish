@@ -22,7 +22,9 @@ function ResumeTemplateModalContent({
 }) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(defaultTemplate);
   const [previewMode, setPreviewMode] = useState(false);
-  const [zoom, setZoom] = useState(90);
+  const [zoom, setZoom] = useState(() =>
+    typeof window !== "undefined" && window.innerWidth < 640 ? 45 : 90,
+  );
   const [exportingId, setExportingId] = useState(null);
   const [downloadSuccessId, setDownloadSuccessId] = useState(null);
   const [resumeData] = useState(() => {
@@ -143,7 +145,7 @@ function ResumeTemplateModalContent({
       {/* Main Modal Surface */}
       <div className="relative flex flex-col w-full max-w-6xl max-h-[92vh] bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden text-zinc-900">
         {/* Modal Top Header */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 bg-zinc-50/80">
+        <header className="flex items-center justify-between px-3 sm:px-6 py-3 sm:py-4 border-b border-zinc-200 bg-zinc-50/80">
           <div className="flex items-center gap-3">
             {previewMode ? (
               <button

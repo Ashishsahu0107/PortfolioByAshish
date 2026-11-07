@@ -137,14 +137,18 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
             type="button"
             id="navbar-resume-btn"
             onClick={() => openResumeModal("modern")}
-            className="group/resume inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1.5 font-mono text-[10px] font-medium tracking-wider text-secondary transition-all duration-300 hover:border-action hover:bg-surface-alt hover:text-action hover:shadow-xs cursor-pointer"
+            className="group/resume inline-flex items-center gap-1 sm:gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 sm:px-3 sm:py-1.5 font-mono text-[9px] sm:text-[10px] font-medium tracking-wider text-secondary transition-all duration-300 hover:border-action hover:bg-surface-alt hover:text-action hover:shadow-xs cursor-pointer shrink-0"
             title="Open Resume PDF Template Selector"
           >
             <Download
               size={12}
-              className="transition-transform duration-300 group-hover/resume:-translate-y-0.5"
+              className="transition-transform duration-300 group-hover/resume:-translate-y-0.5 shrink-0"
             />
-            <span>Resume PDF</span>
+            <span>
+              <span className="hidden min-[360px]:inline">Resume</span>
+              <span className="min-[360px]:hidden">CV</span>
+              <span className="hidden min-[440px]:inline"> PDF</span>
+            </span>
           </button>
 
           {/* Theme Toggle Button */}

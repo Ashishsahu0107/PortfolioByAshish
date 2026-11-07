@@ -103,19 +103,19 @@ export default function PortfolioExperience() {
             return (
               <div
                 key={item.id}
-                className="reveal group rounded-lg border border-border bg-surface p-6 sm:p-7 transition-all duration-300 hover:border-action/70 hover:shadow-md"
+                className="reveal group rounded-lg border border-border bg-surface p-4 sm:p-7 transition-all duration-300 hover:border-action/70 hover:shadow-md"
               >
                 <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
                   {/* Left: Icon, Title, Organization */}
-                  <div className="flex items-start gap-4">
+                  <div className="flex items-start gap-3 sm:gap-4">
                     <span
-                      className={`grid size-10 shrink-0 place-items-center rounded-md border ${config.color}`}
+                      className={`grid size-9 sm:size-10 shrink-0 place-items-center rounded-md border ${config.color}`}
                     >
-                      <Icon size={18} />
+                      <Icon size={17} />
                     </span>
-                    <div>
+                    <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-serif text-xl font-bold text-primary group-hover:text-action transition-colors">
+                        <h3 className="font-serif text-lg sm:text-xl font-bold text-primary group-hover:text-action transition-colors">
                           {item.title}
                         </h3>
                         <span className="rounded-full border border-border bg-surface-alt px-2.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-secondary">
