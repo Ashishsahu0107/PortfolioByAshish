@@ -8,14 +8,22 @@ function formatDeveloper(data) {
   return {
     ...data,
     firstName: data.firstName || data.name?.trim().split(/\s+/)[0] || "",
-    lastName: data.lastName || data.name?.trim().split(/\s+/).slice(1).join(" ") || "",
-    locationShort: data.locationShort || data.location?.split(",")[0].trim() || data.location || "",
+    lastName:
+      data.lastName || data.name?.trim().split(/\s+/).slice(1).join(" ") || "",
+    locationShort:
+      data.locationShort ||
+      data.location?.split(",")[0].trim() ||
+      data.location ||
+      "",
   };
 }
 
 export function DeveloperProvider({ children }) {
   const { developer: rawDeveloper, refreshBundle } = usePortfolioData();
-  const developer = useMemo(() => formatDeveloper(rawDeveloper), [rawDeveloper]);
+  const developer = useMemo(
+    () => formatDeveloper(rawDeveloper),
+    [rawDeveloper],
+  );
 
   return (
     <DeveloperContext.Provider

@@ -36,7 +36,7 @@ export function AdminThemeProvider({ children }) {
     root.style.setProperty("--admin-gradient", gradient);
     root.style.setProperty(
       "--admin-shadow",
-      `0 4px 18px rgba(${r}, ${g}, ${b}, 0.35)`
+      `0 4px 18px rgba(${r}, ${g}, ${b}, 0.35)`,
     );
   }, [currentTheme]);
 

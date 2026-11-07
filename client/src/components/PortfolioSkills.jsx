@@ -21,8 +21,14 @@ function mixBackendTechnologies(categories) {
   const toolsCat = categories.find((c) => c.id === "tools")?.skills || [];
   const otherCat = categories.find((c) => c.id === "other")?.skills || [];
 
-  const taggedBackend = backendCat.map((s) => ({ ...s, categoryLabel: "Backend" }));
-  const taggedDatabase = databaseCat.map((s) => ({ ...s, categoryLabel: "Database" }));
+  const taggedBackend = backendCat.map((s) => ({
+    ...s,
+    categoryLabel: "Backend",
+  }));
+  const taggedDatabase = databaseCat.map((s) => ({
+    ...s,
+    categoryLabel: "Database",
+  }));
   const taggedTools = toolsCat.map((s) => ({ ...s, categoryLabel: "Tools" }));
   const taggedOther = otherCat.map((s) => ({ ...s, categoryLabel: "Core" }));
 
@@ -47,7 +53,12 @@ function mixBackendTechnologies(categories) {
   if (mixed.length === 0) {
     return categories
       .filter((c) => c.id !== "frontend")
-      .flatMap((c) => (c.skills || []).map((s) => ({ ...s, categoryLabel: c.label || "Backend" })));
+      .flatMap((c) =>
+        (c.skills || []).map((s) => ({
+          ...s,
+          categoryLabel: c.label || "Backend",
+        })),
+      );
   }
 
   return mixed;
@@ -106,13 +117,22 @@ export default function PortfolioSkills() {
   const ltrTrackItems = useMemo(() => {
     if (frontendSkills.length === 0) return [];
     // Duplicate 4x to ensure uninterrupted track loop
-    return [...frontendSkills, ...frontendSkills, ...frontendSkills, ...frontendSkills];
+    return [
+      ...frontendSkills,
+      ...frontendSkills,
+      ...frontendSkills,
+      ...frontendSkills,
+    ];
   }, [frontendSkills]);
 
   const rtlTrackItems = useMemo(() => {
     if (mixedBackendSkills.length === 0) return [];
     // Duplicate 3x to ensure uninterrupted track loop
-    return [...mixedBackendSkills, ...mixedBackendSkills, ...mixedBackendSkills];
+    return [
+      ...mixedBackendSkills,
+      ...mixedBackendSkills,
+      ...mixedBackendSkills,
+    ];
   }, [mixedBackendSkills]);
 
   return (
@@ -141,10 +161,14 @@ export default function PortfolioSkills() {
           <div className="mt-3 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <h2 className={`${sectionTitle} max-w-[640px]`} id="skills-title">
               Technical skills &amp;{" "}
-              <span className="italic font-normal text-action">technologies.</span>
+              <span className="italic font-normal text-action">
+                technologies.
+              </span>
             </h2>
             <p className={`${sectionLede} max-w-[420px] pb-2`}>
-              A curated stack of frontend, backend, database, and system technologies I rely on to build resilient, high-performance web applications.
+              A curated stack of frontend, backend, database, and system
+              technologies I rely on to build resilient, high-performance web
+              applications.
             </p>
           </div>
         </div>
@@ -154,9 +178,12 @@ export default function PortfolioSkills() {
       {categories.length === 0 && (
         <div className="reveal mx-auto my-12 max-w-lg rounded-xl border border-border bg-surface p-12 text-center">
           <Wrench size={36} className="mx-auto mb-3 text-secondary/50" />
-          <h3 className="mb-1 text-base font-semibold text-primary">No Skills Configured</h3>
+          <h3 className="mb-1 text-base font-semibold text-primary">
+            No Skills Configured
+          </h3>
           <p className="text-sm text-secondary">
-            Add your tech stack in the Admin Dashboard to activate the dual-direction sliders.
+            Add your tech stack in the Admin Dashboard to activate the
+            dual-direction sliders.
           </p>
         </div>
       )}
@@ -176,10 +203,14 @@ export default function PortfolioSkills() {
           {frontendSkills.length > 0 && (
             <div className="space-y-2.5">
               {/* Slider Subtitle Label */}
-              <div className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}>
+              <div
+                className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}
+              >
                 <span className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-action" />
-                  <span className="text-primary font-semibold">Frontend &amp; Interface</span>
+                  <span className="text-primary font-semibold">
+                    Frontend &amp; Interface
+                  </span>
                 </span>
                 <span className="text-[11px] text-secondary/70">
                   Left &rarr; Right &bull; Hover to pause
@@ -206,7 +237,10 @@ export default function PortfolioSkills() {
                 {/* Infinite Moving Track (Left to Right) */}
                 <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-ltr">
                   {ltrTrackItems.map((skill, idx) => (
-                    <SkillPill key={`frontend-pill-${skill.name}-${idx}`} skill={skill} />
+                    <SkillPill
+                      key={`frontend-pill-${skill.name}-${idx}`}
+                      skill={skill}
+                    />
                   ))}
                 </div>
               </div>
@@ -225,10 +259,14 @@ export default function PortfolioSkills() {
           {mixedBackendSkills.length > 0 && (
             <div className="space-y-2.5">
               {/* Slider Subtitle Label */}
-              <div className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}>
+              <div
+                className={`${contentWidth} flex items-center justify-between text-xs font-mono text-secondary`}
+              >
                 <span className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-action" />
-                  <span className="text-primary font-semibold">Backend, Databases &amp; Systems</span>
+                  <span className="text-primary font-semibold">
+                    Backend, Databases &amp; Systems
+                  </span>
                 </span>
                 <span className="text-[11px] text-secondary/70">
                   &larr; Right to Left &bull; Hover to pause
@@ -255,7 +293,10 @@ export default function PortfolioSkills() {
                 {/* Infinite Moving Track (Right to Left) */}
                 <div className="flex w-max gap-3.5 sm:gap-4 animate-skills-rtl">
                   {rtlTrackItems.map((skill, idx) => (
-                    <SkillPill key={`backend-pill-${skill.name}-${idx}`} skill={skill} />
+                    <SkillPill
+                      key={`backend-pill-${skill.name}-${idx}`}
+                      skill={skill}
+                    />
                   ))}
                 </div>
               </div>
@@ -273,7 +314,8 @@ export default function PortfolioSkills() {
       {/* Interactive Exploration Hint */}
       <div className={`${contentWidth} mt-10 text-center`}>
         <p className="reveal font-mono text-[11px] text-secondary/70">
-          Hover over either slider to pause motion &bull; All skills synchronize live with MongoDB database
+          Hover over either slider to pause motion &bull; All skills synchronize
+          live with MongoDB database
         </p>
       </div>
     </section>

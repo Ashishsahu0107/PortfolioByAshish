@@ -23,50 +23,65 @@ export const BASELINE_PORTFOLIO = {
     availableForWork: true,
     statusPhrase: "Available for opportunities",
     bio: "I am a Computer Science and Engineering undergraduate (Class of 2026) and passionate Full Stack Developer specializing in the MERN stack. I build robust, scalable web applications that combine high-performance backends with refined editorial user interfaces. With a strong foundation in Data Structures and Algorithms in Java, my focus is crafting software that is both architecturally sound and delightful to use.",
-    philosophy: "I care about the details users notice, and the engineering they never have to.",
+    philosophy:
+      "I care about the details users notice, and the engineering they never have to.",
     emailjsServiceId: "service_mshfzaf",
     emailjsTemplateId: "template_0rruyps",
     emailjsPublicKey: "3JGbJNsXsGW1gQJGu",
   },
   about: {
     bio: "I am a Computer Science and Engineering undergraduate (Class of 2026) and passionate Full Stack Developer specializing in the MERN stack. I build robust, scalable web applications that combine high-performance backends with refined editorial user interfaces.",
-    philosophy: "I care about the details users notice, and the engineering they never have to.",
+    philosophy:
+      "I care about the details users notice, and the engineering they never have to.",
     github: "https://github.com/Ashishsahu0107",
     focusAreas: [
       {
         id: "focus_1",
         title: "Frontend Development",
-        description: "Modern component architecture with React, Next.js, Tailwind CSS, and fluid GSAP micro-animations.",
+        description:
+          "Modern component architecture with React, Next.js, Tailwind CSS, and fluid GSAP micro-animations.",
         icon: "Code2",
       },
       {
         id: "focus_2",
         title: "Backend Engineering",
-        description: "RESTful API design, Express.js servers, JWT authentication, and secure middleware pipelines.",
+        description:
+          "RESTful API design, Express.js servers, JWT authentication, and secure middleware pipelines.",
         icon: "Server",
       },
       {
         id: "focus_3",
         title: "Database Architecture",
-        description: "Data modeling, schema validation, and indexing with MongoDB, Mongoose, and relational MySQL.",
+        description:
+          "Data modeling, schema validation, and indexing with MongoDB, Mongoose, and relational MySQL.",
         icon: "Database",
       },
       {
         id: "focus_4",
         title: "Data Structures & Java",
-        description: "Algorithmic problem solving, clean OOP patterns, and computational complexity optimization.",
+        description:
+          "Algorithmic problem solving, clean OOP patterns, and computational complexity optimization.",
         icon: "Cpu",
       },
       {
         id: "focus_5",
         title: "Developer Tooling & CI/CD",
-        description: "Git version control, Postman API testing, Vite build optimizations, and automated deployment.",
+        description:
+          "Git version control, Postman API testing, Vite build optimizations, and automated deployment.",
         icon: "Terminal",
       },
     ],
     stats: [
-      { label: "Engineering Depth", value: "3+ Yrs", detail: "Active programming" },
-      { label: "Full Stack Projects", value: "10+", detail: "Shipped & verified" },
+      {
+        label: "Engineering Depth",
+        value: "3+ Yrs",
+        detail: "Active programming",
+      },
+      {
+        label: "Full Stack Projects",
+        value: "10+",
+        detail: "Shipped & verified",
+      },
       { label: "LeetCode & DSA", value: "300+", detail: "Problems solved" },
       { label: "Code Commits", value: "500+", detail: "Across repositories" },
     ],
@@ -77,12 +92,42 @@ export const BASELINE_PORTFOLIO = {
       label: "Frontend",
       color: "var(--color-accent)",
       skills: [
-        { name: "React", description: "Component-based UI library", level: 90, icon: "Code2" },
-        { name: "JavaScript", description: "Core language for the web", level: 88, icon: "FileCode" },
-        { name: "HTML5", description: "Semantic web structure", level: 95, icon: "Globe" },
-        { name: "CSS3", description: "Styling & animations", level: 90, icon: "Palette" },
-        { name: "Tailwind CSS", description: "Utility-first CSS framework", level: 88, icon: "Wind" },
-        { name: "React Router", description: "Client-side routing", level: 85, icon: "Route" },
+        {
+          name: "React",
+          description: "Component-based UI library",
+          level: 90,
+          icon: "Code2",
+        },
+        {
+          name: "JavaScript",
+          description: "Core language for the web",
+          level: 88,
+          icon: "FileCode",
+        },
+        {
+          name: "HTML5",
+          description: "Semantic web structure",
+          level: 95,
+          icon: "Globe",
+        },
+        {
+          name: "CSS3",
+          description: "Styling & animations",
+          level: 90,
+          icon: "Palette",
+        },
+        {
+          name: "Tailwind CSS",
+          description: "Utility-first CSS framework",
+          level: 88,
+          icon: "Wind",
+        },
+        {
+          name: "React Router",
+          description: "Client-side routing",
+          level: 85,
+          icon: "Route",
+        },
       ],
       order: 0,
     },
@@ -91,12 +136,42 @@ export const BASELINE_PORTFOLIO = {
       label: "Backend",
       color: "var(--color-accent)",
       skills: [
-        { name: "Node.js", description: "JavaScript runtime", level: 85, icon: "Server" },
-        { name: "Express.js", description: "Fast, minimal web framework", level: 85, icon: "Zap" },
-        { name: "REST APIs", description: "API design & development", level: 88, icon: "Network" },
-        { name: "Authentication", description: "Secure user auth systems", level: 82, icon: "ShieldCheck" },
-        { name: "JWT", description: "Token-based auth", level: 80, icon: "KeyRound" },
-        { name: "Docker Containerization", description: "Microservices and isolated deployment", level: 90, icon: "Code2" },
+        {
+          name: "Node.js",
+          description: "JavaScript runtime",
+          level: 85,
+          icon: "Server",
+        },
+        {
+          name: "Express.js",
+          description: "Fast, minimal web framework",
+          level: 85,
+          icon: "Zap",
+        },
+        {
+          name: "REST APIs",
+          description: "API design & development",
+          level: 88,
+          icon: "Network",
+        },
+        {
+          name: "Authentication",
+          description: "Secure user auth systems",
+          level: 82,
+          icon: "ShieldCheck",
+        },
+        {
+          name: "JWT",
+          description: "Token-based auth",
+          level: 80,
+          icon: "KeyRound",
+        },
+        {
+          name: "Docker Containerization",
+          description: "Microservices and isolated deployment",
+          level: 90,
+          icon: "Code2",
+        },
       ],
       order: 1,
     },
@@ -105,8 +180,18 @@ export const BASELINE_PORTFOLIO = {
       label: "Database",
       color: "var(--color-accent)",
       skills: [
-        { name: "MongoDB", description: "NoSQL document database", level: 85, icon: "Database" },
-        { name: "MySQL", description: "Relational database", level: 75, icon: "TableProperties" },
+        {
+          name: "MongoDB",
+          description: "NoSQL document database",
+          level: 85,
+          icon: "Database",
+        },
+        {
+          name: "MySQL",
+          description: "Relational database",
+          level: 75,
+          icon: "TableProperties",
+        },
       ],
       order: 2,
     },
@@ -115,10 +200,30 @@ export const BASELINE_PORTFOLIO = {
       label: "Tools",
       color: "var(--color-accent)",
       skills: [
-        { name: "Git", description: "Version control", level: 88, icon: "GitBranch" },
-        { name: "GitHub", description: "Code hosting & collaboration", level: 88, icon: "Github" },
-        { name: "VS Code", description: "Primary code editor", level: 95, icon: "Terminal" },
-        { name: "Postman", description: "API testing", level: 85, icon: "Send" },
+        {
+          name: "Git",
+          description: "Version control",
+          level: 88,
+          icon: "GitBranch",
+        },
+        {
+          name: "GitHub",
+          description: "Code hosting & collaboration",
+          level: 88,
+          icon: "Github",
+        },
+        {
+          name: "VS Code",
+          description: "Primary code editor",
+          level: 95,
+          icon: "Terminal",
+        },
+        {
+          name: "Postman",
+          description: "API testing",
+          level: 85,
+          icon: "Send",
+        },
       ],
       order: 3,
     },
@@ -127,11 +232,36 @@ export const BASELINE_PORTFOLIO = {
       label: "Other",
       color: "var(--color-accent)",
       skills: [
-        { name: "Java", description: "Object-oriented programming", level: 78, icon: "Coffee" },
-        { name: "DSA", description: "Data structures & algorithms", level: 75, icon: "Binary" },
-        { name: "IoT", description: "Internet of Things", level: 70, icon: "Radio" },
-        { name: "Cloud Computing", description: "Cloud infrastructure basics", level: 68, icon: "Cloud" },
-        { name: "Computer Vision", description: "Image processing & ML", level: 65, icon: "Eye" },
+        {
+          name: "Java",
+          description: "Object-oriented programming",
+          level: 78,
+          icon: "Coffee",
+        },
+        {
+          name: "DSA",
+          description: "Data structures & algorithms",
+          level: 75,
+          icon: "Binary",
+        },
+        {
+          name: "IoT",
+          description: "Internet of Things",
+          level: 70,
+          icon: "Radio",
+        },
+        {
+          name: "Cloud Computing",
+          description: "Cloud infrastructure basics",
+          level: 68,
+          icon: "Cloud",
+        },
+        {
+          name: "Computer Vision",
+          description: "Image processing & ML",
+          level: 65,
+          icon: "Eye",
+        },
       ],
       order: 4,
     },
@@ -145,10 +275,14 @@ export const BASELINE_PORTFOLIO = {
       category: "Full Stack",
       year: "2024",
       color: "#00f0ff",
-      shortDescription: "A comprehensive healthcare appointment management platform with real-time SMS notifications, Twilio integration, and role-based access for doctors and patients.",
-      description: "CarePulse streamlines patient registration, doctor appointment scheduling, and clinical record administration.",
-      problem: "Healthcare appointment systems often suffer from poor UX, lack of mobile confirmation, and fragmented records.",
-      solution: "Engineered an end-to-end appointment platform with SMS delivery, OTP-based identity validation, and responsive appointment workflows.",
+      shortDescription:
+        "A comprehensive healthcare appointment management platform with real-time SMS notifications, Twilio integration, and role-based access for doctors and patients.",
+      description:
+        "CarePulse streamlines patient registration, doctor appointment scheduling, and clinical record administration.",
+      problem:
+        "Healthcare appointment systems often suffer from poor UX, lack of mobile confirmation, and fragmented records.",
+      solution:
+        "Engineered an end-to-end appointment platform with SMS delivery, OTP-based identity validation, and responsive appointment workflows.",
       features: [
         "Patient registration with passkey security",
         "SMS notifications via Twilio",
@@ -156,7 +290,14 @@ export const BASELINE_PORTFOLIO = {
         "Automated cancellation and reschedule workflows",
       ],
       tags: ["Healthcare", "Full Stack", "Twilio", "Next.js"],
-      tech: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Appwrite", "Twilio"],
+      tech: [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Tailwind CSS",
+        "Appwrite",
+        "Twilio",
+      ],
       github: "https://github.com/Ashishsahu0107/CarePulse",
       live: "https://carepulse-kappa.vercel.app",
       featured: true,
@@ -170,10 +311,14 @@ export const BASELINE_PORTFOLIO = {
       category: "Frontend",
       year: "2024",
       color: "#a855f7",
-      shortDescription: "A futuristic SaaS landing page and interactive platform showcase built with React, Tailwind CSS, and sophisticated scroll-linked micro-interactions.",
-      description: "BrainWave showcases modern web design trends: complex bento grids, glowing linear gradients, and interactive AI product feature modules.",
-      problem: "SaaS landing pages require high visual impact without sacrificing performance or accessibility.",
-      solution: "Implemented component-driven architecture with lightweight CSS animations, custom SVG graphics, and responsive glassmorphic cards.",
+      shortDescription:
+        "A futuristic SaaS landing page and interactive platform showcase built with React, Tailwind CSS, and sophisticated scroll-linked micro-interactions.",
+      description:
+        "BrainWave showcases modern web design trends: complex bento grids, glowing linear gradients, and interactive AI product feature modules.",
+      problem:
+        "SaaS landing pages require high visual impact without sacrificing performance or accessibility.",
+      solution:
+        "Implemented component-driven architecture with lightweight CSS animations, custom SVG graphics, and responsive glassmorphic cards.",
       features: [
         "Interactive AI feature discovery",
         "Complex responsive bento layout",
@@ -195,10 +340,14 @@ export const BASELINE_PORTFOLIO = {
       category: "Full Stack",
       year: "2024",
       color: "#10b981",
-      shortDescription: "Real-time analytics and tracking system for software teams, featuring GitHub webhooks, sprint velocity tracking, and automated performance reports.",
-      description: "DevPulse aggregates engineering contributions across repositories to provide actionable sprint telemetry.",
-      problem: "Development managers lack unified visibility into cross-repository commits, PR velocity, and deploy health.",
-      solution: "Created an automated webhook pipeline with MongoDB aggregation pipelines and real-time Chart.js visualizers.",
+      shortDescription:
+        "Real-time analytics and tracking system for software teams, featuring GitHub webhooks, sprint velocity tracking, and automated performance reports.",
+      description:
+        "DevPulse aggregates engineering contributions across repositories to provide actionable sprint telemetry.",
+      problem:
+        "Development managers lack unified visibility into cross-repository commits, PR velocity, and deploy health.",
+      solution:
+        "Created an automated webhook pipeline with MongoDB aggregation pipelines and real-time Chart.js visualizers.",
       features: [
         "GitHub webhook integration",
         "Sprint velocity and burn-down charts",
@@ -222,7 +371,8 @@ export const BASELINE_PORTFOLIO = {
       location: "Bhopal, Madhya Pradesh, India",
       period: "2022 - 2026",
       status: "Currently Pursuing (Final Year)",
-      description: "Focusing on Core Computer Science: Data Structures & Algorithms, Database Management Systems, Computer Networks, Operating Systems, and Full Stack Web Engineering.",
+      description:
+        "Focusing on Core Computer Science: Data Structures & Algorithms, Database Management Systems, Computer Networks, Operating Systems, and Full Stack Web Engineering.",
       highlights: [
         "Active member of Technical Innovation & Coding Clubs",
         "Maintained strong academic standing across foundational engineering coursework",
@@ -238,7 +388,8 @@ export const BASELINE_PORTFOLIO = {
       location: "Remote",
       period: "2024 - Present",
       status: "In Production",
-      description: "Designed, engineered, and deployed an enterprise-grade portfolio platform featuring dynamic CMS capabilities, automated resume generator, and Resend OTP security.",
+      description:
+        "Designed, engineered, and deployed an enterprise-grade portfolio platform featuring dynamic CMS capabilities, automated resume generator, and Resend OTP security.",
       highlights: [
         "Built responsive dual-direction animated continuous skill sliders with hardware acceleration",
         "Engineered dual MongoDB-in-memory caching layer achieving < 2ms API response times",
@@ -254,7 +405,8 @@ export const BASELINE_PORTFOLIO = {
       location: "India",
       period: "2023 - 2024",
       status: "Completed",
-      description: "Contributed to building and scaling web applications, creating RESTful endpoints, and developing interactive React user interfaces for institutional portals.",
+      description:
+        "Contributed to building and scaling web applications, creating RESTful endpoints, and developing interactive React user interfaces for institutional portals.",
       highlights: [
         "Developed 15+ reusable React UI components adhering to strict design standards",
         "Optimized MongoDB aggregations to reduce backend response latencies by 35%",
@@ -270,7 +422,8 @@ export const BASELINE_PORTFOLIO = {
       location: "Self-Paced",
       period: "2022 - Present",
       status: "Continuous Growth",
-      description: "Extensive problem solving across arrays, strings, linked lists, trees, graphs, dynamic programming, and system design principles using Java.",
+      description:
+        "Extensive problem solving across arrays, strings, linked lists, trees, graphs, dynamic programming, and system design principles using Java.",
       highlights: [
         "Solved 300+ algorithmic problems across LeetCode, HackerRank, and GeeksforGeeks",
         "Deep understanding of Big-O time and space computational complexity",
@@ -280,13 +433,61 @@ export const BASELINE_PORTFOLIO = {
     },
   ],
   sections: [
-    { id: "hero", slug: "hero", name: "Hero", type: "builtin", enabled: true, order: 0 },
-    { id: "about", slug: "about", name: "About", type: "builtin", enabled: true, order: 1 },
-    { id: "skills", slug: "skills", name: "Skills", type: "builtin", enabled: true, order: 2 },
-    { id: "projects", slug: "projects", name: "Projects", type: "builtin", enabled: true, order: 3 },
-    { id: "process", slug: "process", name: "Process", type: "builtin", enabled: true, order: 4 },
-    { id: "experience", slug: "experience", name: "Experience", type: "builtin", enabled: true, order: 5 },
-    { id: "contact", slug: "contact", name: "Contact", type: "builtin", enabled: true, order: 6 },
+    {
+      id: "hero",
+      slug: "hero",
+      name: "Hero",
+      type: "builtin",
+      enabled: true,
+      order: 0,
+    },
+    {
+      id: "about",
+      slug: "about",
+      name: "About",
+      type: "builtin",
+      enabled: true,
+      order: 1,
+    },
+    {
+      id: "skills",
+      slug: "skills",
+      name: "Skills",
+      type: "builtin",
+      enabled: true,
+      order: 2,
+    },
+    {
+      id: "projects",
+      slug: "projects",
+      name: "Projects",
+      type: "builtin",
+      enabled: true,
+      order: 3,
+    },
+    {
+      id: "process",
+      slug: "process",
+      name: "Process",
+      type: "builtin",
+      enabled: true,
+      order: 4,
+    },
+    {
+      id: "experience",
+      slug: "experience",
+      name: "Experience",
+      type: "builtin",
+      enabled: true,
+      order: 5,
+    },
+    {
+      id: "contact",
+      slug: "contact",
+      name: "Contact",
+      type: "builtin",
+      enabled: true,
+      order: 6,
+    },
   ],
 };
-

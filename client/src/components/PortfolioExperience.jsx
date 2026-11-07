@@ -59,11 +59,12 @@ export default function PortfolioExperience() {
             <span className="text-action">05</span> Background & Experience
           </p>
           <h2 className={sectionTitle} id="experience-title">
-            The path of <span className="italic font-normal text-action">growth.</span>
+            The path of{" "}
+            <span className="italic font-normal text-action">growth.</span>
           </h2>
           <p className={sectionLede}>
-            Academic foundations in Computer Science paired with continuous hands-on full stack
-            engineering and algorithmic problem solving.
+            Academic foundations in Computer Science paired with continuous
+            hands-on full stack engineering and algorithmic problem solving.
           </p>
         </div>
 
@@ -71,7 +72,10 @@ export default function PortfolioExperience() {
         {loading && experienceList.length === 0 && (
           <div className="mt-12 space-y-4">
             {[1, 2].map((n) => (
-              <div key={n} className="h-28 animate-pulse rounded-lg border border-border bg-surface" />
+              <div
+                key={n}
+                className="h-28 animate-pulse rounded-lg border border-border bg-surface"
+              />
             ))}
           </div>
         )}
@@ -80,9 +84,12 @@ export default function PortfolioExperience() {
         {!loading && experienceList.length === 0 && (
           <div className="reveal mt-12 rounded-lg border border-border bg-surface p-12 text-center max-w-lg mx-auto">
             <Briefcase size={36} className="mx-auto text-secondary/50 mb-3" />
-            <h3 className="text-base font-semibold text-primary mb-1">No Experience Entries</h3>
+            <h3 className="text-base font-semibold text-primary mb-1">
+              No Experience Entries
+            </h3>
             <p className="text-sm text-secondary">
-              Add your education, work history, or certifications in the Admin Dashboard to display them here.
+              Add your education, work history, or certifications in the Admin
+              Dashboard to display them here.
             </p>
           </div>
         )}

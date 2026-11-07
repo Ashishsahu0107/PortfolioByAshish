@@ -14,8 +14,14 @@ export default function CustomCursor() {
 
     const outerCursor = outerRef.current;
     const innerCursor = innerRef.current;
-    const setOuterX = gsap.quickTo(outerCursor, "left", { duration: 0.18, ease: "power3.out" });
-    const setOuterY = gsap.quickTo(outerCursor, "top", { duration: 0.18, ease: "power3.out" });
+    const setOuterX = gsap.quickTo(outerCursor, "left", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
+    const setOuterY = gsap.quickTo(outerCursor, "top", {
+      duration: 0.18,
+      ease: "power3.out",
+    });
     const handleMove = (event) => {
       gsap.set(innerCursor, { left: event.clientX, top: event.clientY });
       setOuterX(event.clientX);
@@ -24,7 +30,12 @@ export default function CustomCursor() {
 
     const handleHoverIn = (e) => {
       const el = e.target;
-      if (el.tagName === "BUTTON" || el.tagName === "A" || el.closest("button") || el.closest("a")) {
+      if (
+        el.tagName === "BUTTON" ||
+        el.tagName === "A" ||
+        el.closest("button") ||
+        el.closest("a")
+      ) {
         setCursorState("hover");
       } else if (el.closest(".project-card")) {
         setCursorState("view");
@@ -61,7 +72,11 @@ export default function CustomCursor() {
           </span>
         )}
       </div>
-      <div ref={innerRef} className="pointer-events-none fixed left-0 top-0 z-[9999] size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-action" aria-hidden="true" />
+      <div
+        ref={innerRef}
+        className="pointer-events-none fixed left-0 top-0 z-[9999] size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-action"
+        aria-hidden="true"
+      />
     </>
   );
 }

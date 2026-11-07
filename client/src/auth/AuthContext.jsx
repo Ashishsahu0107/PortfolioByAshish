@@ -9,7 +9,9 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
-      const saved = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
+      const saved =
+        localStorage.getItem(AUTH_STORAGE_KEY) ||
+        sessionStorage.getItem(AUTH_STORAGE_KEY);
       if (saved) return JSON.parse(saved);
     } catch {}
     return null;
@@ -48,9 +50,15 @@ export function AuthProvider({ children }) {
 
         try {
           if (rememberMe) {
-            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
+            localStorage.setItem(
+              AUTH_STORAGE_KEY,
+              JSON.stringify(sessionPayload),
+            );
           } else {
-            sessionStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(sessionPayload));
+            sessionStorage.setItem(
+              AUTH_STORAGE_KEY,
+              JSON.stringify(sessionPayload),
+            );
           }
         } catch {}
 
@@ -60,7 +68,9 @@ export function AuthProvider({ children }) {
       }
     } catch (err) {
       setIsLoading(false);
-      const errMsg = err.message || "Invalid credentials. Please verify your email and password.";
+      const errMsg =
+        err.message ||
+        "Invalid credentials. Please verify your email and password.";
       setError(errMsg);
       return { success: false, error: errMsg };
     }

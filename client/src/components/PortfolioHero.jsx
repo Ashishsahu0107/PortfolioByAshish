@@ -34,7 +34,6 @@ export default function PortfolioHero() {
     return [];
   }, [skills]);
 
-
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
@@ -45,61 +44,61 @@ export default function PortfolioHero() {
           .fromTo(
             ".hero-status-pill",
             { autoAlpha: 0, y: -16 },
-            { autoAlpha: 1, y: 0, duration: 0.6 }
+            { autoAlpha: 1, y: 0, duration: 0.6 },
           )
           .fromTo(
             ".hero-title-first",
             { autoAlpha: 0, x: -40 },
             { autoAlpha: 1, x: 0, duration: 0.7 },
-            "-=0.4"
+            "-=0.4",
           )
           .fromTo(
             ".hero-title-last",
             { autoAlpha: 0, x: 40 },
             { autoAlpha: 1, x: 0, duration: 0.7 },
-            "-=0.5"
+            "-=0.5",
           )
           .fromTo(
             ".hero-role-bar",
             { autoAlpha: 0, y: 15 },
             { autoAlpha: 1, y: 0, duration: 0.5 },
-            "-=0.4"
+            "-=0.4",
           )
           .fromTo(
             ".hero-bio-copy",
             { autoAlpha: 0, y: 15 },
             { autoAlpha: 1, y: 0, duration: 0.5 },
-            "-=0.3"
+            "-=0.3",
           )
           .fromTo(
             ".hero-actions",
             { autoAlpha: 0, y: 15 },
             { autoAlpha: 1, y: 0, duration: 0.5 },
-            "-=0.3"
+            "-=0.3",
           )
           .fromTo(
             ".hero-profile-container",
             { autoAlpha: 0, scale: 0.92 },
             { autoAlpha: 1, scale: 1, duration: 0.8, ease: "back.out(1.4)" },
-            "-=0.6"
+            "-=0.6",
           )
           .fromTo(
             ".hero-floating-code",
             { autoAlpha: 0, y: 25, rotate: 2 },
             { autoAlpha: 1, y: 0, rotate: 0, duration: 0.6 },
-            "-=0.4"
+            "-=0.4",
           )
           .fromTo(
             ".hero-stack-item",
             { autoAlpha: 0, y: 12 },
             { autoAlpha: 1, y: 0, stagger: 0.05, duration: 0.4 },
-            "-=0.4"
+            "-=0.4",
           )
           .fromTo(
             ".hero-metrics-bar",
             { autoAlpha: 0, y: 20 },
             { autoAlpha: 1, y: 0, duration: 0.6 },
-            "-=0.3"
+            "-=0.3",
           );
 
         // Ambient continuous orbital breathing
@@ -187,7 +186,10 @@ export default function PortfolioHero() {
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                 <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
               </span>
-              {developer?.statusPhrase || (developer?.availableForWork ? "Available for opportunities" : "Currently engaged")}
+              {developer?.statusPhrase ||
+                (developer?.availableForWork
+                  ? "Available for opportunities"
+                  : "Currently engaged")}
             </span>
             {developer?.graduatingYear && (
               <span className="font-mono text-[10px] text-secondary">
@@ -202,25 +204,37 @@ export default function PortfolioHero() {
             id="hero-title"
           >
             <span className="hero-title-first block">
-              {developer?.firstName || developer?.name?.split(" ")[0] || "Developer"}
+              {developer?.firstName ||
+                developer?.name?.split(" ")[0] ||
+                "Developer"}
             </span>
             <span className="hero-title-last block italic font-normal text-action">
-              {developer?.lastName || developer?.name?.split(" ").slice(1).join(" ") || ""}
+              {developer?.lastName ||
+                developer?.name?.split(" ").slice(1).join(" ") ||
+                ""}
             </span>
           </h1>
 
           {/* Monospaced Subheading Bar */}
           <div className="hero-role-bar mb-4 flex items-center gap-3 font-mono text-[11px] font-semibold tracking-[0.16em] uppercase text-primary">
-            <span>{developer?.role ? developer.role.toUpperCase() : "FULL STACK DEVELOPER"}</span>
+            <span>
+              {developer?.role
+                ? developer.role.toUpperCase()
+                : "FULL STACK DEVELOPER"}
+            </span>
             <span className="h-px w-12 bg-action/60" />
             <span className="text-[10px] text-secondary">
-              {developer?.degree ? `${developer.degree} · ${developer?.graduatingYear || ""}`.trim() : `CSE ${developer?.graduatingYear || "2026"}`}
+              {developer?.degree
+                ? `${developer.degree} · ${developer?.graduatingYear || ""}`.trim()
+                : `CSE ${developer?.graduatingYear || "2026"}`}
             </span>
           </div>
 
           {/* Punchy Bio Description */}
           <p className="hero-bio-copy mb-6 max-w-[500px] text-[15px] leading-[1.8] text-secondary max-sm:text-[14px]">
-            {developer?.tagline || developer?.bio || "Building modern, scalable web platforms with engineering precision."}
+            {developer?.tagline ||
+              developer?.bio ||
+              "Building modern, scalable web platforms with engineering precision."}
           </p>
 
           {/* Dual Action CTAs (View Work + 1-Click Download Resume) */}
@@ -336,10 +350,18 @@ export default function PortfolioHero() {
               </div>
               <pre className="font-mono text-[9px] leading-relaxed text-secondary overflow-hidden">
                 <code>
-                  <span className="text-action font-semibold">const</span> engineer = {"{\n"}
-                  {"  "}name: <span className="text-primary font-medium">&quot;Ashish&quot;</span>,{"\n"}
-                  {"  "}stack: [<span className="text-action">&quot;MERN&quot;</span>, <span className="text-action">&quot;Next&quot;</span>],{"\n"}
-                  {"  "}ready: <span className="text-emerald-500">true</span>{"\n"}
+                  <span className="text-action font-semibold">const</span>{" "}
+                  engineer = {"{\n"}
+                  {"  "}name:{" "}
+                  <span className="text-primary font-medium">
+                    &quot;Ashish&quot;
+                  </span>
+                  ,{"\n"}
+                  {"  "}stack: [
+                  <span className="text-action">&quot;MERN&quot;</span>,{" "}
+                  <span className="text-action">&quot;Next&quot;</span>],{"\n"}
+                  {"  "}ready: <span className="text-emerald-500">true</span>
+                  {"\n"}
                   {"}"};
                 </code>
               </pre>
@@ -403,12 +425,14 @@ export default function PortfolioHero() {
           <div className="flex items-center gap-3 rounded-full border border-border bg-surface px-4 py-1.5 font-mono text-[10px] text-secondary">
             <GraduationCap size={15} className="text-action" />
             <span>
-              <strong className="text-primary font-semibold">2022</strong> B.Tech Start
+              <strong className="text-primary font-semibold">2022</strong>{" "}
+              B.Tech Start
             </span>
             <span className="h-2 w-px bg-border" />
             <Flag size={14} className="text-action" />
             <span>
-              <strong className="text-primary font-semibold">2026</strong> Graduation Ready
+              <strong className="text-primary font-semibold">2026</strong>{" "}
+              Graduation Ready
             </span>
           </div>
 

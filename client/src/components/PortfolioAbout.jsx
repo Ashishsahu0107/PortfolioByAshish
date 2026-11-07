@@ -45,8 +45,13 @@ export default function PortfolioAbout() {
       bio: contextAbout?.bio || developer?.bio || "",
       philosophy: contextAbout?.philosophy || developer?.philosophy || "",
       github: contextAbout?.github || developer?.github || "",
-      focusAreas: Array.isArray(contextAbout?.focusAreas) ? contextAbout.focusAreas : [],
-      stats: Array.isArray(contextAbout?.stats) && contextAbout.stats.length > 0 ? contextAbout.stats : (developer?.stats || []),
+      focusAreas: Array.isArray(contextAbout?.focusAreas)
+        ? contextAbout.focusAreas
+        : [],
+      stats:
+        Array.isArray(contextAbout?.stats) && contextAbout.stats.length > 0
+          ? contextAbout.stats
+          : developer?.stats || [],
     };
   }, [contextAbout, developer]);
 
@@ -86,7 +91,9 @@ export default function PortfolioAbout() {
               ) : (
                 <>
                   Good software should feel{" "}
-                  <span className="italic font-normal text-action">inevitable.</span>
+                  <span className="italic font-normal text-action">
+                    inevitable.
+                  </span>
                 </>
               )}
             </h2>
@@ -97,7 +104,9 @@ export default function PortfolioAbout() {
               ) : loading ? (
                 <div className="h-20 animate-pulse rounded bg-surface" />
               ) : (
-                <p className="italic text-secondary/70">No biography details added in database.</p>
+                <p className="italic text-secondary/70">
+                  No biography details added in database.
+                </p>
               )}
             </div>
 
@@ -138,7 +147,10 @@ export default function PortfolioAbout() {
             {loading ? (
               <div className="space-y-3 py-4">
                 {[1, 2, 3].map((n) => (
-                  <div key={n} className="h-12 animate-pulse rounded bg-canvas" />
+                  <div
+                    key={n}
+                    className="h-12 animate-pulse rounded bg-canvas"
+                  />
                 ))}
               </div>
             ) : focusAreas.length === 0 ? (

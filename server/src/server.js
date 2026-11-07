@@ -13,7 +13,9 @@ async function startServer() {
     await connectDB();
 
     const server = app.listen(config.port, () => {
-      console.log(`Portfolio API Server listening at http://localhost:${config.port}`);
+      console.log(
+        `Portfolio API Server listening at http://localhost:${config.port}`,
+      );
       console.log(`Allowed Client URL: ${config.clientUrl}`);
       console.log(`Database: MongoDB (${config.mongodbUri})`);
       console.log(`Ready for incoming REST requests.`);
@@ -22,8 +24,12 @@ async function startServer() {
 
     server.on("error", (err) => {
       if (err.code === "EADDRINUSE") {
-        console.error(`\n[Server Error]: Port ${config.port} is already in use by another running process.`);
-        console.error(`Please terminate the existing process or set a different PORT in server/.env.\n`);
+        console.error(
+          `\n[Server Error]: Port ${config.port} is already in use by another running process.`,
+        );
+        console.error(
+          `Please terminate the existing process or set a different PORT in server/.env.\n`,
+        );
       } else {
         console.error("Server runtime error:", err);
       }

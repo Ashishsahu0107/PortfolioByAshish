@@ -1,6 +1,16 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight, CheckCircle2, Download, Loader2, Mail, MapPin, Send, AlertCircle, Sparkles } from "lucide-react";
+import {
+  ArrowUpRight,
+  CheckCircle2,
+  Download,
+  Loader2,
+  Mail,
+  MapPin,
+  Send,
+  AlertCircle,
+  Sparkles,
+} from "lucide-react";
 import emailjs from "@emailjs/browser";
 import { GithubIcon, LinkedinIcon } from "./icons";
 import { useGsapReveal } from "../hooks/useGsapReveal";
@@ -70,7 +80,10 @@ export default function PortfolioContact() {
         setCustomForms(formsList.filter((f) => f.enabled));
       }
     } catch (err) {
-      console.warn("[PortfolioContact] Could not load contact or forms:", err.message);
+      console.warn(
+        "[PortfolioContact] Could not load contact or forms:",
+        err.message,
+      );
     }
   }, []);
 
@@ -113,7 +126,8 @@ export default function PortfolioContact() {
     if (!cleanEmail) {
       errors.email = "Please enter your email address.";
     } else if (!emailRegex.test(cleanEmail)) {
-      errors.email = "Please enter a valid email address (e.g. name@domain.com).";
+      errors.email =
+        "Please enter a valid email address (e.g. name@domain.com).";
     } else if (cleanEmail.length > 120) {
       errors.email = "Email cannot exceed 120 characters.";
     }
@@ -151,7 +165,9 @@ export default function PortfolioContact() {
 
     setSubmitting(true);
     setGeneralError("");
-    const toastId = toast.loading("Sending your message...", { id: "contact-submit" });
+    const toastId = toast.loading("Sending your message...", {
+      id: "contact-submit",
+    });
 
     const payload = {
       name: formData.name.trim(),
@@ -165,7 +181,8 @@ export default function PortfolioContact() {
       const res = await contactApi.sendMessage(payload);
 
       // 2. Dispatch via EmailJS if credentials are configured
-      const { emailjsServiceId, emailjsTemplateId, emailjsPublicKey } = contactData;
+      const { emailjsServiceId, emailjsTemplateId, emailjsPublicKey } =
+        contactData;
       if (emailjsServiceId && emailjsTemplateId && emailjsPublicKey) {
         emailjs
           .send(
@@ -178,10 +195,13 @@ export default function PortfolioContact() {
               subject: payload.subject,
               message: payload.message,
             },
-            emailjsPublicKey
+            emailjsPublicKey,
           )
           .catch((emailErr) => {
-            console.warn("[PortfolioContact] EmailJS dispatch non-critical error:", emailErr);
+            console.warn(
+              "[PortfolioContact] EmailJS dispatch non-critical error:",
+              emailErr,
+            );
           });
       }
 
@@ -191,8 +211,9 @@ export default function PortfolioContact() {
       setSubmitSuccess(true);
 
       toast.success(
-        res?.message || "Message sent successfully! Thank you for reaching out.",
-        { id: toastId }
+        res?.message ||
+          "Message sent successfully! Thank you for reaching out.",
+        { id: toastId },
       );
     } catch (err) {
       const msg =
@@ -224,13 +245,14 @@ export default function PortfolioContact() {
               className="mb-4 mt-6 font-serif text-[clamp(42px,5.5vw,72px)] font-bold leading-[1.02] text-primary"
               id="contact-title"
             >
-              Have a project<br />
+              Have a project
+              <br />
               in <span className="italic font-normal text-action">mind?</span>
             </h2>
             <p className={`${sectionLede} max-w-[420px]`}>
-              Whether you are looking to build a full stack product from scratch,
-              discuss an internship or full-time opportunity, or talk engineering — my
-              inbox is open.
+              Whether you are looking to build a full stack product from
+              scratch, discuss an internship or full-time opportunity, or talk
+              engineering — my inbox is open.
             </p>
 
             {/* Direct Email Link */}
@@ -246,7 +268,9 @@ export default function PortfolioContact() {
             {/* Location & Status Info */}
             <p className="mt-5 flex items-center gap-2 font-mono text-[11px] text-secondary">
               <MapPin className="text-action shrink-0" size={15} />
-              <span>{contactData.location} · Available worldwide (Remote & On-site)</span>
+              <span>
+                {contactData.location} · Available worldwide (Remote & On-site)
+              </span>
             </p>
 
             {/* Direct Resource Links (Resume, GitHub, LinkedIn) */}
@@ -313,7 +337,8 @@ export default function PortfolioContact() {
                   Message Sent Successfully
                 </h3>
                 <p className="mt-2 text-sm text-secondary max-w-sm mx-auto leading-relaxed">
-                  Thank you for reaching out! Your message has been saved to the database and delivered. I will respond to your email shortly.
+                  Thank you for reaching out! Your message has been saved to the
+                  database and delivered. I will respond to your email shortly.
                 </p>
                 <button
                   type="button"
@@ -330,7 +355,11 @@ export default function PortfolioContact() {
                 </button>
               </div>
             ) : (
-              <form className="contact-form space-y-5" onSubmit={submit} noValidate>
+              <form
+                className="contact-form space-y-5"
+                onSubmit={submit}
+                noValidate
+              >
                 {/* General Error Banner */}
                 {generalError && (
                   <div
@@ -499,4 +528,3 @@ export default function PortfolioContact() {
     </section>
   );
 }
-

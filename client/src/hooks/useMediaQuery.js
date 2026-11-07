@@ -8,7 +8,7 @@ export function useMediaQuery(query) {
       mql.addEventListener("change", callback);
       return () => mql.removeEventListener("change", callback);
     },
-    [query]
+    [query],
   );
 
   const getSnapshot = () => {

@@ -294,7 +294,11 @@ export default function HangingLamp({
             {/* Lampshade Inner Cavity Reflector */}
             <radialGradient id="shadeInteriorLit" cx="45%" cy="40%" r="60%">
               <stop offset="0%" stopColor="#ffffff" stopOpacity="1" />
-              <stop offset="35%" stopColor={theme.lightSoft} stopOpacity="0.95" />
+              <stop
+                offset="35%"
+                stopColor={theme.lightSoft}
+                stopOpacity="0.95"
+              />
               <stop offset="70%" stopColor={theme.glow} stopOpacity="0.8" />
               <stop offset="95%" stopColor="#e2e8f0" stopOpacity="0.9" />
               <stop offset="100%" stopColor="#cbd5e1" stopOpacity="0.95" />
@@ -307,7 +311,13 @@ export default function HangingLamp({
             </radialGradient>
 
             {/* Dynamic Trim Rim for Lampshade Edge */}
-            <linearGradient id="shadeBrassRim" x1="0%" y1="0%" x2="100%" y2="0%">
+            <linearGradient
+              id="shadeBrassRim"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
               <stop offset="0%" stopColor="#27272a" />
               <stop offset="25%" stopColor={theme.lampTrimLight || "#fef08a"} />
               <stop offset="55%" stopColor={theme.lampTrim || "#f59e0b"} />
@@ -316,7 +326,13 @@ export default function HangingLamp({
             </linearGradient>
 
             {/* Volumetric Angled Light Beam from Lampshade Aperture */}
-            <linearGradient id="volumetricLight" x1="30%" y1="0%" x2="90%" y2="100%">
+            <linearGradient
+              id="volumetricLight"
+              x1="30%"
+              y1="0%"
+              x2="90%"
+              y2="100%"
+            >
               <stop offset="0%" stopColor={theme.beamGradient.stop0} />
               <stop offset="18%" stopColor={theme.beamGradient.stop1} />
               <stop offset="50%" stopColor={theme.beamGradient.stop2} />
@@ -350,11 +366,23 @@ export default function HangingLamp({
             />
 
             {/* Floating Dust Motes in Light Beam (Themed Atmosphere) */}
-            <circle cx="210" cy="220" r="1.5" fill={theme.lightSoft} opacity="0.75" />
+            <circle
+              cx="210"
+              cy="220"
+              r="1.5"
+              fill={theme.lightSoft}
+              opacity="0.75"
+            />
             <circle cx="245" cy="265" r="1.2" fill="#fff" opacity="0.6" />
             <circle cx="195" cy="305" r="1.6" fill={theme.glow} opacity="0.6" />
             <circle cx="270" cy="330" r="1.4" fill="#fff" opacity="0.55" />
-            <circle cx="230" cy="360" r="1.2" fill={theme.lightSoft} opacity="0.5" />
+            <circle
+              cx="230"
+              cy="360"
+              r="1.2"
+              fill={theme.lightSoft}
+              opacity="0.5"
+            />
             <circle cx="295" cy="245" r="1" fill="#fff" opacity="0.45" />
           </g>
 
@@ -367,29 +395,107 @@ export default function HangingLamp({
             d="M95 383 C95 391 117 396 145 396 C173 396 195 391 195 383 L195 386 C195 394 173 399 145 399 C117 399 95 394 95 386 Z"
             fill="url(#baseMetal)"
           />
-          <ellipse cx="145" cy="382" rx="47" ry="9.5" fill="url(#baseMetal)" stroke="#3f3f46" strokeWidth="1" />
-          <ellipse cx="145" cy="382" rx="36" ry="7" fill="none" stroke="#27272a" strokeWidth="1" />
-          <ellipse cx="145" cy="381" rx="14" ry="4" fill="#18181b" stroke="#52525b" strokeWidth="1" />
+          <ellipse
+            cx="145"
+            cy="382"
+            rx="47"
+            ry="9.5"
+            fill="url(#baseMetal)"
+            stroke="#3f3f46"
+            strokeWidth="1"
+          />
+          <ellipse
+            cx="145"
+            cy="382"
+            rx="36"
+            ry="7"
+            fill="none"
+            stroke="#27272a"
+            strokeWidth="1"
+          />
+          <ellipse
+            cx="145"
+            cy="381"
+            rx="14"
+            ry="4"
+            fill="#18181b"
+            stroke="#52525b"
+            strokeWidth="1"
+          />
 
           {/* ========================================================== */}
           {/* 3. LOWER ARM & ARTICULATED HINGE JOINTS                    */}
           {/* ========================================================== */}
           <g>
-            <circle cx="145" cy="371" r="10" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
+            <circle
+              cx="145"
+              cy="371"
+              r="10"
+              fill="url(#brassJoint)"
+              stroke="#27272a"
+              strokeWidth="1"
+            />
             <circle cx="145" cy="371" r="5" fill="#18181b" />
             <circle cx="145" cy="371" r="2.5" fill="url(#brassJoint)" />
           </g>
 
           <g>
-            <line x1="142" y1="368" x2="122" y2="258" stroke="url(#armMetal)" strokeWidth="4.5" strokeLinecap="round" />
-            <line x1="142" y1="368" x2="122" y2="258" stroke="#52525b" strokeWidth="1.2" strokeLinecap="round" />
-            <line x1="148" y1="371" x2="128" y2="261" stroke="url(#armMetal)" strokeWidth="3" strokeLinecap="round" />
-            <line x1="148" y1="371" x2="128" y2="261" stroke="#3f3f46" strokeWidth="1" strokeLinecap="round" />
-            <line x1="134" y1="316" x2="139" y2="317" stroke="url(#brassJoint)" strokeWidth="2.5" strokeLinecap="round" />
+            <line
+              x1="142"
+              y1="368"
+              x2="122"
+              y2="258"
+              stroke="url(#armMetal)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="142"
+              y1="368"
+              x2="122"
+              y2="258"
+              stroke="#52525b"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+            <line
+              x1="148"
+              y1="371"
+              x2="128"
+              y2="261"
+              stroke="url(#armMetal)"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            <line
+              x1="148"
+              y1="371"
+              x2="128"
+              y2="261"
+              stroke="#3f3f46"
+              strokeWidth="1"
+              strokeLinecap="round"
+            />
+            <line
+              x1="134"
+              y1="316"
+              x2="139"
+              y2="317"
+              stroke="url(#brassJoint)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
           </g>
 
           <g>
-            <circle cx="125" cy="257" r="10.5" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
+            <circle
+              cx="125"
+              cy="257"
+              r="10.5"
+              fill="url(#brassJoint)"
+              stroke="#27272a"
+              strokeWidth="1"
+            />
             <circle cx="125" cy="257" r="5.5" fill="#18181b" />
             <circle cx="125" cy="257" r="2.8" fill="url(#brassJoint)" />
           </g>
@@ -398,14 +504,53 @@ export default function HangingLamp({
           {/* 4. UPPER ARM (Extending from Elbow to Shade Socket)        */}
           {/* ========================================================== */}
           <g>
-            <line x1="126" y1="254" x2="164" y2="166" stroke="url(#armMetal)" strokeWidth="4.5" strokeLinecap="round" />
-            <line x1="126" y1="254" x2="164" y2="166" stroke="#52525b" strokeWidth="1.2" strokeLinecap="round" />
-            <line x1="128" y1="259" x2="168" y2="170" stroke="url(#armMetal)" strokeWidth="3" strokeLinecap="round" />
-            <line x1="146" y1="210" x2="149" y2="213" stroke="url(#brassJoint)" strokeWidth="2.5" strokeLinecap="round" />
+            <line
+              x1="126"
+              y1="254"
+              x2="164"
+              y2="166"
+              stroke="url(#armMetal)"
+              strokeWidth="4.5"
+              strokeLinecap="round"
+            />
+            <line
+              x1="126"
+              y1="254"
+              x2="164"
+              y2="166"
+              stroke="#52525b"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+            <line
+              x1="128"
+              y1="259"
+              x2="168"
+              y2="170"
+              stroke="url(#armMetal)"
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+            <line
+              x1="146"
+              y1="210"
+              x2="149"
+              y2="213"
+              stroke="url(#brassJoint)"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
           </g>
 
           <g>
-            <circle cx="166" cy="168" r="8" fill="url(#brassJoint)" stroke="#27272a" strokeWidth="1" />
+            <circle
+              cx="166"
+              cy="168"
+              r="8"
+              fill="url(#brassJoint)"
+              stroke="#27272a"
+              strokeWidth="1"
+            />
             <circle cx="166" cy="168" r="3.5" fill="#18181b" />
           </g>
 
@@ -443,7 +588,9 @@ export default function HangingLamp({
             rx="44"
             ry="14"
             transform="rotate(11 185 170)"
-            fill={isLightOn ? "url(#shadeInteriorLit)" : "url(#shadeInteriorUnlit)"}
+            fill={
+              isLightOn ? "url(#shadeInteriorLit)" : "url(#shadeInteriorUnlit)"
+            }
             className="transition-colors duration-300"
           />
 
@@ -495,9 +642,7 @@ export default function HangingLamp({
             className="transition-colors duration-300"
           />
 
-          {isLightOn && (
-            <circle cx="186" cy="163" r="4.5" fill="#fffbeb" />
-          )}
+          {isLightOn && <circle cx="186" cy="163" r="4.5" fill="#fffbeb" />}
 
           {/* ========================================================== */}
           {/* 7. HANGING PULL CORD & PULL KNOB (Interactive)             */}
@@ -512,9 +657,7 @@ export default function HangingLamp({
             strokeLinecap="round"
             className="transition-[y2] duration-75"
             style={{
-              filter: isLightOn
-                ? `drop-shadow(0 0 4px ${theme.glow})`
-                : "none",
+              filter: isLightOn ? `drop-shadow(0 0 4px ${theme.glow})` : "none",
             }}
           />
 
@@ -529,15 +672,33 @@ export default function HangingLamp({
 
           {/* Tear-drop / Bell-shaped Golden Brass Pull Knob */}
           <g transform={`translate(${cordOriginX - 6}, ${knobY})`}>
-            <rect x="4.5" y="0" width="3" height="2" rx="0.8" fill="url(#brassJoint)" />
+            <rect
+              x="4.5"
+              y="0"
+              width="3"
+              height="2"
+              rx="0.8"
+              fill="url(#brassJoint)"
+            />
             <path
               d="M6 2 C3.5 2 2 5.5 2 9 C2 12.5 3.8 14.5 6 14.5 C8.2 14.5 10 12.5 10 9 C10 5.5 8.5 2 6 2 Z"
               fill="url(#brassJoint)"
               stroke="#27272a"
               strokeWidth="0.8"
             />
-            <path d="M4 6 C3.8 7.5 4.2 10.5 5.5 12" stroke="#ffffff" strokeWidth="0.8" strokeLinecap="round" opacity="0.6" />
-            <circle cx="6" cy="14.5" r="1.5" fill={theme.lampTrimLight || "#fef08a"} />
+            <path
+              d="M4 6 C3.8 7.5 4.2 10.5 5.5 12"
+              stroke="#ffffff"
+              strokeWidth="0.8"
+              strokeLinecap="round"
+              opacity="0.6"
+            />
+            <circle
+              cx="6"
+              cy="14.5"
+              r="1.5"
+              fill={theme.lampTrimLight || "#fef08a"}
+            />
           </g>
         </svg>
 
@@ -576,9 +737,7 @@ export default function HangingLamp({
           {/* Subtle Halo Pulsing on Hover */}
           <div
             className={`size-full rounded-full transition-all flex items-center justify-center ${
-              isCordDragging
-                ? "ring-4 scale-110"
-                : "hover:bg-white/10"
+              isCordDragging ? "ring-4 scale-110" : "hover:bg-white/10"
             }`}
             style={{
               backgroundColor: isCordDragging ? theme.cordKnobGlow : undefined,
@@ -611,7 +770,9 @@ export default function HangingLamp({
               <div
                 className="rounded-full px-2.5 py-0.5 text-[10px] font-mono font-bold transition-all shadow-lg"
                 style={{
-                  backgroundColor: hasTriggeredThisDrag ? theme.glow : "#27272a",
+                  backgroundColor: hasTriggeredThisDrag
+                    ? theme.glow
+                    : "#27272a",
                   color: hasTriggeredThisDrag ? "#09090b" : "#e4e4e7",
                 }}
               >

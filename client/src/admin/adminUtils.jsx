@@ -1,6 +1,15 @@
 import { useState, useCallback } from "react";
-import { CheckCircle2, AlertCircle, Info, AlertTriangle, X } from "lucide-react";
-import { toast as sonnerToast, showToast as sonnerShowToast } from "../utils/toast";
+import {
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  AlertTriangle,
+  X,
+} from "lucide-react";
+import {
+  toast as sonnerToast,
+  showToast as sonnerShowToast,
+} from "../utils/toast";
 
 export { sonnerToast as toast, sonnerShowToast };
 
@@ -47,7 +56,9 @@ export function ConfirmModal({ title, message, onConfirm, onCancel }) {
         <div className="flex items-center justify-between mb-4 border-b border-zinc-800/80 pb-3">
           <div className="flex items-center gap-2 text-white">
             <AlertTriangle size={18} className="text-amber-400 shrink-0" />
-            <h3 className="text-base font-bold m-0">{title || "Confirm Action"}</h3>
+            <h3 className="text-base font-bold m-0">
+              {title || "Confirm Action"}
+            </h3>
           </div>
           <button
             onClick={onCancel}
@@ -59,16 +70,10 @@ export function ConfirmModal({ title, message, onConfirm, onCancel }) {
         </div>
         <p className="text-zinc-400 text-sm mb-1">{message}</p>
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-zinc-800/80">
-          <button
-            onClick={onCancel}
-            className={btnSecondary}
-          >
+          <button onClick={onCancel} className={btnSecondary}>
             Cancel
           </button>
-          <button
-            onClick={onConfirm}
-            className={btnDanger}
-          >
+          <button onClick={onConfirm} className={btnDanger}>
             Delete
           </button>
         </div>
@@ -91,13 +96,27 @@ export function AdminSection({ title, desc, children }) {
 }
 
 /** Reusable card with dark surface & theme accents */
-export function AdminCard({ title, icon: Icon, action, children, className = "" }) {
+export function AdminCard({
+  title,
+  icon: Icon,
+  action,
+  children,
+  className = "",
+}) {
   return (
-    <div className={`bg-zinc-900/85 border border-zinc-800/90 rounded-2xl p-6 shadow-xl backdrop-blur-xl transition-all ${className}`}>
+    <div
+      className={`bg-zinc-900/85 border border-zinc-800/90 rounded-2xl p-6 shadow-xl backdrop-blur-xl transition-all ${className}`}
+    >
       {title && (
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-zinc-800/80 flex-wrap gap-2">
           <h2 className="text-base font-bold text-zinc-100 m-0 flex items-center gap-2">
-            {Icon && <Icon size={16} style={{ color: "var(--admin-glow)" }} className="shrink-0" />}
+            {Icon && (
+              <Icon
+                size={16}
+                style={{ color: "var(--admin-glow)" }}
+                className="shrink-0"
+              />
+            )}
             <span>{title}</span>
           </h2>
           {action && <div className="flex items-center gap-2">{action}</div>}
@@ -111,8 +130,14 @@ export function AdminCard({ title, icon: Icon, action, children, className = "" 
 /** Form group wrapper */
 export function FormGroup({ label, children, fullWidth = false }) {
   return (
-    <div className={`flex flex-col gap-1.5 ${fullWidth ? "col-span-full" : ""}`}>
-      {label && <label className="text-xs font-semibold text-zinc-300 tracking-wide">{label}</label>}
+    <div
+      className={`flex flex-col gap-1.5 ${fullWidth ? "col-span-full" : ""}`}
+    >
+      {label && (
+        <label className="text-xs font-semibold text-zinc-300 tracking-wide">
+          {label}
+        </label>
+      )}
       {children}
     </div>
   );

@@ -13,7 +13,7 @@ export function useGsapReveal(ref, selector = ".reveal") {
 
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
+      "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (prefersReducedMotion) {
@@ -38,7 +38,7 @@ export function useGsapReveal(ref, selector = ".reveal") {
           }
         });
       },
-      { threshold: 0.05, rootMargin: "0px 0px 50px 0px" }
+      { threshold: 0.05, rootMargin: "0px 0px 50px 0px" },
     );
 
     elements.forEach((el, index) => {

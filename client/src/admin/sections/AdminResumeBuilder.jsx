@@ -13,9 +13,7 @@ import {
   Loader2,
   ZoomIn,
   ZoomOut,
-  AlertCircle,
   Layout,
-  Code2,
   Briefcase,
   User,
   GraduationCap,
@@ -23,18 +21,14 @@ import {
   Trash2,
   Award,
   FolderGit2,
-  BookOpen,
 } from "lucide-react";
 import {
-  AdminSection,
   AdminCard,
   FormGroup,
   useToast,
   Toast,
   inputCls,
   textareaCls,
-  btnPrimary,
-  btnSecondary,
 } from "../adminUtils";
 import { resumeApi } from "../../services/api";
 import {
@@ -46,9 +40,7 @@ import { sampleResumeData } from "../../resume-builder/sampleData";
 import { exportResumeToPdf } from "../../resume-builder/utils/pdfExport";
 
 export default function AdminResumeBuilder() {
-  const [resumes, setResumes] = useState([]);
   const [approvedResume, setApprovedResume] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [approvingId, setApprovingId] = useState(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState("modern");
   const [activeTab, setActiveTab] = useState("gallery"); // 'gallery' | 'preview' | 'editor'
@@ -72,7 +64,10 @@ export default function AdminResumeBuilder() {
       if (approvedData) {
         setApprovedResume(approvedData);
         setSelectedTemplateId(approvedData.templateId || "modern");
-        if (approvedData.resumeData && Object.keys(approvedData.resumeData).length > 0) {
+        if (
+          approvedData.resumeData &&
+          Object.keys(approvedData.resumeData).length > 0
+        ) {
           setResumeData(approvedData.resumeData);
         }
       }
@@ -81,8 +76,9 @@ export default function AdminResumeBuilder() {
     } catch (err) {
       console.error("[AdminResumeBuilder] Error loading resume data:", err);
       showToast(
-        "Failed to load resume templates from server: " + (err.message || "Unknown error"),
-        "error"
+        "Failed to load resume templates from server: " +
+          (err.message || "Unknown error"),
+        "error",
       );
     } finally {
       setLoading(false);
@@ -105,13 +101,13 @@ export default function AdminResumeBuilder() {
         setResumes(all);
         showToast(
           `Template "${res.data.title || templateId}" approved! Only this resume can now be downloaded by visitors on your portfolio.`,
-          "success"
+          "success",
         );
       }
     } catch (err) {
       showToast(
         "Failed to approve template: " + (err.message || "Server error"),
-        "error"
+        "error",
       );
     } finally {
       setApprovingId(null);
@@ -122,12 +118,19 @@ export default function AdminResumeBuilder() {
   const handleSaveResumeData = async () => {
     try {
       setIsSaving(true);
-      const targetTemplate = selectedTemplateId || approvedResume?.templateId || "modern";
+      const targetTemplate =
+        selectedTemplateId || approvedResume?.templateId || "modern";
       await resumeApi.update(targetTemplate, { resumeData });
-      showToast(`Resume data for "${targetTemplate}" saved successfully!`, "success");
+      showToast(
+        `Resume data for "${targetTemplate}" saved successfully!`,
+        "success",
+      );
       await loadData();
     } catch (err) {
-      showToast("Failed to save resume data: " + (err.message || "Unknown error"), "error");
+      showToast(
+        "Failed to save resume data: " + (err.message || "Unknown error"),
+        "error",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -136,15 +139,19 @@ export default function AdminResumeBuilder() {
   const handleSaveAndApprove = async () => {
     try {
       setIsSaving(true);
-      const targetTemplate = selectedTemplateId || approvedResume?.templateId || "modern";
+      const targetTemplate =
+        selectedTemplateId || approvedResume?.templateId || "modern";
       const res = await resumeApi.approve(targetTemplate, resumeData);
       showToast(
         `Template "${res?.data?.title || targetTemplate}" saved and approved as the active portfolio resume!`,
-        "success"
+        "success",
       );
       await loadData();
     } catch (err) {
-      showToast("Failed to approve template: " + (err.message || "Unknown error"), "error");
+      showToast(
+        "Failed to approve template: " + (err.message || "Unknown error"),
+        "error",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -175,7 +182,7 @@ export default function AdminResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       workExperience: (prev.workExperience || []).map((exp) =>
-        exp.id === id ? { ...exp, [field]: value } : exp
+        exp.id === id ? { ...exp, [field]: value } : exp,
       ),
     }));
   };
@@ -183,7 +190,9 @@ export default function AdminResumeBuilder() {
   const handleDeleteExperience = (id) => {
     setResumeData((prev) => ({
       ...prev,
-      workExperience: (prev.workExperience || []).filter((exp) => exp.id !== id),
+      workExperience: (prev.workExperience || []).filter(
+        (exp) => exp.id !== id,
+      ),
     }));
     showToast("Experience entry removed.", "info");
   };
@@ -210,7 +219,7 @@ export default function AdminResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       projects: (prev.projects || []).map((p) =>
-        p.id === id ? { ...p, [field]: value } : p
+        p.id === id ? { ...p, [field]: value } : p,
       ),
     }));
   };
@@ -246,7 +255,7 @@ export default function AdminResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       education: (prev.education || []).map((edu) =>
-        edu.id === id ? { ...edu, [field]: value } : edu
+        edu.id === id ? { ...edu, [field]: value } : edu,
       ),
     }));
   };
@@ -280,7 +289,7 @@ export default function AdminResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       certifications: (prev.certifications || []).map((c) =>
-        c.id === id ? { ...c, [field]: value } : c
+        c.id === id ? { ...c, [field]: value } : c,
       ),
     }));
   };
@@ -314,7 +323,7 @@ export default function AdminResumeBuilder() {
     setResumeData((prev) => ({
       ...prev,
       achievements: (prev.achievements || []).map((a) =>
-        a.id === id ? { ...a, [field]: value } : a
+        a.id === id ? { ...a, [field]: value } : a,
       ),
     }));
   };
@@ -342,7 +351,9 @@ export default function AdminResumeBuilder() {
   };
 
   // Handle quick PDF test download
-  const handleTestDownload = async (templateIdToDownload = selectedTemplateId) => {
+  const handleTestDownload = async (
+    templateIdToDownload = selectedTemplateId,
+  ) => {
     setIsExporting(true);
     try {
       const templateObj = getTemplateById(templateIdToDownload);
@@ -352,13 +363,18 @@ export default function AdminResumeBuilder() {
       if (!targetEl) {
         throw new Error("Resume preview document is not rendered.");
       }
-      const candidateName =
-        resumeData?.personalInfo?.fullName || "Ashish Sahu";
+      const candidateName = resumeData?.personalInfo?.fullName || "Ashish Sahu";
       const customFileName = `${candidateName.trim().replace(/\s+/g, "_")}_${templateObj.name}_Resume`;
       await exportResumeToPdf(targetEl, customFileName);
-      showToast(`Test PDF downloaded for "${templateObj.name}" template.`, "success");
+      showToast(
+        `Test PDF downloaded for "${templateObj.name}" template.`,
+        "success",
+      );
     } catch (err) {
-      showToast("Download failed: " + (err.message || "Unknown error"), "error");
+      showToast(
+        "Download failed: " + (err.message || "Unknown error"),
+        "error",
+      );
     } finally {
       setIsExporting(false);
     }
@@ -388,7 +404,8 @@ export default function AdminResumeBuilder() {
           </h1>
           <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-2xl leading-relaxed">
             Select and approve the official resume template for your portfolio.
-            Visitors clicking <strong>Resume PDF</strong> anywhere on your live site will be prompted to download only your approved resume.
+            Visitors clicking <strong>Resume PDF</strong> anywhere on your live
+            site will be prompted to download only your approved resume.
           </p>
         </div>
 
@@ -443,7 +460,9 @@ export default function AdminResumeBuilder() {
                 </span>
               </h3>
               <p className="text-xs text-zinc-400 mt-1">
-                Only this resume template is downloadable through the portfolio’s <strong>Resume PDF</strong> confirmation modal. Unapproved/draft resumes are blocked by the backend API.
+                Only this resume template is downloadable through the
+                portfolio’s <strong>Resume PDF</strong> confirmation modal.
+                Unapproved/draft resumes are blocked by the backend API.
               </p>
             </div>
           </div>
@@ -466,7 +485,10 @@ export default function AdminResumeBuilder() {
               disabled={isExporting}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-xs font-bold text-white shadow-md shadow-emerald-900/40 transition cursor-pointer disabled:opacity-50"
             >
-              <Download size={14} className={isExporting ? "animate-bounce" : ""} />
+              <Download
+                size={14}
+                className={isExporting ? "animate-bounce" : ""}
+              />
               <span>{isExporting ? "Exporting..." : "Test Download PDF"}</span>
             </button>
           </div>
@@ -523,14 +545,16 @@ export default function AdminResumeBuilder() {
               <span>Choose One Template to Approve</span>
             </h2>
             <span className="text-xs text-zinc-400">
-              Click &quot;Approve for Portfolio&quot; to set as the active download
+              Click &quot;Approve for Portfolio&quot; to set as the active
+              download
             </span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {RESUME_TEMPLATES.map((tmpl) => {
               const isApproved =
-                tmpl.id === currentApprovedId || tmpl.altId === currentApprovedId;
+                tmpl.id === currentApprovedId ||
+                tmpl.altId === currentApprovedId;
               const isApprovingThis = approvingId === tmpl.id;
               const isSelected = selectedTemplateId === tmpl.id;
 
@@ -541,8 +565,8 @@ export default function AdminResumeBuilder() {
                     isApproved
                       ? "border-emerald-500/60 bg-gradient-to-b from-emerald-950/30 to-zinc-900/90 shadow-lg shadow-emerald-950/30 ring-1 ring-emerald-500/30"
                       : isSelected
-                      ? "border-amber-500/50 bg-zinc-900/90"
-                      : "border-zinc-800 bg-zinc-900/60 hover:border-zinc-700 hover:bg-zinc-900"
+                        ? "border-amber-500/50 bg-zinc-900/90"
+                        : "border-zinc-800 bg-zinc-900/60 hover:border-zinc-700 hover:bg-zinc-900"
                   }`}
                 >
                   {/* Color Accent Bar */}
@@ -572,7 +596,10 @@ export default function AdminResumeBuilder() {
                       <h3 className="text-lg font-bold text-white flex items-center gap-2">
                         <span>{tmpl.name}</span>
                         {isApproved && (
-                          <CheckCircle2 size={16} className="text-emerald-400" />
+                          <CheckCircle2
+                            size={16}
+                            className="text-emerald-400"
+                          />
                         )}
                       </h3>
                       <p className="text-xs text-amber-400/90 font-medium mt-0.5">
@@ -764,7 +791,8 @@ export default function AdminResumeBuilder() {
                 </span>
               </h3>
               <p className="text-xs text-zinc-400 mt-0.5">
-                Add, edit, or delete resume items. Save changes to MongoDB or immediately approve for portfolio downloads.
+                Add, edit, or delete resume items. Save changes to MongoDB or
+                immediately approve for portfolio downloads.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -983,7 +1011,9 @@ export default function AdminResumeBuilder() {
                   type="text"
                   className={inputCls}
                   value={(resumeData?.skills?.languages || []).join(", ")}
-                  onChange={(e) => handleSkillChange("languages", e.target.value)}
+                  onChange={(e) =>
+                    handleSkillChange("languages", e.target.value)
+                  }
                   placeholder="JavaScript (ES6+), TypeScript, Python, HTML5, CSS3"
                 />
               </FormGroup>
@@ -993,7 +1023,9 @@ export default function AdminResumeBuilder() {
                   type="text"
                   className={inputCls}
                   value={(resumeData?.skills?.frontend || []).join(", ")}
-                  onChange={(e) => handleSkillChange("frontend", e.target.value)}
+                  onChange={(e) =>
+                    handleSkillChange("frontend", e.target.value)
+                  }
                   placeholder="React 19, Next.js, Tailwind CSS, Vite, Redux Toolkit"
                 />
               </FormGroup>
@@ -1013,7 +1045,9 @@ export default function AdminResumeBuilder() {
                   type="text"
                   className={inputCls}
                   value={(resumeData?.skills?.databases || []).join(", ")}
-                  onChange={(e) => handleSkillChange("databases", e.target.value)}
+                  onChange={(e) =>
+                    handleSkillChange("databases", e.target.value)
+                  }
                   placeholder="MongoDB, Mongoose, PostgreSQL, Redis, Cloudinary"
                 />
               </FormGroup>
@@ -1024,7 +1058,9 @@ export default function AdminResumeBuilder() {
                     type="text"
                     className={inputCls}
                     value={(resumeData?.skills?.toolsDevOps || []).join(", ")}
-                    onChange={(e) => handleSkillChange("toolsDevOps", e.target.value)}
+                    onChange={(e) =>
+                      handleSkillChange("toolsDevOps", e.target.value)
+                    }
                     placeholder="Git, GitHub Actions, Docker, Vercel, Render, Postman, Linux"
                   />
                 </FormGroup>
@@ -1038,7 +1074,10 @@ export default function AdminResumeBuilder() {
               <div className="flex items-center justify-between w-full">
                 <span className="flex items-center gap-2">
                   <Briefcase size={16} className="text-amber-400" />
-                  <span>4. Work Experience ({resumeData?.workExperience?.length || 0})</span>
+                  <span>
+                    4. Work Experience (
+                    {resumeData?.workExperience?.length || 0})
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -1052,9 +1091,12 @@ export default function AdminResumeBuilder() {
             }
           >
             <div className="space-y-4">
-              {(!resumeData?.workExperience || resumeData.workExperience.length === 0) ? (
+              {!resumeData?.workExperience ||
+              resumeData.workExperience.length === 0 ? (
                 <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
-                  <p className="text-xs text-zinc-500">No work experience entries added.</p>
+                  <p className="text-xs text-zinc-500">
+                    No work experience entries added.
+                  </p>
                   <button
                     type="button"
                     onClick={handleAddExperience}
@@ -1089,7 +1131,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={exp.title || ""}
-                          onChange={(e) => handleUpdateExperience(exp.id, "title", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateExperience(
+                              exp.id,
+                              "title",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Senior Full Stack Engineer"
                         />
                       </FormGroup>
@@ -1099,7 +1147,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={exp.company || ""}
-                          onChange={(e) => handleUpdateExperience(exp.id, "company", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateExperience(
+                              exp.id,
+                              "company",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Tech Corp Inc."
                         />
                       </FormGroup>
@@ -1109,7 +1163,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={exp.location || ""}
-                          onChange={(e) => handleUpdateExperience(exp.id, "location", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateExperience(
+                              exp.id,
+                              "location",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Remote / Bengaluru"
                         />
                       </FormGroup>
@@ -1119,7 +1179,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={exp.startDate || ""}
-                          onChange={(e) => handleUpdateExperience(exp.id, "startDate", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateExperience(
+                              exp.id,
+                              "startDate",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Jan 2023"
                         />
                       </FormGroup>
@@ -1130,7 +1196,13 @@ export default function AdminResumeBuilder() {
                           disabled={exp.current}
                           className={`${inputCls} ${exp.current ? "opacity-50" : ""}`}
                           value={exp.endDate || ""}
-                          onChange={(e) => handleUpdateExperience(exp.id, "endDate", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateExperience(
+                              exp.id,
+                              "endDate",
+                              e.target.value,
+                            )
+                          }
                           placeholder={exp.current ? "Present" : "Dec 2024"}
                         />
                       </FormGroup>
@@ -1141,7 +1213,11 @@ export default function AdminResumeBuilder() {
                             type="checkbox"
                             checked={!!exp.current}
                             onChange={(e) =>
-                              handleUpdateExperience(exp.id, "current", e.target.checked)
+                              handleUpdateExperience(
+                                exp.id,
+                                "current",
+                                e.target.checked,
+                              )
                             }
                             className="size-4 rounded border-zinc-700 bg-zinc-900 text-blue-600 focus:ring-0 cursor-pointer"
                           />
@@ -1156,7 +1232,11 @@ export default function AdminResumeBuilder() {
                         className={textareaCls}
                         value={exp.description || ""}
                         onChange={(e) =>
-                          handleUpdateExperience(exp.id, "description", e.target.value)
+                          handleUpdateExperience(
+                            exp.id,
+                            "description",
+                            e.target.value,
+                          )
                         }
                         placeholder="• Architected microservices improving API throughput by 35%...&#10;• Led cross-functional team of 4 engineers delivering full-stack features..."
                       />
@@ -1173,7 +1253,9 @@ export default function AdminResumeBuilder() {
               <div className="flex items-center justify-between w-full">
                 <span className="flex items-center gap-2">
                   <FolderGit2 size={16} className="text-amber-400" />
-                  <span>5. Featured Projects ({resumeData?.projects?.length || 0})</span>
+                  <span>
+                    5. Featured Projects ({resumeData?.projects?.length || 0})
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -1187,9 +1269,11 @@ export default function AdminResumeBuilder() {
             }
           >
             <div className="space-y-4">
-              {(!resumeData?.projects || resumeData.projects.length === 0) ? (
+              {!resumeData?.projects || resumeData.projects.length === 0 ? (
                 <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
-                  <p className="text-xs text-zinc-500">No project entries added.</p>
+                  <p className="text-xs text-zinc-500">
+                    No project entries added.
+                  </p>
                   <button
                     type="button"
                     onClick={handleAddProject}
@@ -1224,7 +1308,9 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={proj.name || ""}
-                          onChange={(e) => handleUpdateProject(proj.id, "name", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateProject(proj.id, "name", e.target.value)
+                          }
                           placeholder="DevPulse - Developer Analytics Platform"
                         />
                       </FormGroup>
@@ -1235,7 +1321,11 @@ export default function AdminResumeBuilder() {
                           className={inputCls}
                           value={proj.technologies || ""}
                           onChange={(e) =>
-                            handleUpdateProject(proj.id, "technologies", e.target.value)
+                            handleUpdateProject(
+                              proj.id,
+                              "technologies",
+                              e.target.value,
+                            )
                           }
                           placeholder="React, Tailwind, Node.js, Express, MongoDB"
                         />
@@ -1246,7 +1336,13 @@ export default function AdminResumeBuilder() {
                           type="url"
                           className={inputCls}
                           value={proj.liveUrl || ""}
-                          onChange={(e) => handleUpdateProject(proj.id, "liveUrl", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateProject(
+                              proj.id,
+                              "liveUrl",
+                              e.target.value,
+                            )
+                          }
                           placeholder="https://devpulse.io"
                         />
                       </FormGroup>
@@ -1256,7 +1352,13 @@ export default function AdminResumeBuilder() {
                           type="url"
                           className={inputCls}
                           value={proj.githubUrl || ""}
-                          onChange={(e) => handleUpdateProject(proj.id, "githubUrl", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateProject(
+                              proj.id,
+                              "githubUrl",
+                              e.target.value,
+                            )
+                          }
                           placeholder="https://github.com/ashishsahu0107/devpulse"
                         />
                       </FormGroup>
@@ -1267,7 +1369,13 @@ export default function AdminResumeBuilder() {
                         rows={2}
                         className={textareaCls}
                         value={proj.description || ""}
-                        onChange={(e) => handleUpdateProject(proj.id, "description", e.target.value)}
+                        onChange={(e) =>
+                          handleUpdateProject(
+                            proj.id,
+                            "description",
+                            e.target.value,
+                          )
+                        }
                         placeholder="Engineered high-performance real-time telemetry dashboard utilizing WebSocket streams..."
                       />
                     </FormGroup>
@@ -1283,7 +1391,9 @@ export default function AdminResumeBuilder() {
               <div className="flex items-center justify-between w-full">
                 <span className="flex items-center gap-2">
                   <GraduationCap size={16} className="text-amber-400" />
-                  <span>6. Education ({resumeData?.education?.length || 0})</span>
+                  <span>
+                    6. Education ({resumeData?.education?.length || 0})
+                  </span>
                 </span>
                 <button
                   type="button"
@@ -1297,9 +1407,11 @@ export default function AdminResumeBuilder() {
             }
           >
             <div className="space-y-4">
-              {(!resumeData?.education || resumeData.education.length === 0) ? (
+              {!resumeData?.education || resumeData.education.length === 0 ? (
                 <div className="text-center py-6 border border-dashed border-zinc-800 rounded-xl">
-                  <p className="text-xs text-zinc-500">No education entries added.</p>
+                  <p className="text-xs text-zinc-500">
+                    No education entries added.
+                  </p>
                   <button
                     type="button"
                     onClick={handleAddEducation}
@@ -1334,7 +1446,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={edu.degree || ""}
-                          onChange={(e) => handleUpdateEducation(edu.id, "degree", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateEducation(
+                              edu.id,
+                              "degree",
+                              e.target.value,
+                            )
+                          }
                           placeholder="B.Tech in Computer Science & Engineering"
                         />
                       </FormGroup>
@@ -1345,7 +1463,11 @@ export default function AdminResumeBuilder() {
                           className={inputCls}
                           value={edu.institution || ""}
                           onChange={(e) =>
-                            handleUpdateEducation(edu.id, "institution", e.target.value)
+                            handleUpdateEducation(
+                              edu.id,
+                              "institution",
+                              e.target.value,
+                            )
                           }
                           placeholder="ABC Institute of Technology"
                         />
@@ -1356,7 +1478,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={edu.location || ""}
-                          onChange={(e) => handleUpdateEducation(edu.id, "location", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateEducation(
+                              edu.id,
+                              "location",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Bengaluru, India"
                         />
                       </FormGroup>
@@ -1367,7 +1495,11 @@ export default function AdminResumeBuilder() {
                           className={inputCls}
                           value={edu.graduationYear || ""}
                           onChange={(e) =>
-                            handleUpdateEducation(edu.id, "graduationYear", e.target.value)
+                            handleUpdateEducation(
+                              edu.id,
+                              "graduationYear",
+                              e.target.value,
+                            )
                           }
                           placeholder="2024"
                         />
@@ -1378,7 +1510,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={edu.gradeGpa || ""}
-                          onChange={(e) => handleUpdateEducation(edu.id, "gradeGpa", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateEducation(
+                              edu.id,
+                              "gradeGpa",
+                              e.target.value,
+                            )
+                          }
                           placeholder="8.8 / 10 CGPA"
                         />
                       </FormGroup>
@@ -1388,7 +1526,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={edu.details || ""}
-                          onChange={(e) => handleUpdateEducation(edu.id, "details", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateEducation(
+                              edu.id,
+                              "details",
+                              e.target.value,
+                            )
+                          }
                           placeholder="DSA, DBMS, OS, Computer Networks"
                         />
                       </FormGroup>
@@ -1407,7 +1551,10 @@ export default function AdminResumeBuilder() {
                 <div className="flex items-center justify-between w-full">
                   <span className="flex items-center gap-2">
                     <Award size={16} className="text-amber-400" />
-                    <span>7. Certifications ({resumeData?.certifications?.length || 0})</span>
+                    <span>
+                      7. Certifications (
+                      {resumeData?.certifications?.length || 0})
+                    </span>
                   </span>
                   <button
                     type="button"
@@ -1421,8 +1568,11 @@ export default function AdminResumeBuilder() {
               }
             >
               <div className="space-y-3">
-                {(!resumeData?.certifications || resumeData.certifications.length === 0) ? (
-                  <p className="text-xs text-zinc-500 text-center py-4">No certifications added.</p>
+                {!resumeData?.certifications ||
+                resumeData.certifications.length === 0 ? (
+                  <p className="text-xs text-zinc-500 text-center py-4">
+                    No certifications added.
+                  </p>
                 ) : (
                   resumeData.certifications.map((cert, index) => (
                     <div
@@ -1430,7 +1580,9 @@ export default function AdminResumeBuilder() {
                       className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-2.5"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">{cert.name || `Certification #${index + 1}`}</span>
+                        <span className="text-xs font-bold text-white">
+                          {cert.name || `Certification #${index + 1}`}
+                        </span>
                         <button
                           type="button"
                           onClick={() => handleDeleteCertification(cert.id)}
@@ -1444,14 +1596,26 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={cert.name || ""}
-                          onChange={(e) => handleUpdateCertification(cert.id, "name", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateCertification(
+                              cert.id,
+                              "name",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Cert Name (e.g. AWS Solutions Architect)"
                         />
                         <input
                           type="text"
                           className={inputCls}
                           value={cert.issuer || ""}
-                          onChange={(e) => handleUpdateCertification(cert.id, "issuer", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateCertification(
+                              cert.id,
+                              "issuer",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Issuer (e.g. Amazon Web Services)"
                         />
                       </div>
@@ -1460,7 +1624,13 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={cert.date || ""}
-                          onChange={(e) => handleUpdateCertification(cert.id, "date", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateCertification(
+                              cert.id,
+                              "date",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Issue Date (e.g. 2024)"
                         />
                         <input
@@ -1468,7 +1638,11 @@ export default function AdminResumeBuilder() {
                           className={inputCls}
                           value={cert.credentialUrl || ""}
                           onChange={(e) =>
-                            handleUpdateCertification(cert.id, "credentialUrl", e.target.value)
+                            handleUpdateCertification(
+                              cert.id,
+                              "credentialUrl",
+                              e.target.value,
+                            )
                           }
                           placeholder="Credential Verification URL"
                         />
@@ -1485,7 +1659,10 @@ export default function AdminResumeBuilder() {
                 <div className="flex items-center justify-between w-full">
                   <span className="flex items-center gap-2">
                     <Sparkles size={16} className="text-amber-400" />
-                    <span>8. Honors & Achievements ({resumeData?.achievements?.length || 0})</span>
+                    <span>
+                      8. Honors & Achievements (
+                      {resumeData?.achievements?.length || 0})
+                    </span>
                   </span>
                   <button
                     type="button"
@@ -1499,8 +1676,11 @@ export default function AdminResumeBuilder() {
               }
             >
               <div className="space-y-3">
-                {(!resumeData?.achievements || resumeData.achievements.length === 0) ? (
-                  <p className="text-xs text-zinc-500 text-center py-4">No achievements added.</p>
+                {!resumeData?.achievements ||
+                resumeData.achievements.length === 0 ? (
+                  <p className="text-xs text-zinc-500 text-center py-4">
+                    No achievements added.
+                  </p>
                 ) : (
                   resumeData.achievements.map((ach, index) => (
                     <div
@@ -1508,7 +1688,9 @@ export default function AdminResumeBuilder() {
                       className="p-3 rounded-xl border border-zinc-800 bg-zinc-950/60 space-y-2.5"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-bold text-white">{ach.title || `Achievement #${index + 1}`}</span>
+                        <span className="text-xs font-bold text-white">
+                          {ach.title || `Achievement #${index + 1}`}
+                        </span>
                         <button
                           type="button"
                           onClick={() => handleDeleteAchievement(ach.id)}
@@ -1522,14 +1704,26 @@ export default function AdminResumeBuilder() {
                           type="text"
                           className={inputCls}
                           value={ach.title || ""}
-                          onChange={(e) => handleUpdateAchievement(ach.id, "title", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateAchievement(
+                              ach.id,
+                              "title",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Title (e.g. Winner Smart India Hackathon)"
                         />
                         <input
                           type="text"
                           className={inputCls}
                           value={ach.issuer || ""}
-                          onChange={(e) => handleUpdateAchievement(ach.id, "issuer", e.target.value)}
+                          onChange={(e) =>
+                            handleUpdateAchievement(
+                              ach.id,
+                              "issuer",
+                              e.target.value,
+                            )
+                          }
                           placeholder="Organization / Issuer"
                         />
                       </div>
@@ -1537,7 +1731,13 @@ export default function AdminResumeBuilder() {
                         type="text"
                         className={inputCls}
                         value={ach.description || ach.year || ""}
-                        onChange={(e) => handleUpdateAchievement(ach.id, "description", e.target.value)}
+                        onChange={(e) =>
+                          handleUpdateAchievement(
+                            ach.id,
+                            "description",
+                            e.target.value,
+                          )
+                        }
                         placeholder="Description (e.g. Ranked 1st among 2,500+ participants nationwide)"
                       />
                     </div>

@@ -84,7 +84,7 @@ function AdminDashboardContent() {
     NAV_ITEMS.find((item) =>
       item.exact
         ? location.pathname === item.path
-        : location.pathname.startsWith(item.path) && item.path !== "/admin"
+        : location.pathname.startsWith(item.path) && item.path !== "/admin",
     )?.label || "Dashboard";
 
   // Calculate RGB string for dynamic rgba overlays
@@ -148,7 +148,11 @@ function AdminDashboardContent() {
             className="hidden lg:flex bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 rounded-lg w-7 h-7 items-center justify-center cursor-pointer text-zinc-400 hover:text-white transition-colors shrink-0"
             aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
-            {sidebarOpen ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            {sidebarOpen ? (
+              <ChevronLeft size={16} />
+            ) : (
+              <ChevronRight size={16} />
+            )}
           </button>
         </div>
 

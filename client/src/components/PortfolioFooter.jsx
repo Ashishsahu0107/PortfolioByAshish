@@ -11,9 +11,12 @@ export default function PortfolioFooter() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const firstName = developer?.firstName || developer?.name?.split(" ")[0] || "Portfolio";
-  const lastName = developer?.lastName || developer?.name?.split(" ").slice(1).join(" ") || "";
-  const tagline = developer?.tagline || developer?.role || "Full Stack Developer";
+  const firstName =
+    developer?.firstName || developer?.name?.split(" ")[0] || "Portfolio";
+  const lastName =
+    developer?.lastName || developer?.name?.split(" ").slice(1).join(" ") || "";
+  const tagline =
+    developer?.tagline || developer?.role || "Full Stack Developer";
   const graduatingYear = developer?.graduatingYear;
   const fullName = developer?.name || `${firstName} ${lastName}`.trim();
   const location = developer?.locationShort || developer?.location || "India";
@@ -90,7 +93,8 @@ export default function PortfolioFooter() {
         <div className="flex flex-col justify-between gap-2 border-t border-border/60 pt-6 text-[11px] text-secondary sm:flex-row sm:items-center">
           <p className="font-mono text-[10px]">
             © {new Date().getFullYear()} {fullName}. Crafted with{" "}
-            <Heart size={11} className="inline text-action mx-0.5" /> in {location}.
+            <Heart size={11} className="inline text-action mx-0.5" /> in{" "}
+            {location}.
           </p>
           <div className="flex items-center gap-4 font-mono text-[10px]">
             <button

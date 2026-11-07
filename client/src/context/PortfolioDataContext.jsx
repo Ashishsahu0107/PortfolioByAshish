@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from "react";
 import { portfolioApi } from "../services/api";
 import { BASELINE_PORTFOLIO } from "../data/baselinePortfolioData";
 
@@ -8,13 +15,62 @@ const CACHE_KEY = "portfolio_bundle_cache_v2";
  * Default fallback section configuration for instant first paint
  */
 export const DEFAULT_BUILTIN_SECTIONS = [
-  { id: "hero", slug: "hero", name: "Hero", type: "builtin", enabled: true, order: 0 },
-  { id: "about", slug: "about", name: "About", type: "builtin", enabled: true, order: 1 },
-  { id: "skills", slug: "skills", name: "Skills", type: "builtin", enabled: true, order: 2 },
-  { id: "projects", slug: "projects", name: "Projects", type: "builtin", enabled: true, order: 3 },
-  { id: "process", slug: "process", name: "Process", type: "builtin", enabled: true, order: 4 },
-  { id: "experience", slug: "experience", name: "Experience", type: "builtin", enabled: true, order: 5 },
-  { id: "contact", slug: "contact", name: "Contact", type: "builtin", enabled: true, order: 6 },
+  {
+    id: "hero",
+    slug: "hero",
+    name: "Hero",
+    type: "builtin",
+    enabled: true,
+    order: 0,
+  },
+  {
+    id: "about",
+    slug: "about",
+    name: "About",
+    type: "builtin",
+    enabled: true,
+    order: 1,
+  },
+  {
+    id: "skills",
+    slug: "skills",
+    name: "Skills",
+    type: "builtin",
+    enabled: true,
+    order: 2,
+  },
+  {
+    id: "projects",
+    slug: "projects",
+    name: "Projects",
+    type: "builtin",
+    enabled: true,
+    order: 3,
+  },
+  {
+    id: "process",
+    slug: "process",
+    name: "Process",
+    type: "builtin",
+    enabled: true,
+    order: 4,
+  },
+  {
+    id: "experience",
+    slug: "experience",
+    name: "Experience",
+    type: "builtin",
+    enabled: true,
+    order: 5,
+  },
+  {
+    id: "contact",
+    slug: "contact",
+    name: "Contact",
+    type: "builtin",
+    enabled: true,
+    order: 6,
+  },
 ];
 
 /**
@@ -48,7 +104,7 @@ export function setStoredPortfolioBundle(bundle) {
       JSON.stringify({
         data: bundle,
         timestamp: Date.now(),
-      })
+      }),
     );
   } catch {}
 }
@@ -68,7 +124,10 @@ export function PortfolioDataProvider({ children }) {
     try {
       let res = null;
       // If index.html already started prefetching in <head>, consume that promise first
-      if (typeof window !== "undefined" && window.__PORTFOLIO_BUNDLE_PROMISE__) {
+      if (
+        typeof window !== "undefined" &&
+        window.__PORTFOLIO_BUNDLE_PROMISE__
+      ) {
         res = await window.__PORTFOLIO_BUNDLE_PROMISE__;
         window.__PORTFOLIO_BUNDLE_PROMISE__ = null;
       }
@@ -121,7 +180,10 @@ export function PortfolioDataProvider({ children }) {
       skills: currentBundle.skills || BASELINE_PORTFOLIO.skills,
       projects: currentBundle.projects || BASELINE_PORTFOLIO.projects,
       experience: currentBundle.experience || BASELINE_PORTFOLIO.experience,
-      sections: currentBundle.sections && currentBundle.sections.length > 0 ? currentBundle.sections : DEFAULT_BUILTIN_SECTIONS,
+      sections:
+        currentBundle.sections && currentBundle.sections.length > 0
+          ? currentBundle.sections
+          : DEFAULT_BUILTIN_SECTIONS,
       loading,
       isInstantReady: true,
       lastUpdated,
