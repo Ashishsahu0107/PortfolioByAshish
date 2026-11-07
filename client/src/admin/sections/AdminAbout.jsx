@@ -48,7 +48,7 @@ const DEFAULT_ABOUT = {
 // Modal for Adding or Editing a Focus Area
 function FocusAreaModal({ item, onSave, onClose }) {
   const [form, setForm] = useState(
-    item || { title: "", description: "", icon: "Code2" }
+    item || { title: "", description: "", icon: "Code2" },
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -127,11 +127,7 @@ function FocusAreaModal({ item, onSave, onClose }) {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className={btnPrimary}
-              disabled={submitting}
-            >
+            <button type="submit" className={btnPrimary} disabled={submitting}>
               {submitting ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
@@ -210,11 +206,7 @@ function StatModal({ item, onSave, onClose }) {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className={btnPrimary}
-              disabled={submitting}
-            >
+            <button type="submit" className={btnPrimary} disabled={submitting}>
               {submitting ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
@@ -252,7 +244,7 @@ export default function AdminAbout() {
     } catch (err) {
       showToast(
         "Error loading about data: " + (err.message || "Failed to fetch"),
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -306,7 +298,7 @@ export default function AdminAbout() {
     const existingIdx = focusModal.modal?.index;
     if (existingIdx !== undefined && existingIdx !== null) {
       updatedList = form.focusAreas.map((f, i) =>
-        i === existingIdx ? savedItem : f
+        i === existingIdx ? savedItem : f,
       );
     } else {
       updatedList = [...(form.focusAreas || []), savedItem];
@@ -321,7 +313,7 @@ export default function AdminAbout() {
       focusModal.close();
       showToast(
         `Focus area "${savedItem.title}" saved to database!`,
-        "success"
+        "success",
       );
     } catch (err) {
       showToast(err.message || "Failed to save focus area", "error");
@@ -352,7 +344,7 @@ export default function AdminAbout() {
     const existingIdx = statModal.modal?.index;
     if (existingIdx !== undefined && existingIdx !== null) {
       updatedList = form.stats.map((s, i) =>
-        i === existingIdx ? savedItem : s
+        i === existingIdx ? savedItem : s,
       );
     } else {
       updatedList = [...(form.stats || []), savedItem];
@@ -483,7 +475,9 @@ export default function AdminAbout() {
           action={
             <button
               type="button"
-              onClick={() => focusModal.open({ title: "", description: "", icon: "Code2" })}
+              onClick={() =>
+                focusModal.open({ title: "", description: "", icon: "Code2" })
+              }
               className={`${btnPrimary} !px-2.5 !py-1 !text-xs`}
             >
               <Plus size={13} />
@@ -491,9 +485,10 @@ export default function AdminAbout() {
             </button>
           }
         >
-          {(!form.focusAreas || form.focusAreas.length === 0) ? (
+          {!form.focusAreas || form.focusAreas.length === 0 ? (
             <div className="py-6 text-center text-sm text-gray-400 italic">
-              No focus areas added yet. Click &quot;Add Focus Area&quot; above to create one.
+              No focus areas added yet. Click &quot;Add Focus Area&quot; above
+              to create one.
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -526,7 +521,9 @@ export default function AdminAbout() {
                     </button>
                     <button
                       type="button"
-                      onClick={() => deleteFocusModal.open({ ...area, index: idx })}
+                      onClick={() =>
+                        deleteFocusModal.open({ ...area, index: idx })
+                      }
                       className="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-red-50"
                       title="Delete focus area"
                     >
@@ -554,9 +551,10 @@ export default function AdminAbout() {
             </button>
           }
         >
-          {(!form.stats || form.stats.length === 0) ? (
+          {!form.stats || form.stats.length === 0 ? (
             <div className="py-6 text-center text-sm text-gray-400 italic">
-              No metrics added yet. Click &quot;Add Metric&quot; to configure your stats bar.
+              No metrics added yet. Click &quot;Add Metric&quot; to configure
+              your stats bar.
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -580,7 +578,9 @@ export default function AdminAbout() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => deleteStatModal.open({ ...stat, index: idx })}
+                        onClick={() =>
+                          deleteStatModal.open({ ...stat, index: idx })
+                        }
                         className="p-1 text-gray-400 hover:text-red-500 rounded hover:bg-red-50"
                         title="Delete metric"
                       >

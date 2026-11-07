@@ -22,12 +22,18 @@ export function cleanDocs(docs) {
 const userSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+    },
     password: { type: String, required: true },
     name: { type: String, default: "Ashish Sahu" },
     role: { type: String, default: "admin" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 2. Developer Schema
@@ -54,19 +60,24 @@ const developerSchema = new mongoose.Schema(
     emailjsTemplateId: { type: String, default: "" },
     emailjsPublicKey: { type: String, default: "" },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 3. About Schema
 const aboutSchema = new mongoose.Schema(
   {
-    id: { type: String, required: true, unique: true, default: "about_content" },
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+      default: "about_content",
+    },
     bio: { type: String, default: "" },
     philosophy: { type: String, default: "" },
     focusAreas: { type: [mongoose.Schema.Types.Mixed], default: [] },
     stats: { type: [mongoose.Schema.Types.Mixed], default: [] },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 4. Skill Category Schema
@@ -88,7 +99,7 @@ const skillCategorySchema = new mongoose.Schema(
     },
     order: { type: Number, default: 0 },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 5. Project Schema
@@ -112,7 +123,7 @@ const projectSchema = new mongoose.Schema(
     live: { type: String, default: "" },
     featured: { type: Boolean, default: false },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 6. Experience Schema
@@ -128,7 +139,7 @@ const experienceSchema = new mongoose.Schema(
     description: { type: String, default: "" },
     highlights: { type: [String], default: [] },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 7. Dynamic Section Schema
@@ -143,7 +154,7 @@ const sectionSchema = new mongoose.Schema(
     desc: { type: String, default: "" },
     content: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 8. Form Builder Schema
@@ -155,10 +166,13 @@ const formSchema = new mongoose.Schema(
     description: { type: String, default: "" },
     enabled: { type: Boolean, default: true },
     submitButtonText: { type: String, default: "Submit" },
-    successMessage: { type: String, default: "Your submission has been received successfully." },
+    successMessage: {
+      type: String,
+      default: "Your submission has been received successfully.",
+    },
     fields: { type: [mongoose.Schema.Types.Mixed], default: [] },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 9. Form Submission Schema
@@ -172,7 +186,7 @@ const submissionSchema = new mongoose.Schema(
     submittedAt: { type: Date, default: Date.now },
     data: { type: mongoose.Schema.Types.Mixed, default: {} },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 10. Contact Message Schema
@@ -187,14 +201,20 @@ const messageSchema = new mongoose.Schema(
     ip: { type: String, default: "127.0.0.1" },
     receivedAt: { type: Date, default: Date.now },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // 11. OTP Verification Schema (Resend Integration)
 const otpSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
-    email: { type: String, required: true, lowercase: true, trim: true, index: true },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
     name: { type: String, default: "" },
     otpHash: { type: String, required: true },
     verificationToken: { type: String, default: null, index: true },
@@ -208,7 +228,7 @@ const otpSchema = new mongoose.Schema(
     ip: { type: String, default: "" },
     purpose: { type: String, default: "registration" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // 12. Resume Template / Approved Resume Schema
@@ -222,7 +242,12 @@ const resumeSchema = new mongoose.Schema(
     badgeColor: { type: String, default: "" },
     description: { type: String, default: "" },
     accent: { type: String, default: "#2563eb" },
-    status: { type: String, enum: ["draft", "approved"], default: "draft", index: true },
+    status: {
+      type: String,
+      enum: ["draft", "approved"],
+      default: "draft",
+      index: true,
+    },
     isApproved: { type: Boolean, default: false, index: true },
     approvedAt: { type: Date, default: null },
     resumeData: { type: Object, default: {} },
@@ -230,7 +255,7 @@ const resumeSchema = new mongoose.Schema(
     version: { type: Number, default: 1 },
     updatedBy: { type: String, default: "Admin" },
   },
-  { timestamps: true, strict: false }
+  { timestamps: true, strict: false },
 );
 
 // High-Performance Query Indexes
@@ -240,16 +265,27 @@ experienceSchema.index({ order: 1, type: 1 });
 sectionSchema.index({ enabled: 1, order: 1 });
 formSchema.index({ enabled: 1 });
 
-export const UserModel = mongoose.models.User || mongoose.model("User", userSchema);
-export const DeveloperModel = mongoose.models.Developer || mongoose.model("Developer", developerSchema);
-export const AboutModel = mongoose.models.About || mongoose.model("About", aboutSchema);
-export const SkillCategoryModel = mongoose.models.SkillCategory || mongoose.model("SkillCategory", skillCategorySchema);
-export const ProjectModel = mongoose.models.Project || mongoose.model("Project", projectSchema);
-export const ExperienceModel = mongoose.models.Experience || mongoose.model("Experience", experienceSchema);
-export const SectionModel = mongoose.models.Section || mongoose.model("Section", sectionSchema);
-export const FormModel = mongoose.models.Form || mongoose.model("Form", formSchema);
-export const SubmissionModel = mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
-export const MessageModel = mongoose.models.Message || mongoose.model("Message", messageSchema);
+export const UserModel =
+  mongoose.models.User || mongoose.model("User", userSchema);
+export const DeveloperModel =
+  mongoose.models.Developer || mongoose.model("Developer", developerSchema);
+export const AboutModel =
+  mongoose.models.About || mongoose.model("About", aboutSchema);
+export const SkillCategoryModel =
+  mongoose.models.SkillCategory ||
+  mongoose.model("SkillCategory", skillCategorySchema);
+export const ProjectModel =
+  mongoose.models.Project || mongoose.model("Project", projectSchema);
+export const ExperienceModel =
+  mongoose.models.Experience || mongoose.model("Experience", experienceSchema);
+export const SectionModel =
+  mongoose.models.Section || mongoose.model("Section", sectionSchema);
+export const FormModel =
+  mongoose.models.Form || mongoose.model("Form", formSchema);
+export const SubmissionModel =
+  mongoose.models.Submission || mongoose.model("Submission", submissionSchema);
+export const MessageModel =
+  mongoose.models.Message || mongoose.model("Message", messageSchema);
 export const OtpModel = mongoose.models.Otp || mongoose.model("Otp", otpSchema);
-export const ResumeModel = mongoose.models.Resume || mongoose.model("Resume", resumeSchema);
-
+export const ResumeModel =
+  mongoose.models.Resume || mongoose.model("Resume", resumeSchema);

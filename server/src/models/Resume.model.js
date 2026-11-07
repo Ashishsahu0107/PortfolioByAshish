@@ -11,7 +11,9 @@ export const ResumeModelService = {
     try {
       const count = await Resume.countDocuments();
       if (count === 0) {
-        console.log("[ResumeModel] No resume templates in DB. Initializing default templates...");
+        console.log(
+          "[ResumeModel] No resume templates in DB. Initializing default templates...",
+        );
         await Resume.insertMany(initialResumeTemplates);
       }
 
@@ -21,10 +23,14 @@ export const ResumeModelService = {
         await Resume.findOneAndUpdate(
           { templateId: "modern" },
           {
-            $set: { isApproved: true, status: "approved", approvedAt: new Date() },
+            $set: {
+              isApproved: true,
+              status: "approved",
+              approvedAt: new Date(),
+            },
             $setOnInsert: { id: "resume_modern" },
           },
-          { upsert: true }
+          { upsert: true },
         );
       }
     } catch (err) {
@@ -37,7 +43,10 @@ export const ResumeModelService = {
    */
   async getApproved() {
     await this.ensureInitialResumes();
-    const approved = await Resume.findOne({ isApproved: true, status: "approved" }).lean();
+    const approved = await Resume.findOne({
+      isApproved: true,
+      status: "approved",
+    }).lean();
     if (!approved) {
       // Fallback: find any marked isApproved
       const fallback = await Resume.findOne({ isApproved: true }).lean();
@@ -86,7 +95,7 @@ export const ResumeModelService = {
     // 1. Mark ALL other resumes as draft / not approved
     await Resume.updateMany(
       {},
-      { $set: { isApproved: false, status: "draft" } }
+      { $set: { isApproved: false, status: "draft" } },
     );
 
     // 2. Prepare payload for the target template
@@ -107,7 +116,7 @@ export const ResumeModelService = {
         $set: updatePayload,
         $setOnInsert: { id: `resume_${templateId}` },
       },
-      { returnDocument: "after", upsert: true }
+      { returnDocument: "after", upsert: true },
     ).lean();
 
     // If template had empty resumeData, fill from initial data
@@ -115,7 +124,7 @@ export const ResumeModelService = {
       approved = await Resume.findOneAndUpdate(
         { templateId },
         { $set: { resumeData: initialResumeData } },
-        { returnDocument: "after" }
+        { returnDocument: "after" },
       ).lean();
     }
 
@@ -151,7 +160,7 @@ export const ResumeModelService = {
         $set: payload,
         $setOnInsert: { id: `resume_${templateId}` },
       },
-      { returnDocument: "after", upsert: true }
+      { returnDocument: "after", upsert: true },
     ).lean();
 
     return cleanDoc(updated);

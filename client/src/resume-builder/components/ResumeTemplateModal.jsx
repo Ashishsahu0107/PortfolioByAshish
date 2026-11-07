@@ -15,7 +15,11 @@ import { sampleResumeData } from "../sampleData";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { toast } from "../../utils/toast";
 
-function ResumeTemplateModalContent({ onClose, defaultTemplate, onSelectTemplate }) {
+function ResumeTemplateModalContent({
+  onClose,
+  defaultTemplate,
+  onSelectTemplate,
+}) {
   const [selectedTemplateId, setSelectedTemplateId] = useState(defaultTemplate);
   const [previewMode, setPreviewMode] = useState(false);
   const [zoom, setZoom] = useState(90);
@@ -81,19 +85,24 @@ function ResumeTemplateModalContent({ onClose, defaultTemplate, onSelectTemplate
         throw new Error("Unable to locate resume element for export");
       }
 
-      const candidateName =
-        resumeData?.personalInfo?.fullName || "Ashish Sahu";
+      const candidateName = resumeData?.personalInfo?.fullName || "Ashish Sahu";
       const customFileName = `${candidateName}_${template.name}`;
 
-      toast.loading("Exporting resume PDF...", { id: `pdf-export-${templateId}` });
+      toast.loading("Exporting resume PDF...", {
+        id: `pdf-export-${templateId}`,
+      });
       await exportResumeToPdf(targetElement, customFileName);
 
       setDownloadSuccessId(templateId);
-      toast.success(`Exported ${template.name} PDF successfully!`, { id: `pdf-export-${templateId}` });
+      toast.success(`Exported ${template.name} PDF successfully!`, {
+        id: `pdf-export-${templateId}`,
+      });
       setTimeout(() => setDownloadSuccessId(null), 3000);
     } catch (err) {
       console.error("PDF export error:", err);
-      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), { id: `pdf-export-${templateId}` });
+      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), {
+        id: `pdf-export-${templateId}`,
+      });
     } finally {
       setExportingId(null);
       setHiddenTemplateToExport(null);
@@ -503,7 +512,12 @@ function ResumeTemplateModalContent({ onClose, defaultTemplate, onSelectTemplate
   );
 }
 
-export default function ResumeTemplateModal({ isOpen, onClose, defaultTemplate = "modern", onSelectTemplate }) {
+export default function ResumeTemplateModal({
+  isOpen,
+  onClose,
+  defaultTemplate = "modern",
+  onSelectTemplate,
+}) {
   if (!isOpen) return null;
   return (
     <ResumeTemplateModalContent

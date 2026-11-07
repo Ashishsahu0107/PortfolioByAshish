@@ -62,9 +62,13 @@ async function runMongoDBSeed() {
       password: defaultPasswordHash,
       role: "admin",
     });
-    console.log("[SEED] Created default root admin into MongoDB (ashishsahu01072005@gmail.com).");
+    console.log(
+      "[SEED] Created default root admin into MongoDB (ashishsahu01072005@gmail.com).",
+    );
   } else {
-    console.log(`[SEED] Preserved ${userCount} existing registered admin user(s).`);
+    console.log(
+      `[SEED] Preserved ${userCount} existing registered admin user(s).`,
+    );
   }
 
   // 2. Developer profile
@@ -78,27 +82,38 @@ async function runMongoDBSeed() {
   // 4. Skills
   if (Array.isArray(initialSkills)) {
     await SkillCategoryModel.insertMany(
-      initialSkills.map((c, idx) => ({ ...c, order: c.order !== undefined ? c.order : idx }))
+      initialSkills.map((c, idx) => ({
+        ...c,
+        order: c.order !== undefined ? c.order : idx,
+      })),
     );
-    console.log(`[SEED] Populated ${initialSkills.length} skill categories into MongoDB.`);
+    console.log(
+      `[SEED] Populated ${initialSkills.length} skill categories into MongoDB.`,
+    );
   }
 
   // 5. Projects
   if (Array.isArray(initialProjects)) {
     await ProjectModel.insertMany(initialProjects);
-    console.log(`[SEED] Populated ${initialProjects.length} projects into MongoDB.`);
+    console.log(
+      `[SEED] Populated ${initialProjects.length} projects into MongoDB.`,
+    );
   }
 
   // 6. Experience
   if (Array.isArray(initialExperience)) {
     await ExperienceModel.insertMany(initialExperience);
-    console.log(`[SEED] Populated ${initialExperience.length} experience entries into MongoDB.`);
+    console.log(
+      `[SEED] Populated ${initialExperience.length} experience entries into MongoDB.`,
+    );
   }
 
   // 7. Sections
   if (Array.isArray(initialSections)) {
     await SectionModel.insertMany(initialSections);
-    console.log(`[SEED] Populated ${initialSections.length} dynamic sections into MongoDB.`);
+    console.log(
+      `[SEED] Populated ${initialSections.length} dynamic sections into MongoDB.`,
+    );
   }
 
   // 8. Forms
@@ -110,7 +125,9 @@ async function runMongoDBSeed() {
   // 9. Resume Templates (with default approved resume)
   if (Array.isArray(initialResumeTemplates)) {
     await ResumeModel.insertMany(initialResumeTemplates);
-    console.log(`[SEED] Populated ${initialResumeTemplates.length} resume templates into MongoDB.`);
+    console.log(
+      `[SEED] Populated ${initialResumeTemplates.length} resume templates into MongoDB.`,
+    );
   }
 
   console.log("==========================================");

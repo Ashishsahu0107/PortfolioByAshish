@@ -1,4 +1,7 @@
-import { SkillCategoryModel as SkillCategory, cleanDocs } from "../db/schemas.js";
+import {
+  SkillCategoryModel as SkillCategory,
+  cleanDocs,
+} from "../db/schemas.js";
 
 export const SkillModel = {
   async getAll() {

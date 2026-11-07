@@ -16,7 +16,8 @@ export const initialDeveloper = {
   availableForWork: true,
   statusPhrase: "Available for opportunities",
   bio: "I am a Computer Science and Engineering undergraduate (Class of 2026) and passionate Full Stack Developer specializing in the MERN stack. I build robust, scalable web applications that combine high-performance backends with refined editorial user interfaces. With a strong foundation in Data Structures and Algorithms in Java, my focus is crafting software that is both architecturally sound and delightful to use.",
-  philosophy: "I care about the details users notice, and the engineering they never have to.",
+  philosophy:
+    "I care about the details users notice, and the engineering they never have to.",
   emailjsServiceId: "service_mshfzaf",
   emailjsTemplateId: "template_0rruyps",
   emailjsPublicKey: "3JGbJNsXsGW1gQJGu",
@@ -29,31 +30,36 @@ export const initialAbout = {
     {
       id: "focus_1",
       title: "Frontend Development",
-      description: "Modern component architecture with React, Next.js, Tailwind CSS, and fluid GSAP micro-animations.",
+      description:
+        "Modern component architecture with React, Next.js, Tailwind CSS, and fluid GSAP micro-animations.",
       icon: "Code2",
     },
     {
       id: "focus_2",
       title: "Backend Engineering",
-      description: "RESTful API design, Express.js servers, JWT authentication, and secure middleware pipelines.",
+      description:
+        "RESTful API design, Express.js servers, JWT authentication, and secure middleware pipelines.",
       icon: "Server",
     },
     {
       id: "focus_3",
       title: "Database Architecture",
-      description: "Data modeling, schema validation, and indexing with MongoDB, Mongoose, and relational MySQL.",
+      description:
+        "Data modeling, schema validation, and indexing with MongoDB, Mongoose, and relational MySQL.",
       icon: "Database",
     },
     {
       id: "focus_4",
       title: "Data Structures & Java",
-      description: "Algorithmic problem solving, clean OOP patterns, and computational complexity optimization.",
+      description:
+        "Algorithmic problem solving, clean OOP patterns, and computational complexity optimization.",
       icon: "Cpu",
     },
     {
       id: "focus_5",
       title: "Developer Tooling & CI/CD",
-      description: "Git version control, Postman API testing, Vite build optimizations, and automated deployment.",
+      description:
+        "Git version control, Postman API testing, Vite build optimizations, and automated deployment.",
       icon: "Terminal",
     },
   ],
@@ -71,12 +77,42 @@ export const initialSkills = [
     label: "Frontend",
     color: "var(--color-accent)",
     skills: [
-      { name: "React", description: "Component-based UI library", level: 90, icon: "Code2" },
-      { name: "JavaScript", description: "Core language for the web", level: 88, icon: "FileCode" },
-      { name: "HTML5", description: "Semantic web structure", level: 95, icon: "Globe" },
-      { name: "CSS3", description: "Styling & animations", level: 90, icon: "Palette" },
-      { name: "Tailwind CSS", description: "Utility-first CSS framework", level: 88, icon: "Wind" },
-      { name: "React Router", description: "Client-side routing", level: 85, icon: "Route" },
+      {
+        name: "React",
+        description: "Component-based UI library",
+        level: 90,
+        icon: "Code2",
+      },
+      {
+        name: "JavaScript",
+        description: "Core language for the web",
+        level: 88,
+        icon: "FileCode",
+      },
+      {
+        name: "HTML5",
+        description: "Semantic web structure",
+        level: 95,
+        icon: "Globe",
+      },
+      {
+        name: "CSS3",
+        description: "Styling & animations",
+        level: 90,
+        icon: "Palette",
+      },
+      {
+        name: "Tailwind CSS",
+        description: "Utility-first CSS framework",
+        level: 88,
+        icon: "Wind",
+      },
+      {
+        name: "React Router",
+        description: "Client-side routing",
+        level: 85,
+        icon: "Route",
+      },
     ],
   },
   {
@@ -84,11 +120,36 @@ export const initialSkills = [
     label: "Backend",
     color: "var(--color-accent)",
     skills: [
-      { name: "Node.js", description: "JavaScript runtime", level: 85, icon: "Server" },
-      { name: "Express.js", description: "Fast, minimal web framework", level: 85, icon: "Zap" },
-      { name: "REST APIs", description: "API design & development", level: 88, icon: "Network" },
-      { name: "Authentication", description: "Secure user auth systems", level: 82, icon: "ShieldCheck" },
-      { name: "JWT", description: "Token-based auth", level: 80, icon: "KeyRound" },
+      {
+        name: "Node.js",
+        description: "JavaScript runtime",
+        level: 85,
+        icon: "Server",
+      },
+      {
+        name: "Express.js",
+        description: "Fast, minimal web framework",
+        level: 85,
+        icon: "Zap",
+      },
+      {
+        name: "REST APIs",
+        description: "API design & development",
+        level: 88,
+        icon: "Network",
+      },
+      {
+        name: "Authentication",
+        description: "Secure user auth systems",
+        level: 82,
+        icon: "ShieldCheck",
+      },
+      {
+        name: "JWT",
+        description: "Token-based auth",
+        level: 80,
+        icon: "KeyRound",
+      },
     ],
   },
   {
@@ -96,8 +157,18 @@ export const initialSkills = [
     label: "Database",
     color: "var(--color-accent)",
     skills: [
-      { name: "MongoDB", description: "NoSQL document database", level: 85, icon: "Database" },
-      { name: "MySQL", description: "Relational database", level: 75, icon: "TableProperties" },
+      {
+        name: "MongoDB",
+        description: "NoSQL document database",
+        level: 85,
+        icon: "Database",
+      },
+      {
+        name: "MySQL",
+        description: "Relational database",
+        level: 75,
+        icon: "TableProperties",
+      },
     ],
   },
   {
@@ -105,9 +176,24 @@ export const initialSkills = [
     label: "Tools",
     color: "var(--color-accent)",
     skills: [
-      { name: "Git", description: "Version control", level: 88, icon: "GitBranch" },
-      { name: "GitHub", description: "Code hosting & collaboration", level: 88, icon: "Github" },
-      { name: "VS Code", description: "Primary code editor", level: 95, icon: "Terminal" },
+      {
+        name: "Git",
+        description: "Version control",
+        level: 88,
+        icon: "GitBranch",
+      },
+      {
+        name: "GitHub",
+        description: "Code hosting & collaboration",
+        level: 88,
+        icon: "Github",
+      },
+      {
+        name: "VS Code",
+        description: "Primary code editor",
+        level: 95,
+        icon: "Terminal",
+      },
       { name: "Postman", description: "API testing", level: 85, icon: "Send" },
     ],
   },
@@ -116,11 +202,36 @@ export const initialSkills = [
     label: "Other",
     color: "var(--color-accent)",
     skills: [
-      { name: "Java", description: "Object-oriented programming", level: 78, icon: "Coffee" },
-      { name: "DSA", description: "Data structures & algorithms", level: 75, icon: "Binary" },
-      { name: "IoT", description: "Internet of Things", level: 70, icon: "Radio" },
-      { name: "Cloud Computing", description: "Cloud infrastructure basics", level: 68, icon: "Cloud" },
-      { name: "Computer Vision", description: "Image processing & ML", level: 65, icon: "Eye" },
+      {
+        name: "Java",
+        description: "Object-oriented programming",
+        level: 78,
+        icon: "Coffee",
+      },
+      {
+        name: "DSA",
+        description: "Data structures & algorithms",
+        level: 75,
+        icon: "Binary",
+      },
+      {
+        name: "IoT",
+        description: "Internet of Things",
+        level: 70,
+        icon: "Radio",
+      },
+      {
+        name: "Cloud Computing",
+        description: "Cloud infrastructure basics",
+        level: 68,
+        icon: "Cloud",
+      },
+      {
+        name: "Computer Vision",
+        description: "Image processing & ML",
+        level: 65,
+        icon: "Eye",
+      },
     ],
   },
 ];
@@ -188,7 +299,8 @@ export const initialProjects = [
     id: "proj_03",
     number: "03",
     title: "Portfolio & Editorial Digital Showcase",
-    subtitle: "Architectural Personal Website with Physics-Based UI & Custom Admin Console",
+    subtitle:
+      "Architectural Personal Website with Physics-Based UI & Custom Admin Console",
     category: "Portfolio / Creative Web",
     year: "2024",
     color: "#4C1D95",
@@ -207,8 +319,22 @@ export const initialProjects = [
       "Dynamic section management and integrated Form Builder engine",
       "Consistently 95+ Lighthouse performance scores and sub-second load times",
     ],
-    tags: ["React 19", "Node.js", "Express", "Tailwind CSS", "GSAP", "REST API"],
-    tech: ["React 19", "Node.js", "Express", "Tailwind CSS", "GSAP", "REST API"],
+    tags: [
+      "React 19",
+      "Node.js",
+      "Express",
+      "Tailwind CSS",
+      "GSAP",
+      "REST API",
+    ],
+    tech: [
+      "React 19",
+      "Node.js",
+      "Express",
+      "Tailwind CSS",
+      "GSAP",
+      "REST API",
+    ],
     github: "https://github.com/Ashishsahu0107",
     live: "https://iamashish.vercel.app",
     featured: true,
@@ -285,10 +411,42 @@ export const initialExperience = [
 ];
 
 export const initialSections = [
-  { id: "hero", name: "Hero Section", slug: "home", type: "builtin", enabled: true, order: 1, desc: "Introductory header with animated status and portrait" },
-  { id: "about", name: "About & Philosophy", slug: "about", type: "builtin", enabled: true, order: 2, desc: "Personal bio, focus pillars, and statistics" },
-  { id: "skills", name: "Skills & Toolkit", slug: "skills", type: "builtin", enabled: true, order: 3, desc: "Disciplines, technologies, and self-assessment metrics" },
-  { id: "projects", name: "Selected Works", slug: "projects", type: "builtin", enabled: true, order: 4, desc: "Curated engineering projects with details" },
+  {
+    id: "hero",
+    name: "Hero Section",
+    slug: "home",
+    type: "builtin",
+    enabled: true,
+    order: 1,
+    desc: "Introductory header with animated status and portrait",
+  },
+  {
+    id: "about",
+    name: "About & Philosophy",
+    slug: "about",
+    type: "builtin",
+    enabled: true,
+    order: 2,
+    desc: "Personal bio, focus pillars, and statistics",
+  },
+  {
+    id: "skills",
+    name: "Skills & Toolkit",
+    slug: "skills",
+    type: "builtin",
+    enabled: true,
+    order: 3,
+    desc: "Disciplines, technologies, and self-assessment metrics",
+  },
+  {
+    id: "projects",
+    name: "Selected Works",
+    slug: "projects",
+    type: "builtin",
+    enabled: true,
+    order: 4,
+    desc: "Curated engineering projects with details",
+  },
   {
     id: "process",
     name: "Engineering Process",
@@ -299,68 +457,90 @@ export const initialSections = [
     desc: "5-step architectural lifecycle from discovery to ship",
     content: {
       heading: "How ideas become software.",
-      subheading: "A systematic approach that balances high-speed iteration with architectural rigor.",
+      subheading:
+        "A systematic approach that balances high-speed iteration with architectural rigor.",
       items: [
         {
           step: "01",
           phase: "Discover",
           tagline: "Problem Framing & Architecture",
-          description: "Deeply understanding the user requirements, scoping technical constraints, defining data models, and identifying edge cases before writing a line of code.",
+          description:
+            "Deeply understanding the user requirements, scoping technical constraints, defining data models, and identifying edge cases before writing a line of code.",
           deliverables: [
             "Requirements gathering & user flows",
             "API contract specification",
-            "Database schema diagramming"
-          ]
+            "Database schema diagramming",
+          ],
         },
         {
           step: "02",
           phase: "Design",
           tagline: "UI & Technical Blueprints",
-          description: "Establishing design systems, responsive wireframes, component hierarchies, and state management strategies to ensure a cohesive experience.",
+          description:
+            "Establishing design systems, responsive wireframes, component hierarchies, and state management strategies to ensure a cohesive experience.",
           deliverables: [
             "Typography & color tokens",
             "Component hierarchy planning",
-            "Accessible interactive states"
-          ]
+            "Accessible interactive states",
+          ],
         },
         {
           step: "03",
           phase: "Develop",
           tagline: "Clean, Modular Coding",
-          description: "Writing modular, self-documenting code with reusable React components, custom hooks, and robust error handling across both client and server.",
+          description:
+            "Writing modular, self-documenting code with reusable React components, custom hooks, and robust error handling across both client and server.",
           deliverables: [
             "Semantic HTML5 & responsive CSS",
             "Reusable component library",
-            "Strict data validation"
-          ]
+            "Strict data validation",
+          ],
         },
         {
           step: "04",
           phase: "Integrate",
           tagline: "APIs, Persistence & Auth",
-          description: "Connecting frontend interfaces to high-throughput REST endpoints, managing database indexes, configuring JWT security, and optimizing query speeds.",
+          description:
+            "Connecting frontend interfaces to high-throughput REST endpoints, managing database indexes, configuring JWT security, and optimizing query speeds.",
           deliverables: [
             "Secure REST API endpoints",
             "MongoDB Mongoose pipelines",
-            "Protected auth routes & sessions"
-          ]
+            "Protected auth routes & sessions",
+          ],
         },
         {
           step: "05",
           phase: "Test & Deploy",
           tagline: "Vitals Optimization & Launch",
-          description: "Auditing cross-device responsiveness, tuning Core Web Vitals, verifying WCAG AA contrast compliance, and automating production deployments.",
+          description:
+            "Auditing cross-device responsiveness, tuning Core Web Vitals, verifying WCAG AA contrast compliance, and automating production deployments.",
           deliverables: [
             "Lighthouse performance ≥ 95 audit",
             "Cross-browser responsive testing",
-            "CI/CD production deployment"
-          ]
-        }
-      ]
-    }
+            "CI/CD production deployment",
+          ],
+        },
+      ],
+    },
   },
-  { id: "experience", name: "Experience & Education", slug: "experience", type: "builtin", enabled: true, order: 6, desc: "Chronological academic and technical milestones" },
-  { id: "contact", name: "Contact & Connect", slug: "contact", type: "builtin", enabled: true, order: 7, desc: "Get in touch form, links, and status" },
+  {
+    id: "experience",
+    name: "Experience & Education",
+    slug: "experience",
+    type: "builtin",
+    enabled: true,
+    order: 6,
+    desc: "Chronological academic and technical milestones",
+  },
+  {
+    id: "contact",
+    name: "Contact & Connect",
+    slug: "contact",
+    type: "builtin",
+    enabled: true,
+    order: 7,
+    desc: "Get in touch form, links, and status",
+  },
 ];
 
 export const initialForms = [
@@ -371,12 +551,41 @@ export const initialForms = [
     description: "Default contact form for portfolio visitor inquiries.",
     enabled: true,
     submitButtonText: "Send Message",
-    successMessage: "Thank you for reaching out! I will review your message and reply promptly.",
+    successMessage:
+      "Thank you for reaching out! I will review your message and reply promptly.",
     fields: [
-      { id: "f_name", name: "name", label: "Your Full Name", type: "text", placeholder: "e.g. Jane Doe", required: true },
-      { id: "f_email", name: "email", label: "Email Address", type: "email", placeholder: "jane@company.com", required: true },
-      { id: "f_subject", name: "subject", label: "Project / Subject", type: "text", placeholder: "e.g. Full Stack Collaboration", required: false },
-      { id: "f_message", name: "message", label: "Message", type: "textarea", placeholder: "Tell me about your project, timeline, or idea…", required: true },
+      {
+        id: "f_name",
+        name: "name",
+        label: "Your Full Name",
+        type: "text",
+        placeholder: "e.g. Jane Doe",
+        required: true,
+      },
+      {
+        id: "f_email",
+        name: "email",
+        label: "Email Address",
+        type: "email",
+        placeholder: "jane@company.com",
+        required: true,
+      },
+      {
+        id: "f_subject",
+        name: "subject",
+        label: "Project / Subject",
+        type: "text",
+        placeholder: "e.g. Full Stack Collaboration",
+        required: false,
+      },
+      {
+        id: "f_message",
+        name: "message",
+        label: "Message",
+        type: "textarea",
+        placeholder: "Tell me about your project, timeline, or idea…",
+        required: true,
+      },
     ],
     createdAt: new Date().toISOString(),
   },
@@ -397,11 +606,46 @@ export const initialResumeData = {
   summary:
     "Proactive Full Stack Developer and Computer Science & Engineering undergraduate (Class of 2026) specializing in the MERN stack (MongoDB, Express, React, Node.js). Strong foundations in Data Structures and Algorithms in Java, RESTful API architecture, responsive modern UIs, and cloud deployments. Proven track record of architecting scalable educational platforms, e-commerce systems, and high-performance interactive web applications with sub-2s latency.",
   skills: {
-    languages: ["JavaScript (ES6+)", "TypeScript", "Java", "SQL", "HTML5", "CSS3"],
-    frontend: ["React 19", "Next.js", "Tailwind CSS", "Redux Toolkit", "GSAP 3", "Vite"],
-    backend: ["Node.js", "Express.js", "REST APIs", "JWT Auth", "WebSocket / Socket.io", "Microservices"],
-    databases: ["MongoDB", "Mongoose", "MongoDB Atlas", "MySQL", "Redis (Basic)"],
-    toolsDevOps: ["Git", "GitHub", "Postman", "Docker (Basics)", "Vercel", "Linux", "VS Code"],
+    languages: [
+      "JavaScript (ES6+)",
+      "TypeScript",
+      "Java",
+      "SQL",
+      "HTML5",
+      "CSS3",
+    ],
+    frontend: [
+      "React 19",
+      "Next.js",
+      "Tailwind CSS",
+      "Redux Toolkit",
+      "GSAP 3",
+      "Vite",
+    ],
+    backend: [
+      "Node.js",
+      "Express.js",
+      "REST APIs",
+      "JWT Auth",
+      "WebSocket / Socket.io",
+      "Microservices",
+    ],
+    databases: [
+      "MongoDB",
+      "Mongoose",
+      "MongoDB Atlas",
+      "MySQL",
+      "Redis (Basic)",
+    ],
+    toolsDevOps: [
+      "Git",
+      "GitHub",
+      "Postman",
+      "Docker (Basics)",
+      "Vercel",
+      "Linux",
+      "VS Code",
+    ],
   },
   workExperience: [
     {
@@ -440,7 +684,8 @@ export const initialResumeData = {
     {
       id: "proj-2",
       name: "Interactive Full-Stack Resume Builder",
-      technologies: "React 19, Tailwind CSS, html2canvas, jsPDF, Express, MongoDB",
+      technologies:
+        "React 19, Tailwind CSS, html2canvas, jsPDF, Express, MongoDB",
       description:
         "Editorial-grade resume authoring platform featuring live split-screen previewing, 6 curated ATS-friendly templates, and high-DPI client-side PDF export.",
       githubUrl: "https://github.com/Ashishsahu0107/PortfolioByAshish",
@@ -449,7 +694,8 @@ export const initialResumeData = {
     {
       id: "proj-3",
       name: "CarePulse - Patient Healthcare Portal",
-      technologies: "Next.js 14, TypeScript, Tailwind CSS, Appwrite, Twilio SMS",
+      technologies:
+        "Next.js 14, TypeScript, Tailwind CSS, Appwrite, Twilio SMS",
       description:
         "Healthcare management portal featuring administrative appointment scheduling, SMS alerts, passkey security, and document handling.",
       githubUrl: "https://github.com/Ashishsahu0107/CarePulse",
@@ -486,7 +732,11 @@ export const initialResumeData = {
     },
   ],
   languages: [
-    { id: "lang-1", language: "English", proficiency: "Professional Working Proficiency" },
+    {
+      id: "lang-1",
+      language: "English",
+      proficiency: "Professional Working Proficiency",
+    },
     { id: "lang-2", language: "Hindi", proficiency: "Native / Bilingual" },
   ],
   awards: [
@@ -495,7 +745,8 @@ export const initialResumeData = {
       title: "Top Performer - University Hackathon",
       issuer: "College Tech Fest",
       date: "2024",
-      description: "Ranked in top 3 for developing a real-time collaborative workspace tool within 36 hours.",
+      description:
+        "Ranked in top 3 for developing a real-time collaborative workspace tool within 36 hours.",
     },
   ],
 };
@@ -508,7 +759,8 @@ export const initialResumeTemplates = [
     tagline: "Modern Blue & Balanced",
     badge: "Recommended",
     badgeColor: "bg-blue-100 text-blue-700 border-blue-200",
-    description: "Vibrant blue accents, modern typography, badge skills, and clear timeline hierarchy.",
+    description:
+      "Vibrant blue accents, modern typography, badge skills, and clear timeline hierarchy.",
     accent: "#2563eb",
     status: "approved",
     isApproved: true,
@@ -524,7 +776,8 @@ export const initialResumeTemplates = [
     tagline: "Ultra-Clean ATS Standard",
     badge: "ATS 99%",
     badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    description: "Monochrome high-contrast serif/sans layout designed for zero ATS parsing errors.",
+    description:
+      "Monochrome high-contrast serif/sans layout designed for zero ATS parsing errors.",
     accent: "#18181b",
     status: "draft",
     isApproved: false,
@@ -540,7 +793,8 @@ export const initialResumeTemplates = [
     tagline: "Executive Sidebar",
     badge: "Corporate",
     badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-200",
-    description: "Navy blue left sidebar with quick contact & skill pills, structured experience right pane.",
+    description:
+      "Navy blue left sidebar with quick contact & skill pills, structured experience right pane.",
     accent: "#1e3a8a",
     status: "draft",
     isApproved: false,
@@ -556,7 +810,8 @@ export const initialResumeTemplates = [
     tagline: "Terminal & Code Centric",
     badge: "Tech Focus",
     badgeColor: "bg-emerald-100 text-emerald-900 border-emerald-300",
-    description: "Dark terminal header with git branch styling, monospace tech tags, and code accents.",
+    description:
+      "Dark terminal header with git branch styling, monospace tech tags, and code accents.",
     accent: "#059669",
     status: "draft",
     isApproved: false,
@@ -572,7 +827,8 @@ export const initialResumeTemplates = [
     tagline: "Editorial Warm Serif",
     badge: "Refined",
     badgeColor: "bg-amber-100 text-amber-900 border-amber-200",
-    description: "Editorial typography with warm cream tones, tailored for creative engineering portfolios.",
+    description:
+      "Editorial typography with warm cream tones, tailored for creative engineering portfolios.",
     accent: "#b45309",
     status: "draft",
     isApproved: false,
@@ -588,7 +844,8 @@ export const initialResumeTemplates = [
     tagline: "High-Density Single Page",
     badge: "1-Page Ready",
     badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
-    description: "Dense 2-column layout engineered to fit maximum technical depth into minimal vertical space.",
+    description:
+      "Dense 2-column layout engineered to fit maximum technical depth into minimal vertical space.",
     accent: "#7c3aed",
     status: "draft",
     isApproved: false,
@@ -598,4 +855,3 @@ export const initialResumeTemplates = [
     version: 1,
   },
 ];
-

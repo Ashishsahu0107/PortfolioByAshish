@@ -19,7 +19,13 @@ import {
   Clock,
   Activity,
 } from "lucide-react";
-import { AdminSection, AdminCard, badgeBlue, badgePurple, badgeGreen } from "../adminUtils";
+import {
+  AdminSection,
+  AdminCard,
+  badgeBlue,
+  badgePurple,
+  badgeGreen,
+} from "../adminUtils";
 import { overviewApi, projectsApi } from "../../services/api";
 
 export default function AdminOverview() {
@@ -35,7 +41,8 @@ export default function AdminOverview() {
           projectsApi.getAll().catch(() => []),
         ]);
         if (overviewRes) setData(overviewRes);
-        if (Array.isArray(projectsRes)) setRecentProjects(projectsRes.slice(0, 5));
+        if (Array.isArray(projectsRes))
+          setRecentProjects(projectsRes.slice(0, 5));
       } finally {
         setLoading(false);
       }
@@ -72,19 +79,57 @@ export default function AdminOverview() {
   };
 
   const STAT_CARDS = [
-    { icon: FolderGit2, label: "Live Projects", value: counts.projects, sub: `${counts.featuredProjects} featured` },
-    { icon: Zap, label: "Skill Categories", value: counts.skillCategories, sub: `${counts.totalSkills} total skills` },
-    { icon: Briefcase, label: "Experience Entries", value: counts.experience, sub: "Academia & work" },
-    { icon: LayoutGrid, label: "Dynamic Sections", value: counts.sections, sub: `${counts.activeSections} active` },
-    { icon: FileSpreadsheet, label: "Form Submissions", value: counts.submissions, sub: `${counts.forms} active templates` },
-    { icon: Mail, label: "Inbox Messages", value: counts.messages, sub: `${counts.unreadMessages} unread` },
+    {
+      icon: FolderGit2,
+      label: "Live Projects",
+      value: counts.projects,
+      sub: `${counts.featuredProjects} featured`,
+    },
+    {
+      icon: Zap,
+      label: "Skill Categories",
+      value: counts.skillCategories,
+      sub: `${counts.totalSkills} total skills`,
+    },
+    {
+      icon: Briefcase,
+      label: "Experience Entries",
+      value: counts.experience,
+      sub: "Academia & work",
+    },
+    {
+      icon: LayoutGrid,
+      label: "Dynamic Sections",
+      value: counts.sections,
+      sub: `${counts.activeSections} active`,
+    },
+    {
+      icon: FileSpreadsheet,
+      label: "Form Submissions",
+      value: counts.submissions,
+      sub: `${counts.forms} active templates`,
+    },
+    {
+      icon: Mail,
+      label: "Inbox Messages",
+      value: counts.messages,
+      sub: `${counts.unreadMessages} unread`,
+    },
   ];
 
   const QUICK_LINKS = [
     { label: "Edit Hero / Home", href: "/admin/home", icon: Home },
-    { label: "Manage Dynamic Sections", href: "/admin/sections", icon: LayoutGrid },
+    {
+      label: "Manage Dynamic Sections",
+      href: "/admin/sections",
+      icon: LayoutGrid,
+    },
     { label: "Manage Projects", href: "/admin/projects", icon: FolderGit2 },
-    { label: "Form Builder & Submissions", href: "/admin/forms", icon: FileSpreadsheet },
+    {
+      label: "Form Builder & Submissions",
+      href: "/admin/forms",
+      icon: FileSpreadsheet,
+    },
     { label: "Update Skills", href: "/admin/skills", icon: Zap },
     { label: "Edit Experience", href: "/admin/experience", icon: Briefcase },
     { label: "Inbox & Contact Info", href: "/admin/contact", icon: Mail },
@@ -93,7 +138,10 @@ export default function AdminOverview() {
 
   if (loading) {
     return (
-      <AdminSection title="Dashboard Overview" desc="Loading system telemetry...">
+      <AdminSection
+        title="Dashboard Overview"
+        desc="Loading system telemetry..."
+      >
         <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
           <Loader2 size={20} className="animate-spin text-indigo-600" />
           <span>Synchronizing dashboard with backend server...</span>
@@ -115,11 +163,15 @@ export default function AdminOverview() {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-gray-900">Backend Server Online</span>
+              <span className="text-sm font-bold text-gray-900">
+                Backend Server Online
+              </span>
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className={badgeGreen}>REST API Connected</span>
             </div>
-            <p className="text-xs text-gray-500 m-0">Persistent storage active at port 5000 with atomic JSON cache.</p>
+            <p className="text-xs text-gray-500 m-0">
+              Persistent storage active at port 5000 with atomic JSON cache.
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
@@ -139,15 +191,22 @@ export default function AdminOverview() {
         {STAT_CARDS.map((card) => {
           const Icon = card.icon;
           return (
-            <div key={card.label} className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+            <div
+              key={card.label}
+              className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col justify-between shadow-xs"
+            >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[11px] font-semibold text-gray-500">{card.label}</span>
+                <span className="text-[11px] font-semibold text-gray-500">
+                  {card.label}
+                </span>
                 <div className="w-7 h-7 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center shrink-0">
                   <Icon size={14} />
                 </div>
               </div>
               <div>
-                <p className="text-2xl font-black text-gray-900 m-0 leading-none">{card.value}</p>
+                <p className="text-2xl font-black text-gray-900 m-0 leading-none">
+                  {card.value}
+                </p>
                 <p className="text-[11px] text-gray-400 mt-1 m-0">{card.sub}</p>
               </div>
             </div>
@@ -183,13 +242,28 @@ export default function AdminOverview() {
               { label: "Name", value: dev.name },
               { label: "Role", value: dev.role },
               { label: "Status Phrase", value: dev.statusPhrase },
-              { label: "Available", value: dev.availableForWork ? "Active & Accepting Inquiries" : "Currently Unavailable" },
-              { label: "Dynamic Sections", value: `${counts.activeSections} of ${counts.sections} enabled on portfolio` },
-              { label: "Unread Messages", value: `${counts.unreadMessages} requiring review` },
+              {
+                label: "Available",
+                value: dev.availableForWork
+                  ? "Active & Accepting Inquiries"
+                  : "Currently Unavailable",
+              },
+              {
+                label: "Dynamic Sections",
+                value: `${counts.activeSections} of ${counts.sections} enabled on portfolio`,
+              },
+              {
+                label: "Unread Messages",
+                value: `${counts.unreadMessages} requiring review`,
+              },
             ].map(({ label, value }) => (
               <div key={label} className="flex gap-2.5">
-                <span className="text-[11px] font-semibold text-gray-400 w-28 shrink-0 pt-0.5">{label}</span>
-                <span className="text-sm text-gray-700 break-all font-medium">{value}</span>
+                <span className="text-[11px] font-semibold text-gray-400 w-28 shrink-0 pt-0.5">
+                  {label}
+                </span>
+                <span className="text-sm text-gray-700 break-all font-medium">
+                  {value}
+                </span>
               </div>
             ))}
           </div>
@@ -215,16 +289,24 @@ export default function AdminOverview() {
             <tbody>
               {recentProjects.map((p) => (
                 <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-400 font-semibold">{p.number}</td>
-                  <td className="px-4 py-2.5 border-b border-gray-100 font-semibold text-gray-900">{p.title}</td>
+                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-400 font-semibold">
+                    {p.number}
+                  </td>
+                  <td className="px-4 py-2.5 border-b border-gray-100 font-semibold text-gray-900">
+                    {p.title}
+                  </td>
                   <td className="px-4 py-2.5 border-b border-gray-100">
                     <span className={badgeBlue}>{p.category}</span>
                   </td>
-                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-700">{p.year}</td>
+                  <td className="px-4 py-2.5 border-b border-gray-100 text-gray-700">
+                    {p.year}
+                  </td>
                   <td className="px-4 py-2.5 border-b border-gray-100">
                     <div className="flex gap-1 flex-wrap">
                       {(p.tags || []).slice(0, 3).map((tag) => (
-                        <span key={tag} className={badgePurple}>{tag}</span>
+                        <span key={tag} className={badgePurple}>
+                          {tag}
+                        </span>
                       ))}
                     </div>
                   </td>

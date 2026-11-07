@@ -1,10 +1,4 @@
-import {
-  ExternalLink,
-  FolderGit2,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { ExternalLink, FolderGit2, Mail, MapPin, Phone } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../../components/icons";
 
 export default function TemplateEditorial({ data }) {
@@ -44,7 +38,10 @@ export default function TemplateEditorial({ data }) {
           {personalInfo.email && (
             <span className="flex items-center gap-1.5">
               <Mail size={12} className="text-[#24483A]" />
-              <a href={`mailto:${personalInfo.email}`} className="hover:underline">
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="hover:underline"
+              >
                 {personalInfo.email}
               </a>
             </span>
@@ -63,17 +60,32 @@ export default function TemplateEditorial({ data }) {
           )}
           <div className="flex items-center gap-2 pt-0.5">
             {personalInfo.linkedin && (
-              <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="hover:text-[#24483A]">
+              <a
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#24483A]"
+              >
                 <LinkedinIcon size={13} />
               </a>
             )}
             {personalInfo.github && (
-              <a href={personalInfo.github} target="_blank" rel="noreferrer" className="hover:text-[#24483A]">
+              <a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#24483A]"
+              >
                 <GithubIcon size={13} />
               </a>
             )}
             {personalInfo.portfolioUrl && (
-              <a href={personalInfo.portfolioUrl} target="_blank" rel="noreferrer" className="hover:text-[#24483A]">
+              <a
+                href={personalInfo.portfolioUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-[#24483A]"
+              >
                 <ExternalLink size={13} />
               </a>
             )}
@@ -102,32 +114,52 @@ export default function TemplateEditorial({ data }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1.5 text-[12px]">
             {skills.languages && skills.languages.length > 0 && (
               <p>
-                <strong className="text-[#171717] font-semibold">Languages: </strong>
-                <span className="text-[#4A4D46]">{skills.languages.join(", ")}</span>
+                <strong className="text-[#171717] font-semibold">
+                  Languages:{" "}
+                </strong>
+                <span className="text-[#4A4D46]">
+                  {skills.languages.join(", ")}
+                </span>
               </p>
             )}
             {skills.frontend && skills.frontend.length > 0 && (
               <p>
-                <strong className="text-[#171717] font-semibold">Frontend: </strong>
-                <span className="text-[#4A4D46]">{skills.frontend.join(", ")}</span>
+                <strong className="text-[#171717] font-semibold">
+                  Frontend:{" "}
+                </strong>
+                <span className="text-[#4A4D46]">
+                  {skills.frontend.join(", ")}
+                </span>
               </p>
             )}
             {skills.backend && skills.backend.length > 0 && (
               <p>
-                <strong className="text-[#171717] font-semibold">Backend: </strong>
-                <span className="text-[#4A4D46]">{skills.backend.join(", ")}</span>
+                <strong className="text-[#171717] font-semibold">
+                  Backend:{" "}
+                </strong>
+                <span className="text-[#4A4D46]">
+                  {skills.backend.join(", ")}
+                </span>
               </p>
             )}
             {skills.databases && skills.databases.length > 0 && (
               <p>
-                <strong className="text-[#171717] font-semibold">Databases: </strong>
-                <span className="text-[#4A4D46]">{skills.databases.join(", ")}</span>
+                <strong className="text-[#171717] font-semibold">
+                  Databases:{" "}
+                </strong>
+                <span className="text-[#4A4D46]">
+                  {skills.databases.join(", ")}
+                </span>
               </p>
             )}
             {skills.toolsDevOps && skills.toolsDevOps.length > 0 && (
               <p className="sm:col-span-2">
-                <strong className="text-[#171717] font-semibold">Tools & Infrastructure: </strong>
-                <span className="text-[#4A4D46]">{skills.toolsDevOps.join(", ")}</span>
+                <strong className="text-[#171717] font-semibold">
+                  Tools & Infrastructure:{" "}
+                </strong>
+                <span className="text-[#4A4D46]">
+                  {skills.toolsDevOps.join(", ")}
+                </span>
               </p>
             )}
           </div>
@@ -137,12 +169,19 @@ export default function TemplateEditorial({ data }) {
       {/* Experience */}
       {workExperience && workExperience.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             Experience History
           </h2>
           <div className="space-y-3.5">
             {workExperience.map((exp) => (
-              <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={exp.id}
+                className="break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div className="flex justify-between items-baseline">
                   <h3 className="font-serif font-bold text-[13.5px] text-[#171717]">
                     {exp.title}
@@ -168,12 +207,19 @@ export default function TemplateEditorial({ data }) {
       {/* Projects */}
       {projects && projects.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-3"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             Selected Software Projects
           </h2>
           <div className="space-y-3">
             {projects.map((proj) => (
-              <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={proj.id}
+                className="break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div className="flex justify-between items-baseline">
                   <div className="flex items-center gap-2">
                     <h3 className="font-serif font-bold text-[13px] text-[#171717]">
@@ -187,12 +233,22 @@ export default function TemplateEditorial({ data }) {
                   </div>
                   <div className="flex items-center gap-2 text-[10.5px] font-mono">
                     {proj.githubUrl && (
-                      <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="text-[#24483A] hover:underline flex items-center gap-1">
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#24483A] hover:underline flex items-center gap-1"
+                      >
                         <FolderGit2 size={11} /> Repo
                       </a>
                     )}
                     {proj.liveUrl && (
-                      <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="text-[#24483A] hover:underline flex items-center gap-1">
+                      <a
+                        href={proj.liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#24483A] hover:underline flex items-center gap-1"
+                      >
                         <ExternalLink size={11} /> Live
                       </a>
                     )}
@@ -212,22 +268,35 @@ export default function TemplateEditorial({ data }) {
       {/* Education */}
       {education && education.length > 0 && (
         <section className="mb-5">
-          <h2 className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="font-serif text-[13px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             Academic Background
           </h2>
           <div className="space-y-1.5">
             {education.map((edu) => (
-              <div key={edu.id} className="flex justify-between items-baseline break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={edu.id}
+                className="flex justify-between items-baseline break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div>
                   <h3 className="font-serif font-bold text-[12.5px] text-[#171717]">
                     {edu.degree}
                   </h3>
                   <p className="text-[11.5px] text-[#4A4D46]">
                     {edu.institution} {edu.location && `· ${edu.location}`}{" "}
-                    {edu.gradeGpa && <span className="font-mono font-medium">({edu.gradeGpa})</span>}
+                    {edu.gradeGpa && (
+                      <span className="font-mono font-medium">
+                        ({edu.gradeGpa})
+                      </span>
+                    )}
                   </p>
                   {edu.details && (
-                    <p className="text-[11px] text-[#596150] mt-0.5">{edu.details}</p>
+                    <p className="text-[11px] text-[#596150] mt-0.5">
+                      {edu.details}
+                    </p>
                   )}
                 </div>
                 <span className="font-mono text-[10.5px] text-[#596150] shrink-0">
@@ -240,16 +309,27 @@ export default function TemplateEditorial({ data }) {
       )}
 
       {/* Certifications & Achievements in 2 columns */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 gap-5 break-inside-avoid"
+        style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+      >
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Certifications
             </h2>
             <ul className="space-y-1 text-[11px] text-[#4A4D46]">
               {certifications.map((c) => (
-                <li key={c.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
-                  <strong className="text-[#171717]">{c.name}</strong> — {c.issuer} ({c.date})
+                <li
+                  key={c.id}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
+                  <strong className="text-[#171717]">{c.name}</strong> —{" "}
+                  {c.issuer} ({c.date})
                 </li>
               ))}
             </ul>
@@ -258,13 +338,21 @@ export default function TemplateEditorial({ data }) {
 
         {achievements && achievements.length > 0 && (
           <section>
-            <h2 className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="font-serif text-[12px] font-bold tracking-wider text-[#24483A] uppercase border-b border-[#D8D4C8] pb-1 mb-2"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Recognitions
             </h2>
             <ul className="space-y-1 text-[11px] text-[#4A4D46]">
               {achievements.map((a) => (
-                <li key={a.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
-                  <strong className="text-[#171717]">{a.title}</strong> — {a.issuer} ({a.year})
+                <li
+                  key={a.id}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
+                  <strong className="text-[#171717]">{a.title}</strong> —{" "}
+                  {a.issuer} ({a.year})
                 </li>
               ))}
             </ul>

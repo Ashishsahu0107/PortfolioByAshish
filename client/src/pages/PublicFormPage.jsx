@@ -103,7 +103,8 @@ export default function PublicFormPage() {
       if (f.required) {
         if (f.type === "file") {
           if (!file) {
-            errors[f.name] = `${f.label || f.name} is required. Please attach a file.`;
+            errors[f.name] =
+              `${f.label || f.name} is required. Please attach a file.`;
           }
         } else if (f.type === "checkbox") {
           if (!val) {
@@ -122,7 +123,8 @@ export default function PublicFormPage() {
         if (f.type === "phone") {
           const digits = val.replace(/\D/g, "");
           if (digits.length < 7) {
-            errors[f.name] = "Please enter a valid phone number (at least 7 digits).";
+            errors[f.name] =
+              "Please enter a valid phone number (at least 7 digits).";
           }
         }
         if (f.type === "date") {
@@ -149,7 +151,9 @@ export default function PublicFormPage() {
     }
 
     setSubmitting(true);
-    const toastId = toast.loading("Submitting your response...", { id: "form-submit" });
+    const toastId = toast.loading("Submitting your response...", {
+      id: "form-submit",
+    });
 
     try {
       // Check if we need multipart form data (if files exist)
@@ -184,11 +188,16 @@ export default function PublicFormPage() {
       setSubmissionId(res?.submissionId || "");
 
       toast.success(
-        res?.message || form.successMessage || "Your submission has been received successfully!",
-        { id: toastId }
+        res?.message ||
+          form.successMessage ||
+          "Your submission has been received successfully!",
+        { id: toastId },
       );
     } catch (err) {
-      const msg = err?.data?.message || err?.message || "Failed to submit form. Please try again.";
+      const msg =
+        err?.data?.message ||
+        err?.message ||
+        "Failed to submit form. Please try again.";
       toast.error(msg, { id: toastId });
     } finally {
       setSubmitting(false);
@@ -201,7 +210,9 @@ export default function PublicFormPage() {
       <div className="min-h-screen bg-[#09090b] text-[#f4f4f5] flex items-center justify-center p-6">
         <div className="flex flex-col items-center gap-3">
           <Loader2 size={28} className="animate-spin text-[#00f0ff]" />
-          <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">Loading Form...</span>
+          <span className="font-mono text-xs uppercase tracking-wider text-zinc-400">
+            Loading Form...
+          </span>
         </div>
       </div>
     );
@@ -215,9 +226,12 @@ export default function PublicFormPage() {
           <span className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-red-500/10 text-red-400 border border-red-500/20">
             <AlertCircle size={22} />
           </span>
-          <h2 className="font-serif text-2xl font-bold text-white mb-2">Form Not Found</h2>
+          <h2 className="font-serif text-2xl font-bold text-white mb-2">
+            Form Not Found
+          </h2>
           <p className="text-sm text-zinc-400 leading-relaxed mb-6">
-            The requested form &quot;{slug}&quot; could not be found or may have been deleted.
+            The requested form &quot;{slug}&quot; could not be found or may have
+            been deleted.
           </p>
           <Link
             to="/"
@@ -239,12 +253,15 @@ export default function PublicFormPage() {
           <span className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
             <Clock size={22} />
           </span>
-          <h2 className="font-serif text-2xl font-bold text-white mb-2">{form.name}</h2>
+          <h2 className="font-serif text-2xl font-bold text-white mb-2">
+            {form.name}
+          </h2>
           <div className="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 mb-4">
             Submissions Closed
           </div>
           <p className="text-sm text-zinc-400 leading-relaxed mb-6">
-            This form is currently paused and not accepting new responses. Please check back later or reach out directly.
+            This form is currently paused and not accepting new responses.
+            Please check back later or reach out directly.
           </p>
           <Link
             to="/#contact"
@@ -259,7 +276,9 @@ export default function PublicFormPage() {
   }
 
   return (
-    <div className={`min-h-screen bg-[#09090b] text-[#f4f4f5] ${isEmbed ? "p-4" : "py-12 sm:py-16 px-4 sm:px-6 lg:px-8"}`}>
+    <div
+      className={`min-h-screen bg-[#09090b] text-[#f4f4f5] ${isEmbed ? "p-4" : "py-12 sm:py-16 px-4 sm:px-6 lg:px-8"}`}
+    >
       <div className="max-w-2xl mx-auto">
         {/* Back navigation header (hidden in embed mode) */}
         {!isEmbed && (
@@ -293,11 +312,13 @@ export default function PublicFormPage() {
                 Response Received
               </h2>
               <p className="text-sm text-zinc-300 leading-relaxed max-w-md mx-auto mb-6">
-                {form.successMessage || "Thank you! Your response has been securely saved to the database."}
+                {form.successMessage ||
+                  "Thank you! Your response has been securely saved to the database."}
               </p>
               {submissionId && (
                 <div className="font-mono text-[11px] text-zinc-500 mb-8">
-                  Submission ID: <span className="text-zinc-300">{submissionId}</span>
+                  Submission ID:{" "}
+                  <span className="text-zinc-300">{submissionId}</span>
                 </div>
               )}
               <div className="flex flex-wrap items-center justify-center gap-3">
@@ -350,7 +371,10 @@ export default function PublicFormPage() {
                           htmlFor={`field_${f.name}`}
                           className="block font-mono text-[11px] font-semibold uppercase tracking-wider text-zinc-300"
                         >
-                          {f.label || f.name} {f.required && <span className="text-[#00f0ff]">*</span>}
+                          {f.label || f.name}{" "}
+                          {f.required && (
+                            <span className="text-[#00f0ff]">*</span>
+                          )}
                         </label>
                         {error && (
                           <span className="font-mono text-[10px] text-red-400 flex items-center gap-1">
@@ -370,13 +394,27 @@ export default function PublicFormPage() {
                       {/* Field Renderers by Type */}
 
                       {/* 1. TEXT, PHONE, NUMBER */}
-                      {(f.type === "text" || f.type === "phone" || f.type === "tel" || f.type === "number") && (
+                      {(f.type === "text" ||
+                        f.type === "phone" ||
+                        f.type === "tel" ||
+                        f.type === "number") && (
                         <input
                           id={`field_${f.name}`}
-                          type={f.type === "phone" || f.type === "tel" ? "tel" : f.type === "number" ? "number" : "text"}
-                          placeholder={f.placeholder || `Enter your ${f.label.toLowerCase()}...`}
+                          type={
+                            f.type === "phone" || f.type === "tel"
+                              ? "tel"
+                              : f.type === "number"
+                                ? "number"
+                                : "text"
+                          }
+                          placeholder={
+                            f.placeholder ||
+                            `Enter your ${f.label.toLowerCase()}...`
+                          }
                           value={val || ""}
-                          onChange={(e) => handleInputChange(f.name, e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(f.name, e.target.value)
+                          }
                           disabled={submitting}
                           className={`w-full rounded-md border bg-[#09090b] px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-colors ${
                             error
@@ -394,7 +432,9 @@ export default function PublicFormPage() {
                           autoComplete="email"
                           placeholder={f.placeholder || "jane@example.com"}
                           value={val || ""}
-                          onChange={(e) => handleInputChange(f.name, e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(f.name, e.target.value)
+                          }
                           disabled={submitting}
                           className={`w-full rounded-md border bg-[#09090b] px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-colors ${
                             error
@@ -409,9 +449,14 @@ export default function PublicFormPage() {
                         <textarea
                           id={`field_${f.name}`}
                           rows={4}
-                          placeholder={f.placeholder || "Type your detailed message or project brief..."}
+                          placeholder={
+                            f.placeholder ||
+                            "Type your detailed message or project brief..."
+                          }
                           value={val || ""}
-                          onChange={(e) => handleInputChange(f.name, e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(f.name, e.target.value)
+                          }
                           disabled={submitting}
                           className={`w-full rounded-md border bg-[#09090b] px-3.5 py-2.5 text-sm text-zinc-100 placeholder:text-zinc-500 outline-none transition-colors resize-y ${
                             error
@@ -427,7 +472,9 @@ export default function PublicFormPage() {
                           id={`field_${f.name}`}
                           type="date"
                           value={val || ""}
-                          onChange={(e) => handleInputChange(f.name, e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(f.name, e.target.value)
+                          }
                           disabled={submitting}
                           className={`w-full rounded-md border bg-[#09090b] px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors ${
                             error
@@ -442,7 +489,9 @@ export default function PublicFormPage() {
                         <select
                           id={`field_${f.name}`}
                           value={val || ""}
-                          onChange={(e) => handleInputChange(f.name, e.target.value)}
+                          onChange={(e) =>
+                            handleInputChange(f.name, e.target.value)
+                          }
                           disabled={submitting}
                           className={`w-full rounded-md border bg-[#09090b] px-3.5 py-2.5 text-sm text-zinc-100 outline-none transition-colors ${
                             error
@@ -454,7 +503,10 @@ export default function PublicFormPage() {
                             {f.placeholder || "-- Select an option --"}
                           </option>
                           {(f.options || []).map((opt, i) => (
-                            <option key={i} value={typeof opt === "object" ? opt.value : opt}>
+                            <option
+                              key={i}
+                              value={typeof opt === "object" ? opt.value : opt}
+                            >
                               {typeof opt === "object" ? opt.label : opt}
                             </option>
                           ))}
@@ -465,8 +517,10 @@ export default function PublicFormPage() {
                       {f.type === "radio" && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                           {(f.options || []).map((opt, i) => {
-                            const optVal = typeof opt === "object" ? opt.value : opt;
-                            const optLabel = typeof opt === "object" ? opt.label : opt;
+                            const optVal =
+                              typeof opt === "object" ? opt.value : opt;
+                            const optLabel =
+                              typeof opt === "object" ? opt.label : opt;
                             const isChecked = val === optVal;
                             return (
                               <label
@@ -482,11 +536,15 @@ export default function PublicFormPage() {
                                   name={`radio_${f.name}`}
                                   value={optVal}
                                   checked={isChecked}
-                                  onChange={() => handleInputChange(f.name, optVal)}
+                                  onChange={() =>
+                                    handleInputChange(f.name, optVal)
+                                  }
                                   disabled={submitting}
                                   className="w-4 h-4 accent-[#00f0ff]"
                                 />
-                                <span className="text-xs font-medium">{optLabel}</span>
+                                <span className="text-xs font-medium">
+                                  {optLabel}
+                                </span>
                               </label>
                             );
                           })}
@@ -500,7 +558,9 @@ export default function PublicFormPage() {
                             id={`field_${f.name}`}
                             type="checkbox"
                             checked={Boolean(val)}
-                            onChange={(e) => handleInputChange(f.name, e.target.checked)}
+                            onChange={(e) =>
+                              handleInputChange(f.name, e.target.checked)
+                            }
                             disabled={submitting}
                             className="mt-0.5 w-4 h-4 rounded accent-[#00f0ff] cursor-pointer"
                           />
@@ -521,7 +581,9 @@ export default function PublicFormPage() {
                               const file = e.target.files?.[0];
                               if (file) {
                                 if (file.size > 10 * 1024 * 1024) {
-                                  showToast.error("File size cannot exceed 10MB.");
+                                  showToast.error(
+                                    "File size cannot exceed 10MB.",
+                                  );
                                   e.target.value = "";
                                   return;
                                 }
@@ -535,13 +597,20 @@ export default function PublicFormPage() {
                           {files[f.name] ? (
                             <div className="flex items-center justify-between p-3 rounded-lg border border-emerald-500/40 bg-emerald-500/5">
                               <div className="flex items-center gap-2.5 min-w-0">
-                                <Paperclip size={16} className="text-emerald-400 shrink-0" />
+                                <Paperclip
+                                  size={16}
+                                  className="text-emerald-400 shrink-0"
+                                />
                                 <div className="min-w-0">
                                   <p className="text-xs font-mono font-semibold text-zinc-200 truncate m-0">
                                     {files[f.name].name}
                                   </p>
                                   <span className="text-[10px] text-zinc-400 font-mono">
-                                    {(files[f.name].size / (1024 * 1024)).toFixed(2)} MB
+                                    {(
+                                      files[f.name].size /
+                                      (1024 * 1024)
+                                    ).toFixed(2)}{" "}
+                                    MB
                                   </span>
                                 </div>
                               </div>
@@ -559,7 +628,9 @@ export default function PublicFormPage() {
                             <label
                               htmlFor={`field_${f.name}`}
                               className={`flex flex-col items-center justify-center gap-2 p-5 rounded-lg border-2 border-dashed bg-[#09090b] hover:bg-zinc-900/50 cursor-pointer transition-all ${
-                                error ? "border-red-500/80" : "border-zinc-800 hover:border-[#00f0ff]/60"
+                                error
+                                  ? "border-red-500/80"
+                                  : "border-zinc-800 hover:border-[#00f0ff]/60"
                               }`}
                             >
                               <Upload size={20} className="text-zinc-400" />
@@ -588,7 +659,10 @@ export default function PublicFormPage() {
                   >
                     {submitting ? (
                       <>
-                        <Loader2 size={16} className="animate-spin text-[#09090b]" />
+                        <Loader2
+                          size={16}
+                          className="animate-spin text-[#09090b]"
+                        />
                         <span>Submitting Response...</span>
                       </>
                     ) : (
@@ -607,7 +681,8 @@ export default function PublicFormPage() {
         {/* Footer info */}
         {!isEmbed && (
           <div className="mt-8 text-center text-[11px] font-mono text-zinc-500">
-            Secure submission managed by Ashish Sahu Portfolio Platform &bull; All responses saved directly to database
+            Secure submission managed by Ashish Sahu Portfolio Platform &bull;
+            All responses saved directly to database
           </div>
         )}
       </div>

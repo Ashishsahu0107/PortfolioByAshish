@@ -9,6 +9,8 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "seed": "node src/db/seed.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "echo \"No test specified\""
   },
   "dependencies": {
@@ -23,5 +25,8 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.10"
   }
 }

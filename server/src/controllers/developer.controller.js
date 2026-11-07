@@ -24,7 +24,8 @@ export async function updateDeveloper(req, res, next) {
       if (about) {
         const aboutUpdates = {};
         if (req.body.bio !== undefined) aboutUpdates.bio = req.body.bio;
-        if (req.body.philosophy !== undefined) aboutUpdates.philosophy = req.body.philosophy;
+        if (req.body.philosophy !== undefined)
+          aboutUpdates.philosophy = req.body.philosophy;
         await AboutModel.update(aboutUpdates);
       }
     }

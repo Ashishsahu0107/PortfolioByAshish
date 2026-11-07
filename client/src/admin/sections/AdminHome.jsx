@@ -47,7 +47,11 @@ export default function AdminHome() {
           setOriginal(data);
         }
       } catch (err) {
-        showToast("Error loading developer data: " + (err.message || "Failed to fetch from API"), "error");
+        showToast(
+          "Error loading developer data: " +
+            (err.message || "Failed to fetch from API"),
+          "error",
+        );
       } finally {
         setLoading(false);
       }
@@ -57,7 +61,10 @@ export default function AdminHome() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({ ...prev, [name]: type === "checkbox" ? checked : value }));
+    setForm((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const handleStartEdit = (sectionKey) => {
@@ -92,7 +99,10 @@ export default function AdminHome() {
 
   if (loading) {
     return (
-      <AdminSection title="Home / Hero Section" desc="Loading section data from backend server...">
+      <AdminSection
+        title="Home / Hero Section"
+        desc="Loading section data from backend server..."
+      >
         <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
           <Loader2 size={20} className="animate-spin text-indigo-600" />
           <span>Connecting to database...</span>
@@ -148,7 +158,9 @@ export default function AdminHome() {
                   ) : (
                     <Save size={13} />
                   )}
-                  <span>{savingSection === "personal" ? "Saving…" : "Save"}</span>
+                  <span>
+                    {savingSection === "personal" ? "Saving…" : "Save"}
+                  </span>
                 </button>
               </div>
             )

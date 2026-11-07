@@ -20,7 +20,9 @@ export async function getFormByIdOrSlug(req, res, next) {
   try {
     const form = await FormModel.findByIdOrSlug(req.params.id);
     if (!form) {
-      return res.status(404).json({ success: false, message: "Form not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Form not found." });
     }
     return res.json({ success: true, data: form });
   } catch (err) {
@@ -32,7 +34,12 @@ export async function createForm(req, res, next) {
   try {
     const { name, fields } = req.body || {};
     if (!name || !name.trim()) {
-      return res.status(400).json({ success: false, message: "Form name is required (at least 2 characters)." });
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Form name is required (at least 2 characters).",
+        });
     }
 
     // Normalize field options (e.g. string to array)
@@ -48,7 +55,9 @@ export async function createForm(req, res, next) {
           return {
             ...f,
             id: f.id || `f_${Date.now().toString(36)}_${i}`,
-            name: (f.name || `field_${i + 1}`).trim().replace(/[^a-zA-Z0-9_]/g, "_"),
+            name: (f.name || `field_${i + 1}`)
+              .trim()
+              .replace(/[^a-zA-Z0-9_]/g, "_"),
             label: (f.label || `Field ${i + 1}`).trim(),
             type: f.type || "text",
             placeholder: f.placeholder || "",
@@ -79,7 +88,12 @@ export async function duplicateForm(req, res, next) {
   try {
     const duplicated = await FormModel.duplicate(req.params.id);
     if (!duplicated) {
-      return res.status(404).json({ success: false, message: "Source form not found to duplicate." });
+      return res
+        .status(404)
+        .json({
+          success: false,
+          message: "Source form not found to duplicate.",
+        });
     }
     return res.status(201).json({
       success: true,
@@ -112,7 +126,9 @@ export async function updateForm(req, res, next) {
         return {
           ...f,
           id: f.id || `f_${Date.now().toString(36)}_${i}`,
-          name: (f.name || `field_${i + 1}`).trim().replace(/[^a-zA-Z0-9_]/g, "_"),
+          name: (f.name || `field_${i + 1}`)
+            .trim()
+            .replace(/[^a-zA-Z0-9_]/g, "_"),
           label: (f.label || `Field ${i + 1}`).trim(),
           type: f.type || "text",
           placeholder: f.placeholder || "",
@@ -125,7 +141,9 @@ export async function updateForm(req, res, next) {
 
     const updated = await FormModel.update(req.params.id, updates);
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Form not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Form not found." });
     }
     return res.json({
       success: true,
@@ -141,7 +159,9 @@ export async function deleteForm(req, res, next) {
   try {
     const wasRemoved = await FormModel.delete(req.params.id);
     if (!wasRemoved) {
-      return res.status(404).json({ success: false, message: "Form not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Form not found." });
     }
     return res.json({ success: true, message: "Form deleted successfully." });
   } catch (err) {
@@ -153,7 +173,9 @@ export async function submitForm(req, res, next) {
   try {
     const form = await FormModel.findByIdOrSlug(req.params.id);
     if (!form) {
-      return res.status(404).json({ success: false, message: "Target form not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Target form not found." });
     }
 
     if (!form.enabled) {
@@ -201,10 +223,16 @@ export async function submitForm(req, res, next) {
             savedFiles.some((f) => f.fieldName === field.name) ||
             Boolean(fieldVal && String(fieldVal).trim());
           if (!hasFile) {
-            errors.push(`${field.label || field.name} is required (please select a file).`);
+            errors.push(
+              `${field.label || field.name} is required (please select a file).`,
+            );
           }
         } else if (field.type === "checkbox") {
-          const isChecked = fieldVal === true || fieldVal === "true" || fieldVal === "on" || fieldVal === "1";
+          const isChecked =
+            fieldVal === true ||
+            fieldVal === "true" ||
+            fieldVal === "on" ||
+            fieldVal === "1";
           if (!isChecked) {
             errors.push(`${field.label || field.name} must be checked.`);
           }
@@ -216,18 +244,24 @@ export async function submitForm(req, res, next) {
       // 2. Type-specific Format Validation if value is present
       if (!isMissing && typeof fieldVal === "string" && fieldVal.trim()) {
         if (field.type === "email" && !emailRegex.test(fieldVal.trim())) {
-          errors.push(`Please enter a valid email address for ${field.label || field.name}.`);
+          errors.push(
+            `Please enter a valid email address for ${field.label || field.name}.`,
+          );
         }
         if (field.type === "phone") {
           const digits = fieldVal.replace(/\D/g, "");
           if (digits.length < 7) {
-            errors.push(`Please enter a valid phone number for ${field.label || field.name}.`);
+            errors.push(
+              `Please enter a valid phone number for ${field.label || field.name}.`,
+            );
           }
         }
         if (field.type === "date") {
           const parsed = Date.parse(fieldVal);
           if (isNaN(parsed)) {
-            errors.push(`Please enter a valid date for ${field.label || field.name}.`);
+            errors.push(
+              `Please enter a valid date for ${field.label || field.name}.`,
+            );
           }
         }
       }
@@ -244,8 +278,12 @@ export async function submitForm(req, res, next) {
     const xForwardedFor = req.headers["x-forwarded-for"];
     const forwardIp = Array.isArray(xForwardedFor)
       ? xForwardedFor[0]
-      : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
-    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
+      : typeof xForwardedFor === "string"
+        ? xForwardedFor.split(",")[0]
+        : null;
+    const clientIp = String(
+      req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1",
+    );
 
     const submission = await SubmissionModel.create({
       formId: form.id,
@@ -260,7 +298,8 @@ export async function submitForm(req, res, next) {
     try {
       const dev = await DeveloperModel.get().catch(() => null);
       const ownerEmail = dev?.email || process.env.OWNER_EMAIL || "";
-      const visitorName = payload.name || payload.fullName || payload.username || "Form Visitor";
+      const visitorName =
+        payload.name || payload.fullName || payload.username || "Form Visitor";
       const visitorEmail = payload.email || "";
 
       // Format submission content summary for email body
@@ -283,7 +322,9 @@ export async function submitForm(req, res, next) {
 
     return res.status(201).json({
       success: true,
-      message: form.successMessage || "Your submission has been received successfully.",
+      message:
+        form.successMessage ||
+        "Your submission has been received successfully.",
       submissionId: submission.id,
       data: submission,
     });
@@ -322,11 +363,15 @@ export async function deleteSubmission(req, res, next) {
   try {
     const wasRemoved = await SubmissionModel.delete(req.params.submissionId);
     if (!wasRemoved) {
-      return res.status(404).json({ success: false, message: "Submission not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Submission not found." });
     }
-    return res.json({ success: true, message: "Submission deleted successfully." });
+    return res.json({
+      success: true,
+      message: "Submission deleted successfully.",
+    });
   } catch (err) {
     next(err);
   }
 }
-

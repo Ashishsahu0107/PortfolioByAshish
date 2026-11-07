@@ -99,7 +99,7 @@ export async function approveResume(req, res, next) {
 
     const approved = await ResumeModelService.approveTemplate(
       templateId.toLowerCase(),
-      resumeData
+      resumeData,
     );
 
     res.json({
@@ -148,10 +148,14 @@ export async function downloadApprovedResume(req, res, next) {
     }
 
     // Security check: If templateId is specified in query, it MUST match the approved one
-    if (templateId && templateId.toLowerCase() !== approved.templateId.toLowerCase()) {
+    if (
+      templateId &&
+      templateId.toLowerCase() !== approved.templateId.toLowerCase()
+    ) {
       return res.status(403).json({
         success: false,
-        message: "Forbidden: You cannot download an unapproved or draft resume template. Only the currently approved template is available.",
+        message:
+          "Forbidden: You cannot download an unapproved or draft resume template. Only the currently approved template is available.",
       });
     }
 

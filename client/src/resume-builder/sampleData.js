@@ -37,12 +37,7 @@ export const sampleResumeData = {
       "WebSocket / Socket.io",
       "Microservices",
     ],
-    databases: [
-      "MongoDB",
-      "Mongoose",
-      "MongoDB Atlas",
-      "MySQL",
-    ],
+    databases: ["MongoDB", "Mongoose", "MongoDB Atlas", "MySQL"],
     toolsDevOps: [
       "Git",
       "GitHub",

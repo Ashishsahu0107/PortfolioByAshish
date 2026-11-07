@@ -110,7 +110,7 @@ export default function PortfolioSkills() {
   const totalSkillsCount = useMemo(() => {
     return categories.reduce(
       (sum, cat) => sum + (Array.isArray(cat.skills) ? cat.skills.length : 0),
-      0
+      0,
     );
   }, [categories]);
 
@@ -292,7 +292,10 @@ export default function PortfolioSkills() {
           className="reveal inline-flex items-center gap-2 text-xs text-secondary/75 hover:text-action transition-colors cursor-pointer"
         >
           <Sparkles size={13} className="text-action" />
-          <span>Click any skill card to view full frontend, backend &amp; database breakdown</span>
+          <span>
+            Click any skill card to view full frontend, backend &amp; database
+            breakdown
+          </span>
         </button>
       </div>
 

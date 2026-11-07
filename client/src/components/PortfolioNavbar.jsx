@@ -25,7 +25,14 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
       setScrolled(window.scrollY > 16);
 
       // Section scroll-spy for active indicator
-      const sectionIds = ["about", "skills", "projects", "process", "experience", "contact"];
+      const sectionIds = [
+        "about",
+        "skills",
+        "projects",
+        "process",
+        "experience",
+        "contact",
+      ];
       const scrollPos = window.scrollY + 180;
 
       for (let i = sectionIds.length - 1; i >= 0; i--) {
@@ -149,9 +156,15 @@ export default function PortfolioNavbar({ theme, toggleTheme }) {
             title={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
           >
             {theme === "dark" ? (
-              <Sun size={15} className="transition-transform duration-300 group-hover:scale-110" />
+              <Sun
+                size={15}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
             ) : (
-              <Moon size={15} className="transition-transform duration-300 group-hover:scale-110" />
+              <Moon
+                size={15}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
             )}
           </button>
 

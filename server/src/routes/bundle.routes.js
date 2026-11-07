@@ -7,4 +7,3 @@ const router = Router();
 router.get("/", getPortfolioBundle);
 
 export default router;
-

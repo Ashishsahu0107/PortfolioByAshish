@@ -1,5 +1,9 @@
 import mongoose from "mongoose";
-import { ExperienceModel as Experience, cleanDoc, cleanDocs } from "../db/schemas.js";
+import {
+  ExperienceModel as Experience,
+  cleanDoc,
+  cleanDocs,
+} from "../db/schemas.js";
 
 export const ExperienceModel = {
   async findAll({ type } = {}) {
@@ -12,10 +16,7 @@ export const ExperienceModel = {
     if (!id) return null;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const item = await Experience.findOne({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return cleanDoc(item);
   },
@@ -25,7 +26,9 @@ export const ExperienceModel = {
     delete payload._id;
     delete payload.__v;
 
-    const id = payload.id || `exp_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const id =
+      payload.id ||
+      `exp_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Experience.create({
       id,
       type: payload.type || "work",
@@ -50,13 +53,10 @@ export const ExperienceModel = {
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Experience.findOneAndUpdate(
       {
-        $or: [
-          { id },
-          ...(isObjectId ? [{ _id: id }] : []),
-        ],
+        $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
       },
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },
@@ -82,10 +82,7 @@ export const ExperienceModel = {
     if (!id) return false;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Experience.findOneAndDelete({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return !!doc;
   },

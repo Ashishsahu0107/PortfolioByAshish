@@ -43,7 +43,8 @@ export async function sendMessage(req, res, next) {
     const { name, email, subject, message } = req.body || {};
 
     const cleanName = typeof name === "string" ? name.trim() : "";
-    const cleanEmail = typeof email === "string" ? email.trim().toLowerCase() : "";
+    const cleanEmail =
+      typeof email === "string" ? email.trim().toLowerCase() : "";
     const cleanSubject = typeof subject === "string" ? subject.trim() : "";
     const cleanMessage = typeof message === "string" ? message.trim() : "";
 
@@ -107,8 +108,12 @@ export async function sendMessage(req, res, next) {
     const xForwardedFor = req.headers["x-forwarded-for"];
     const forwardIp = Array.isArray(xForwardedFor)
       ? xForwardedFor[0]
-      : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
-    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
+      : typeof xForwardedFor === "string"
+        ? xForwardedFor.split(",")[0]
+        : null;
+    const clientIp = String(
+      req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1",
+    );
 
     const newMessage = await MessageModel.create({
       name: cleanName,
@@ -130,11 +135,17 @@ export async function sendMessage(req, res, next) {
           subject: cleanSubject,
           message: cleanMessage,
         }).catch((emailErr) => {
-          console.warn("[Contact Controller] Resend notification delivery failed:", emailErr?.message);
+          console.warn(
+            "[Contact Controller] Resend notification delivery failed:",
+            emailErr?.message,
+          );
         });
       }
     } catch (dispatchErr) {
-      console.warn("[Contact Controller] Resend notification dispatch failed:", dispatchErr?.message);
+      console.warn(
+        "[Contact Controller] Resend notification dispatch failed:",
+        dispatchErr?.message,
+      );
     }
 
     return res.status(201).json({
@@ -166,7 +177,9 @@ export async function toggleMessageRead(req, res, next) {
   try {
     const message = await MessageModel.findById(req.params.id);
     if (!message) {
-      return res.status(404).json({ success: false, message: "Message not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found." });
     }
 
     const read = req.body.read !== undefined ? req.body.read : true;
@@ -186,9 +199,14 @@ export async function deleteMessage(req, res, next) {
   try {
     const wasRemoved = await MessageModel.delete(req.params.id);
     if (!wasRemoved) {
-      return res.status(404).json({ success: false, message: "Message not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Message not found." });
     }
-    return res.json({ success: true, message: "Message deleted successfully." });
+    return res.json({
+      success: true,
+      message: "Message deleted successfully.",
+    });
   } catch (err) {
     next(err);
   }

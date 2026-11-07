@@ -1,9 +1,4 @@
-import {
-  ExternalLink,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../../components/icons";
 
 export default function TemplateCompact({ data }) {
@@ -39,7 +34,10 @@ export default function TemplateCompact({ data }) {
             {personalInfo.email && (
               <span className="flex items-center gap-1">
                 <Mail size={11} className="text-zinc-500" />
-                <a href={`mailto:${personalInfo.email}`} className="hover:underline">
+                <a
+                  href={`mailto:${personalInfo.email}`}
+                  className="hover:underline"
+                >
                   {personalInfo.email}
                 </a>
               </span>
@@ -59,7 +57,12 @@ export default function TemplateCompact({ data }) {
             {personalInfo.github && (
               <span className="flex items-center gap-1">
                 <GithubIcon size={11} className="text-zinc-700" />
-                <a href={personalInfo.github} target="_blank" rel="noreferrer" className="hover:underline">
+                <a
+                  href={personalInfo.github}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
                   GitHub
                 </a>
               </span>
@@ -67,7 +70,12 @@ export default function TemplateCompact({ data }) {
             {personalInfo.linkedin && (
               <span className="flex items-center gap-1">
                 <LinkedinIcon size={11} className="text-blue-700" />
-                <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="hover:underline">
+                <a
+                  href={personalInfo.linkedin}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:underline"
+                >
                   LinkedIn
                 </a>
               </span>
@@ -89,32 +97,62 @@ export default function TemplateCompact({ data }) {
               <div className="space-y-2 text-[10.5px]">
                 {skills.languages?.length > 0 && (
                   <div>
-                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">Languages</span>
-                    <p className="text-zinc-700 font-medium">{Array.isArray(skills.languages) ? skills.languages.join(", ") : skills.languages}</p>
+                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">
+                      Languages
+                    </span>
+                    <p className="text-zinc-700 font-medium">
+                      {Array.isArray(skills.languages)
+                        ? skills.languages.join(", ")
+                        : skills.languages}
+                    </p>
                   </div>
                 )}
                 {skills.frontend?.length > 0 && (
                   <div>
-                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">Frontend</span>
-                    <p className="text-zinc-700 font-medium">{Array.isArray(skills.frontend) ? skills.frontend.join(", ") : skills.frontend}</p>
+                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">
+                      Frontend
+                    </span>
+                    <p className="text-zinc-700 font-medium">
+                      {Array.isArray(skills.frontend)
+                        ? skills.frontend.join(", ")
+                        : skills.frontend}
+                    </p>
                   </div>
                 )}
                 {skills.backend?.length > 0 && (
                   <div>
-                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">Backend & APIs</span>
-                    <p className="text-zinc-700 font-medium">{Array.isArray(skills.backend) ? skills.backend.join(", ") : skills.backend}</p>
+                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">
+                      Backend & APIs
+                    </span>
+                    <p className="text-zinc-700 font-medium">
+                      {Array.isArray(skills.backend)
+                        ? skills.backend.join(", ")
+                        : skills.backend}
+                    </p>
                   </div>
                 )}
                 {skills.databases?.length > 0 && (
                   <div>
-                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">Databases</span>
-                    <p className="text-zinc-700 font-medium">{Array.isArray(skills.databases) ? skills.databases.join(", ") : skills.databases}</p>
+                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">
+                      Databases
+                    </span>
+                    <p className="text-zinc-700 font-medium">
+                      {Array.isArray(skills.databases)
+                        ? skills.databases.join(", ")
+                        : skills.databases}
+                    </p>
                   </div>
                 )}
                 {skills.toolsDevOps?.length > 0 && (
                   <div>
-                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">Tools & Cloud</span>
-                    <p className="text-zinc-700 font-medium">{Array.isArray(skills.toolsDevOps) ? skills.toolsDevOps.join(", ") : skills.toolsDevOps}</p>
+                    <span className="font-bold text-zinc-900 block text-[10px] uppercase text-zinc-500">
+                      Tools & Cloud
+                    </span>
+                    <p className="text-zinc-700 font-medium">
+                      {Array.isArray(skills.toolsDevOps)
+                        ? skills.toolsDevOps.join(", ")
+                        : skills.toolsDevOps}
+                    </p>
                   </div>
                 )}
               </div>
@@ -133,7 +171,9 @@ export default function TemplateCompact({ data }) {
                     <div className="font-bold text-zinc-900">{edu.degree}</div>
                     <div className="text-zinc-600">{edu.institution}</div>
                     <div className="text-zinc-500 text-[10px]">
-                      {edu.startYear ? `${edu.startYear} - ${edu.graduationYear}` : edu.graduationYear}
+                      {edu.startYear
+                        ? `${edu.startYear} - ${edu.graduationYear}`
+                        : edu.graduationYear}
                     </div>
                   </div>
                 ))}
@@ -150,8 +190,12 @@ export default function TemplateCompact({ data }) {
               <div className="space-y-1.5 text-[10.5px]">
                 {certifications.map((cert, i) => (
                   <div key={cert.id || i}>
-                    <span className="font-semibold text-zinc-900 block">{cert.name}</span>
-                    <span className="text-zinc-500 text-[10px]">{cert.issuer} {cert.date ? `(${cert.date})` : ""}</span>
+                    <span className="font-semibold text-zinc-900 block">
+                      {cert.name}
+                    </span>
+                    <span className="text-zinc-500 text-[10px]">
+                      {cert.issuer} {cert.date ? `(${cert.date})` : ""}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -167,8 +211,12 @@ export default function TemplateCompact({ data }) {
               <div className="space-y-1.5 text-[10.5px]">
                 {achievements.map((ach, i) => (
                   <div key={ach.id || i}>
-                    <span className="font-bold text-zinc-900 block">{ach.title}</span>
-                    <p className="text-zinc-600 text-[10px]">{ach.description}</p>
+                    <span className="font-bold text-zinc-900 block">
+                      {ach.title}
+                    </span>
+                    <p className="text-zinc-600 text-[10px]">
+                      {ach.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -193,16 +241,26 @@ export default function TemplateCompact({ data }) {
           {/* Experience */}
           {workExperience?.length > 0 && (
             <section>
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+              <h2
+                className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2"
+                style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+              >
                 Work Experience
               </h2>
               <div className="space-y-2.5">
                 {workExperience.map((exp, i) => (
-                  <div key={exp.id || i} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                  <div
+                    key={exp.id || i}
+                    className="break-inside-avoid"
+                    style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                  >
                     <div className="flex justify-between items-baseline">
-                      <span className="font-bold text-zinc-900 text-[11.5px]">{exp.title}</span>
+                      <span className="font-bold text-zinc-900 text-[11.5px]">
+                        {exp.title}
+                      </span>
                       <span className="text-zinc-500 text-[10px] font-medium">
-                        {exp.startDate} – {exp.current ? "Present" : exp.endDate}
+                        {exp.startDate} –{" "}
+                        {exp.current ? "Present" : exp.endDate}
                       </span>
                     </div>
                     <div className="text-zinc-700 font-semibold text-[10.5px]">
@@ -222,22 +280,41 @@ export default function TemplateCompact({ data }) {
           {/* Key Projects */}
           {projects?.length > 0 && (
             <section>
-              <h2 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+              <h2
+                className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-900 pb-0.5 mb-2"
+                style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+              >
                 Key Engineering Projects
               </h2>
               <div className="space-y-2.5">
                 {projects.map((proj, i) => (
-                  <div key={proj.id || i} className="bg-zinc-50/70 p-2 rounded border border-zinc-200/80 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                  <div
+                    key={proj.id || i}
+                    className="bg-zinc-50/70 p-2 rounded border border-zinc-200/80 break-inside-avoid"
+                    style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                  >
                     <div className="flex justify-between items-baseline">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-zinc-900 text-[11px]">{proj.name}</span>
+                        <span className="font-bold text-zinc-900 text-[11px]">
+                          {proj.name}
+                        </span>
                         {proj.liveUrl && (
-                          <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                          <a
+                            href={proj.liveUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-blue-600 hover:underline"
+                          >
                             <ExternalLink size={10} />
                           </a>
                         )}
                         {proj.githubUrl && (
-                          <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-zinc-900">
+                          <a
+                            href={proj.githubUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-zinc-600 hover:text-zinc-900"
+                          >
                             <GithubIcon size={10} />
                           </a>
                         )}
@@ -252,8 +329,11 @@ export default function TemplateCompact({ data }) {
                       const techList = Array.isArray(proj.technologies)
                         ? proj.technologies
                         : typeof proj.technologies === "string"
-                        ? proj.technologies.split(/[,|•]/).map((t) => t.trim()).filter(Boolean)
-                        : [];
+                          ? proj.technologies
+                              .split(/[,|•]/)
+                              .map((t) => t.trim())
+                              .filter(Boolean)
+                          : [];
 
                       if (techList.length === 0) return null;
 

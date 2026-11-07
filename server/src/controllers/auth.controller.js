@@ -17,15 +17,25 @@ export async function sendRegistrationOtp(req, res, next) {
     let rawName = req.body.name || req.body.fullName || req.body.userName || "";
 
     // Self-healing check if email and name were accidentally passed swapped
-    if (typeof rawName === "string" && rawName.includes("@") && !String(rawEmail).includes("@")) {
+    if (
+      typeof rawName === "string" &&
+      rawName.includes("@") &&
+      !String(rawEmail).includes("@")
+    ) {
       const temp = rawEmail;
       rawEmail = rawName;
       rawName = temp;
     }
 
     const xForwardedFor = req.headers["x-forwarded-for"];
-    const forwardIp = Array.isArray(xForwardedFor) ? xForwardedFor[0] : (typeof xForwardedFor === "string" ? xForwardedFor.split(",")[0] : null);
-    const clientIp = String(req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1");
+    const forwardIp = Array.isArray(xForwardedFor)
+      ? xForwardedFor[0]
+      : typeof xForwardedFor === "string"
+        ? xForwardedFor.split(",")[0]
+        : null;
+    const clientIp = String(
+      req.ip || forwardIp?.trim() || req.socket?.remoteAddress || "127.0.0.1",
+    );
 
     if (!rawEmail || !String(rawEmail).trim()) {
       return res.status(400).json({
@@ -56,7 +66,8 @@ export async function sendRegistrationOtp(req, res, next) {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: "An account with this email address already exists. Please sign in.",
+        message:
+          "An account with this email address already exists. Please sign in.",
       });
     }
 
@@ -80,7 +91,7 @@ export async function sendRegistrationOtp(req, res, next) {
       cleanName,
       plainOtp,
       clientIp,
-      "registration"
+      "registration",
     );
 
     // Send the OTP via Resend API dynamically to the user's entered email
@@ -88,25 +99,37 @@ export async function sendRegistrationOtp(req, res, next) {
     let sandboxNotice = null;
 
     try {
-      console.log(`[Resend OTP Dispatch] Dispatching 6-digit OTP to recipient: "${cleanEmail}" (from: "${config.resend.fromEmail}")`);
+      console.log(
+        `[Resend OTP Dispatch] Dispatching 6-digit OTP to recipient: "${cleanEmail}" (from: "${config.resend.fromEmail}")`,
+      );
       resendResult = await sendOtpEmailViaResend({
         to: cleanEmail,
         name: cleanName,
         otp: plainOtp,
         expiryMinutes: 10,
       });
-      console.log(`[Resend OTP Dispatch] Successfully dispatched OTP to ${cleanEmail}. Resend message ID: ${resendResult.messageId}`);
+      console.log(
+        `[Resend OTP Dispatch] Successfully dispatched OTP to ${cleanEmail}. Resend message ID: ${resendResult.messageId}`,
+      );
     } catch (resendErr) {
-      console.warn(`[Resend OTP Dispatch Warning for ${cleanEmail}]:`, resendErr.message);
+      console.warn(
+        `[Resend OTP Dispatch Warning for ${cleanEmail}]:`,
+        resendErr.message,
+      );
 
       const isSandboxRestriction =
         resendErr.resendError?.statusCode === 403 &&
-        (resendErr.message?.includes("only send testing emails") || resendErr.message?.includes("domain"));
+        (resendErr.message?.includes("only send testing emails") ||
+          resendErr.message?.includes("domain"));
 
       if (config.nodeEnv === "development" && isSandboxRestriction) {
-        console.warn(`[Resend Sandbox Notice] Resend test domain (${config.resend.fromEmail}) requires custom domain verification to deliver to external inboxes.`);
+        console.warn(
+          `[Resend Sandbox Notice] Resend test domain (${config.resend.fromEmail}) requires custom domain verification to deliver to external inboxes.`,
+        );
         console.log(`====================================================`);
-        console.log(`[DEV OTP CODE] Recipient: ${cleanEmail} | OTP: ${plainOtp}`);
+        console.log(
+          `[DEV OTP CODE] Recipient: ${cleanEmail} | OTP: ${plainOtp}`,
+        );
         console.log(`====================================================`);
         sandboxNotice = `Resend sandbox active: custom domain verification needed to deliver to external inboxes. In dev mode, check backend console for OTP: ${plainOtp}`;
       } else {
@@ -127,7 +150,9 @@ export async function sendRegistrationOtp(req, res, next) {
       email: cleanEmail,
       cooldownSeconds: 60,
       expiryMinutes: 10,
-      ...(config.nodeEnv === "development" && sandboxNotice ? { devOtp: plainOtp } : {}),
+      ...(config.nodeEnv === "development" && sandboxNotice
+        ? { devOtp: plainOtp }
+        : {}),
     });
   } catch (err) {
     next(err);
@@ -214,11 +239,15 @@ export async function completeRegistration(req, res, next) {
     }
 
     // Verify and consume the single-use verification token
-    const tokenVerification = await OtpService.consumeVerificationToken(cleanEmail, verificationToken);
+    const tokenVerification = await OtpService.consumeVerificationToken(
+      cleanEmail,
+      verificationToken,
+    );
     if (!tokenVerification.valid) {
       return res.status(400).json({
         success: false,
-        message: "Verification session expired or invalid. Please verify your OTP again.",
+        message:
+          "Verification session expired or invalid. Please verify your OTP again.",
       });
     }
 
@@ -295,7 +324,7 @@ export async function login(req, res, next) {
     const token = jwt.sign(
       { userId, email: user.email, role: user.role },
       config.jwtSecret,
-      { expiresIn: config.jwtExpiresIn }
+      { expiresIn: config.jwtExpiresIn },
     );
 
     return res.json({
@@ -353,7 +382,9 @@ export async function changePassword(req, res, next) {
 
     const user = await UserModel.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found." });
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
@@ -369,7 +400,8 @@ export async function changePassword(req, res, next) {
 
     return res.json({
       success: true,
-      message: "Password changed successfully. Please store your new credentials securely.",
+      message:
+        "Password changed successfully. Please store your new credentials securely.",
     });
   } catch (err) {
     next(err);

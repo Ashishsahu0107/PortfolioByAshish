@@ -51,7 +51,11 @@ const EMPTY_SECTION = {
 function SectionModal({ section, onSave, onClose }) {
   const [form, setForm] = useState({
     ...section,
-    content: section.content || { heading: section.name || "", subheading: "", body: "" },
+    content: section.content || {
+      heading: section.name || "",
+      subheading: "",
+      body: "",
+    },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -79,7 +83,10 @@ function SectionModal({ section, onSave, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/45 z-[500] flex items-center justify-center p-5" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/45 z-[500] flex items-center justify-center p-5"
+      onClick={onClose}
+    >
       <div
         className="bg-white rounded-2xl p-7 w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
@@ -92,7 +99,9 @@ function SectionModal({ section, onSave, onClose }) {
               <Plus size={18} className="text-indigo-600 shrink-0" />
             )}
             <h3 className="text-lg font-bold m-0">
-              {section.id ? `Edit Section: ${section.name}` : "Create Dynamic Section"}
+              {section.id
+                ? `Edit Section: ${section.name}`
+                : "Create Dynamic Section"}
             </h3>
           </div>
           <button
@@ -144,13 +153,18 @@ function SectionModal({ section, onSave, onClose }) {
                 onChange={handleChange}
                 className="w-4 h-4 accent-indigo-600 cursor-pointer"
               />
-              <label htmlFor="sec_enabled" className="text-xs font-semibold text-gray-700 cursor-pointer">
+              <label
+                htmlFor="sec_enabled"
+                className="text-xs font-semibold text-gray-700 cursor-pointer"
+              >
                 Section Active on Live Portfolio
               </label>
             </div>
 
             <div className="col-span-full pt-3 border-t border-gray-100">
-              <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">Display Content</h4>
+              <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider mb-2">
+                Display Content
+              </h4>
             </div>
             <FormGroup label="Heading" fullWidth>
               <input
@@ -188,13 +202,22 @@ function SectionModal({ section, onSave, onClose }) {
               <div className="col-span-full pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-xs font-bold text-gray-800 uppercase tracking-wider m-0">
-                    Process Roadmap Phases ({Array.isArray(form.content?.items) ? form.content.items.length : 0})
+                    Process Roadmap Phases (
+                    {Array.isArray(form.content?.items)
+                      ? form.content.items.length
+                      : 0}
+                    )
                   </h4>
                   <button
                     type="button"
                     onClick={() => {
-                      const currentItems = Array.isArray(form.content?.items) ? [...form.content.items] : [];
-                      const nextNum = String(currentItems.length + 1).padStart(2, "0");
+                      const currentItems = Array.isArray(form.content?.items)
+                        ? [...form.content.items]
+                        : [];
+                      const nextNum = String(currentItems.length + 1).padStart(
+                        2,
+                        "0",
+                      );
                       setForm((p) => ({
                         ...p,
                         content: {
@@ -220,16 +243,25 @@ function SectionModal({ section, onSave, onClose }) {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  {(Array.isArray(form.content?.items) ? form.content.items : []).map((stepItem, idx) => (
-                    <div key={idx} className="p-3 rounded-lg border border-gray-200 bg-gray-50/60 relative">
+                  {(Array.isArray(form.content?.items)
+                    ? form.content.items
+                    : []
+                  ).map((stepItem, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-lg border border-gray-200 bg-gray-50/60 relative"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <span className="font-mono text-xs font-bold text-indigo-600">
-                          Step #{stepItem.step || String(idx + 1).padStart(2, "0")}
+                          Step #
+                          {stepItem.step || String(idx + 1).padStart(2, "0")}
                         </span>
                         <button
                           type="button"
                           onClick={() => {
-                            const newItems = form.content.items.filter((_, i) => i !== idx);
+                            const newItems = form.content.items.filter(
+                              (_, i) => i !== idx,
+                            );
                             setForm((p) => ({
                               ...p,
                               content: { ...p.content, items: newItems },
@@ -243,41 +275,65 @@ function SectionModal({ section, onSave, onClose }) {
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         <div>
-                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Phase Title</label>
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                            Phase Title
+                          </label>
                           <input
                             className={inputCls}
                             value={stepItem.phase || ""}
                             onChange={(e) => {
                               const updated = [...form.content.items];
-                              updated[idx] = { ...updated[idx], phase: e.target.value };
-                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                              updated[idx] = {
+                                ...updated[idx],
+                                phase: e.target.value,
+                              };
+                              setForm((p) => ({
+                                ...p,
+                                content: { ...p.content, items: updated },
+                              }));
                             }}
                             placeholder="e.g. ARCHITECTURE & DISCOVERY"
                           />
                         </div>
                         <div>
-                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Tag / Eyebrow</label>
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                            Tag / Eyebrow
+                          </label>
                           <input
                             className={inputCls}
                             value={stepItem.tag || ""}
                             onChange={(e) => {
                               const updated = [...form.content.items];
-                              updated[idx] = { ...updated[idx], tag: e.target.value };
-                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                              updated[idx] = {
+                                ...updated[idx],
+                                tag: e.target.value,
+                              };
+                              setForm((p) => ({
+                                ...p,
+                                content: { ...p.content, items: updated },
+                              }));
                             }}
                             placeholder="e.g. PHASE 01"
                           />
                         </div>
                         <div className="col-span-full">
-                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">Description</label>
+                          <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                            Description
+                          </label>
                           <textarea
                             className={textareaCls}
                             rows={2}
                             value={stepItem.desc || ""}
                             onChange={(e) => {
                               const updated = [...form.content.items];
-                              updated[idx] = { ...updated[idx], desc: e.target.value };
-                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                              updated[idx] = {
+                                ...updated[idx],
+                                desc: e.target.value,
+                              };
+                              setForm((p) => ({
+                                ...p,
+                                content: { ...p.content, items: updated },
+                              }));
                             }}
                             placeholder="What happens during this phase..."
                           />
@@ -288,14 +344,24 @@ function SectionModal({ section, onSave, onClose }) {
                           </label>
                           <input
                             className={inputCls}
-                            value={Array.isArray(stepItem.deliverables) ? stepItem.deliverables.join(", ") : ""}
+                            value={
+                              Array.isArray(stepItem.deliverables)
+                                ? stepItem.deliverables.join(", ")
+                                : ""
+                            }
                             onChange={(e) => {
                               const updated = [...form.content.items];
                               updated[idx] = {
                                 ...updated[idx],
-                                deliverables: e.target.value.split(",").map((d) => d.trim()).filter(Boolean),
+                                deliverables: e.target.value
+                                  .split(",")
+                                  .map((d) => d.trim())
+                                  .filter(Boolean),
                               };
-                              setForm((p) => ({ ...p, content: { ...p.content, items: updated } }));
+                              setForm((p) => ({
+                                ...p,
+                                content: { ...p.content, items: updated },
+                              }));
                             }}
                             placeholder="e.g. RFC Spec, Schema Design, Performance Budgets"
                           />
@@ -309,11 +375,24 @@ function SectionModal({ section, onSave, onClose }) {
           </div>
 
           <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-100">
-            <button type="button" className={btnSecondary} onClick={onClose} disabled={isSubmitting}>
+            <button
+              type="button"
+              className={btnSecondary}
+              onClick={onClose}
+              disabled={isSubmitting}
+            >
               Cancel
             </button>
-            <button type="submit" className={btnPrimary} disabled={isSubmitting}>
-              {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+            <button
+              type="submit"
+              className={btnPrimary}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Save size={14} />
+              )}
               <span>{isSubmitting ? "Saving…" : "Save Section"}</span>
             </button>
           </div>
@@ -338,7 +417,10 @@ export default function AdminSections() {
         setSections(data);
       }
     } catch (err) {
-      showToast("Error loading sections: " + (err.message || "Failed to fetch"), "error");
+      showToast(
+        "Error loading sections: " + (err.message || "Failed to fetch"),
+        "error",
+      );
     } finally {
       setLoading(false);
     }
@@ -352,8 +434,13 @@ export default function AdminSections() {
     const updated = { ...section, enabled: !section.enabled };
     try {
       await sectionsApi.update(section.id, { enabled: updated.enabled });
-      setSections((prev) => prev.map((s) => (s.id === section.id ? updated : s)));
-      showToast(`Section "${section.name}" is now ${updated.enabled ? "enabled" : "hidden"}.`, "info");
+      setSections((prev) =>
+        prev.map((s) => (s.id === section.id ? updated : s)),
+      );
+      showToast(
+        `Section "${section.name}" is now ${updated.enabled ? "enabled" : "hidden"}.`,
+        "info",
+      );
     } catch (err) {
       showToast(err.message || "Failed to toggle section", "error");
     }
@@ -383,10 +470,16 @@ export default function AdminSections() {
     try {
       if (!sectionData.id) {
         const res = await sectionsApi.create(sectionData);
-        showToast(`Section "${res.data.name}" created successfully!`, "success");
+        showToast(
+          `Section "${res.data.name}" created successfully!`,
+          "success",
+        );
       } else {
         const res = await sectionsApi.update(sectionData.id, sectionData);
-        showToast(`Section "${res.data.name}" updated successfully!`, "success");
+        showToast(
+          `Section "${res.data.name}" updated successfully!`,
+          "success",
+        );
       }
       editModal.close();
       await loadSections();
@@ -409,7 +502,10 @@ export default function AdminSections() {
 
   if (loading) {
     return (
-      <AdminSection title="Section Management" desc="Loading sections configuration...">
+      <AdminSection
+        title="Section Management"
+        desc="Loading sections configuration..."
+      >
         <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
           <Loader2 size={20} className="animate-spin text-indigo-600" />
           <span>Connecting to database...</span>
@@ -425,7 +521,8 @@ export default function AdminSections() {
     >
       <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
         <p className="m-0 text-sm text-gray-500">
-          {sections.filter((s) => s.enabled).length} of {sections.length} sections active on public portfolio
+          {sections.filter((s) => s.enabled).length} of {sections.length}{" "}
+          sections active on public portfolio
         </p>
         <button
           className={`${btnPrimary} !px-3 !py-1.5 !text-xs`}
@@ -442,7 +539,9 @@ export default function AdminSections() {
             <div
               key={sec.id}
               className={`flex items-center justify-between gap-4 p-4 rounded-xl border transition-all ${
-                sec.enabled ? "bg-white border-gray-200 shadow-xs" : "bg-gray-50/70 border-gray-200 opacity-60"
+                sec.enabled
+                  ? "bg-white border-gray-200 shadow-xs"
+                  : "bg-gray-50/70 border-gray-200 opacity-60"
               }`}
             >
               {/* Order Controls & Info */}
@@ -474,16 +573,26 @@ export default function AdminSections() {
 
                 <div className="min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-sm text-gray-900">{sec.name}</span>
-                    <span className="font-mono text-xs text-gray-400">#{sec.slug}</span>
-                    <span className={sec.type === "builtin" ? badgeBlue : badgePurple}>
+                    <span className="font-bold text-sm text-gray-900">
+                      {sec.name}
+                    </span>
+                    <span className="font-mono text-xs text-gray-400">
+                      #{sec.slug}
+                    </span>
+                    <span
+                      className={
+                        sec.type === "builtin" ? badgeBlue : badgePurple
+                      }
+                    >
                       {sec.type === "builtin" ? "Core" : "Custom"}
                     </span>
                     <span className={sec.enabled ? badgeGreen : badgeOrange}>
                       {sec.enabled ? "Active" : "Disabled"}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 m-0 mt-0.5 truncate">{sec.desc || "Configured section"}</p>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5 truncate">
+                    {sec.desc || "Configured section"}
+                  </p>
                 </div>
               </div>
 
@@ -493,7 +602,9 @@ export default function AdminSections() {
                   type="button"
                   onClick={() => handleToggle(sec)}
                   className={`${btnSecondary} !px-2.5 !py-1 !text-xs`}
-                  title={sec.enabled ? "Disable on portfolio" : "Enable on portfolio"}
+                  title={
+                    sec.enabled ? "Disable on portfolio" : "Enable on portfolio"
+                  }
                 >
                   {sec.enabled ? (
                     <>
@@ -536,7 +647,11 @@ export default function AdminSections() {
       </AdminCard>
 
       {editModal.modal && (
-        <SectionModal section={editModal.modal} onSave={handleSaveModal} onClose={editModal.close} />
+        <SectionModal
+          section={editModal.modal}
+          onSave={handleSaveModal}
+          onClose={editModal.close}
+        />
       )}
 
       {deleteModal.modal && (

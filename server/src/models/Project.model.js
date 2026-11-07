@@ -10,7 +10,9 @@ export const ProjectModel = {
     if (category) {
       query.category = new RegExp(`^${category}$`, "i");
     }
-    const projects = await Project.find(query).sort({ number: 1, createdAt: -1 }).lean();
+    const projects = await Project.find(query)
+      .sort({ number: 1, createdAt: -1 })
+      .lean();
     return cleanDocs(projects);
   },
 
@@ -18,10 +20,7 @@ export const ProjectModel = {
     if (!id) return null;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const project = await Project.findOne({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return cleanDoc(project);
   },
@@ -33,7 +32,9 @@ export const ProjectModel = {
 
     const count = await Project.countDocuments();
     const number = payload.number || String(count + 1).padStart(2, "0");
-    const id = payload.id || `proj_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const id =
+      payload.id ||
+      `proj_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
 
     const created = await Project.create({
       ...payload,
@@ -53,13 +54,10 @@ export const ProjectModel = {
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Project.findOneAndUpdate(
       {
-        $or: [
-          { id },
-          ...(isObjectId ? [{ _id: id }] : []),
-        ],
+        $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
       },
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },
@@ -86,10 +84,7 @@ export const ProjectModel = {
     if (!id) return false;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Project.findOneAndDelete({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return !!doc;
   },

@@ -28,14 +28,20 @@ export async function getPortfolioBundle(req, res, next) {
     if (req.headers["if-none-match"] === etag && memoryCache) {
       res.set("X-Cache", "HIT-304");
       res.set("ETag", etag);
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
       return res.status(304).end();
     }
 
     if (memoryCache && now - cacheTime < CACHE_TTL_MS) {
       res.set("X-Cache", "HIT");
       res.set("ETag", etag);
-      res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
+      res.set(
+        "Cache-Control",
+        "public, max-age=60, stale-while-revalidate=300",
+      );
       return res.json({
         success: true,
         cached: true,
@@ -44,14 +50,15 @@ export async function getPortfolioBundle(req, res, next) {
       });
     }
 
-    const [developer, about, skills, projects, experience, sections] = await Promise.all([
-      DeveloperModel.get().catch(() => null),
-      AboutModel.get().catch(() => null),
-      SkillModel.getAll().catch(() => []),
-      ProjectModel.findAll().catch(() => []),
-      ExperienceModel.findAll().catch(() => []),
-      SectionModel.findAll({ includeAll: false }).catch(() => []),
-    ]);
+    const [developer, about, skills, projects, experience, sections] =
+      await Promise.all([
+        DeveloperModel.get().catch(() => null),
+        AboutModel.get().catch(() => null),
+        SkillModel.getAll().catch(() => []),
+        ProjectModel.findAll().catch(() => []),
+        ExperienceModel.findAll().catch(() => []),
+        SectionModel.findAll({ includeAll: false }).catch(() => []),
+      ]);
 
     const bundleData = {
       developer,
@@ -78,4 +85,3 @@ export async function getPortfolioBundle(req, res, next) {
     next(err);
   }
 }
-

@@ -1,5 +1,5 @@
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from "node:fs";
+import path from "node:path";
 
 // Generate a 32x32 32-bit BMP ICO format
 const width = 32;
@@ -53,7 +53,7 @@ for (let y = 0; y < height; y++) {
       (x > 28 && y < 3) ||
       (x < 3 && y > 28) ||
       (x > 28 && y > 28);
-    
+
     if (isCorner) {
       xorData[idx] = 0; // B
       xorData[idx + 1] = 0; // G
@@ -63,15 +63,15 @@ for (let y = 0; y < height; y++) {
       // Draw border or background
       const isBorder = x === 0 || x === 31 || y === 0 || y === 31;
       if (isBorder) {
-        xorData[idx] = 0x9C;
-        xorData[idx + 1] = 0xB4;
-        xorData[idx + 2] = 0xA1;
-        xorData[idx + 3] = 0xFF;
+        xorData[idx] = 0x9c;
+        xorData[idx + 1] = 0xb4;
+        xorData[idx + 2] = 0xa1;
+        xorData[idx + 3] = 0xff;
       } else {
-        xorData[idx] = 0x3A; // B
+        xorData[idx] = 0x3a; // B
         xorData[idx + 1] = 0x48; // G
         xorData[idx + 2] = 0x24; // R
-        xorData[idx + 3] = 0xFF; // A
+        xorData[idx + 3] = 0xff; // A
       }
     }
   }
@@ -81,5 +81,7 @@ for (let y = 0; y < height; y++) {
 const andData = Buffer.alloc(andSize, 0);
 
 const icoBuffer = Buffer.concat([header, entry, biHeader, xorData, andData]);
-fs.writeFileSync(path.resolve('public/favicon.ico'), icoBuffer);
-console.log('Successfully created public/favicon.ico (' + icoBuffer.length + ' bytes)');
+fs.writeFileSync(path.resolve("public/favicon.ico"), icoBuffer);
+console.log(
+  "Successfully created public/favicon.ico (" + icoBuffer.length + " bytes)",
+);

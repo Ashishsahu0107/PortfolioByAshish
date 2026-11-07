@@ -1,10 +1,4 @@
-import {
-  ExternalLink,
-  FolderGit2,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { ExternalLink, FolderGit2, Mail, MapPin, Phone } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../../components/icons";
 
 export default function TemplateModern({ data }) {
@@ -39,7 +33,10 @@ export default function TemplateModern({ data }) {
           {personalInfo.email && (
             <span className="flex items-center gap-1.5">
               <Mail size={12} className="text-blue-600" />
-              <a href={`mailto:${personalInfo.email}`} className="hover:underline">
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="hover:underline"
+              >
                 {personalInfo.email}
               </a>
             </span>
@@ -119,32 +116,52 @@ export default function TemplateModern({ data }) {
           <div className="space-y-1.5 text-[12px]">
             {skills.languages && skills.languages.length > 0 && (
               <p>
-                <strong className="text-zinc-900 font-semibold">Languages: </strong>
-                <span className="text-zinc-700">{skills.languages.join(", ")}</span>
+                <strong className="text-zinc-900 font-semibold">
+                  Languages:{" "}
+                </strong>
+                <span className="text-zinc-700">
+                  {skills.languages.join(", ")}
+                </span>
               </p>
             )}
             {skills.frontend && skills.frontend.length > 0 && (
               <p>
-                <strong className="text-zinc-900 font-semibold">Frontend: </strong>
-                <span className="text-zinc-700">{skills.frontend.join(", ")}</span>
+                <strong className="text-zinc-900 font-semibold">
+                  Frontend:{" "}
+                </strong>
+                <span className="text-zinc-700">
+                  {skills.frontend.join(", ")}
+                </span>
               </p>
             )}
             {skills.backend && skills.backend.length > 0 && (
               <p>
-                <strong className="text-zinc-900 font-semibold">Backend & APIs: </strong>
-                <span className="text-zinc-700">{skills.backend.join(", ")}</span>
+                <strong className="text-zinc-900 font-semibold">
+                  Backend & APIs:{" "}
+                </strong>
+                <span className="text-zinc-700">
+                  {skills.backend.join(", ")}
+                </span>
               </p>
             )}
             {skills.databases && skills.databases.length > 0 && (
               <p>
-                <strong className="text-zinc-900 font-semibold">Databases & Storage: </strong>
-                <span className="text-zinc-700">{skills.databases.join(", ")}</span>
+                <strong className="text-zinc-900 font-semibold">
+                  Databases & Storage:{" "}
+                </strong>
+                <span className="text-zinc-700">
+                  {skills.databases.join(", ")}
+                </span>
               </p>
             )}
             {skills.toolsDevOps && skills.toolsDevOps.length > 0 && (
               <p>
-                <strong className="text-zinc-900 font-semibold">Tools & DevOps: </strong>
-                <span className="text-zinc-700">{skills.toolsDevOps.join(", ")}</span>
+                <strong className="text-zinc-900 font-semibold">
+                  Tools & DevOps:{" "}
+                </strong>
+                <span className="text-zinc-700">
+                  {skills.toolsDevOps.join(", ")}
+                </span>
               </p>
             )}
           </div>
@@ -154,12 +171,19 @@ export default function TemplateModern({ data }) {
       {/* Work Experience */}
       {workExperience && workExperience.length > 0 && (
         <section className="mt-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-3"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             <span>Work Experience</span>
           </h2>
           <div className="space-y-3.5">
             {workExperience.map((exp) => (
-              <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={exp.id}
+                className="break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h3 className="font-bold text-[13px] text-zinc-900">
                     {exp.title}
@@ -185,12 +209,19 @@ export default function TemplateModern({ data }) {
       {/* Featured Projects */}
       {projects && projects.length > 0 && (
         <section className="mt-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-3"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             <span>Featured Projects</span>
           </h2>
           <div className="space-y-3">
             {projects.map((proj) => (
-              <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={proj.id}
+                className="break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <h3 className="font-bold text-[13px] text-zinc-900">
@@ -239,22 +270,33 @@ export default function TemplateModern({ data }) {
       {/* Education */}
       {education && education.length > 0 && (
         <section className="mt-5">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-2.5" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <h2
+            className="text-xs font-bold uppercase tracking-wider text-blue-700 flex items-center gap-2 border-b border-zinc-200 pb-1 mb-2.5"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             <span>Education</span>
           </h2>
           <div className="space-y-2">
             {education.map((edu) => (
-              <div key={edu.id} className="flex justify-between items-baseline gap-2 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={edu.id}
+                className="flex justify-between items-baseline gap-2 break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div>
                   <h3 className="font-bold text-[12.5px] text-zinc-900">
                     {edu.degree}
                   </h3>
                   <p className="text-[11.5px] text-zinc-700">
                     {edu.institution} {edu.location && `· ${edu.location}`}{" "}
-                    {edu.gradeGpa && <span className="font-medium">({edu.gradeGpa})</span>}
+                    {edu.gradeGpa && (
+                      <span className="font-medium">({edu.gradeGpa})</span>
+                    )}
                   </p>
                   {edu.details && (
-                    <p className="text-[11px] text-zinc-600 mt-0.5">{edu.details}</p>
+                    <p className="text-[11px] text-zinc-600 mt-0.5">
+                      {edu.details}
+                    </p>
                   )}
                 </div>
                 <span className="text-[11px] font-medium text-zinc-500 shrink-0">
@@ -267,17 +309,29 @@ export default function TemplateModern({ data }) {
       )}
 
       {/* Certifications & Achievements in 2 columns */}
-      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+      <div
+        className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-5 break-inside-avoid"
+        style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+      >
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-blue-700 border-b border-zinc-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="text-xs font-bold uppercase tracking-wider text-blue-700 border-b border-zinc-200 pb-1 mb-2"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Certifications
             </h2>
             <ul className="space-y-1.5 text-[11.5px] text-zinc-700">
               {certifications.map((cert) => (
-                <li key={cert.id} className="flex justify-between items-start gap-1 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <li
+                  key={cert.id}
+                  className="flex justify-between items-start gap-1 break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div>
-                    <span className="font-semibold text-zinc-900">{cert.name}</span>
+                    <span className="font-semibold text-zinc-900">
+                      {cert.name}
+                    </span>
                     <span className="text-zinc-500 block text-[10.5px]">
                       {cert.issuer}
                     </span>
@@ -295,16 +349,27 @@ export default function TemplateModern({ data }) {
 
         {achievements && achievements.length > 0 && (
           <section>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-blue-700 border-b border-zinc-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="text-xs font-bold uppercase tracking-wider text-blue-700 border-b border-zinc-200 pb-1 mb-2"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Key Achievements
             </h2>
             <ul className="space-y-1.5 text-[11.5px] text-zinc-700">
               {achievements.map((ach) => (
-                <li key={ach.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <li
+                  key={ach.id}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div className="flex justify-between items-baseline gap-1">
-                    <span className="font-semibold text-zinc-900">{ach.title}</span>
+                    <span className="font-semibold text-zinc-900">
+                      {ach.title}
+                    </span>
                     {ach.year && (
-                      <span className="text-zinc-400 text-[10.5px]">{ach.year}</span>
+                      <span className="text-zinc-400 text-[10.5px]">
+                        {ach.year}
+                      </span>
                     )}
                   </div>
                   {ach.description && (

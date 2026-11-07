@@ -47,7 +47,7 @@ function deepClone(obj) {
 // Modal for Creating or Editing a Category
 function CategoryModal({ category, onSave, onClose }) {
   const [form, setForm] = useState(
-    category || { label: "", color: "var(--color-accent)" }
+    category || { label: "", color: "var(--color-accent)" },
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -101,11 +101,7 @@ function CategoryModal({ category, onSave, onClose }) {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className={btnPrimary}
-              disabled={submitting}
-            >
+            <button type="submit" className={btnPrimary} disabled={submitting}>
               {submitting ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
@@ -123,7 +119,7 @@ function CategoryModal({ category, onSave, onClose }) {
 // Modal for Creating or Editing a Skill
 function SkillModal({ skill, onSave, onClose }) {
   const [form, setForm] = useState(
-    skill || { name: "", description: "", level: 85, icon: "Code2" }
+    skill || { name: "", description: "", level: 85, icon: "Code2" },
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -149,7 +145,9 @@ function SkillModal({ skill, onSave, onClose }) {
         <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-3">
           <div className="flex items-center gap-2 text-gray-900 font-bold">
             <Pencil size={16} className="text-indigo-600" />
-            <span>{skill?.name ? `Edit Skill: ${skill.name}` : "Add New Skill"}</span>
+            <span>
+              {skill?.name ? `Edit Skill: ${skill.name}` : "Add New Skill"}
+            </span>
           </div>
           <button
             onClick={onClose}
@@ -215,11 +213,7 @@ function SkillModal({ skill, onSave, onClose }) {
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className={btnPrimary}
-              disabled={submitting}
-            >
+            <button type="submit" className={btnPrimary} disabled={submitting}>
               {submitting ? (
                 <Loader2 size={13} className="animate-spin" />
               ) : (
@@ -257,7 +251,7 @@ export default function AdminSkills() {
     } catch (err) {
       showToast(
         "Error loading skills: " + (err.message || "Failed to fetch"),
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -294,7 +288,7 @@ export default function AdminSkills() {
     if (categoryModal.modal?.id) {
       // Edit
       updated = categories.map((c) =>
-        c.id === categoryModal.modal.id ? { ...c, label: saved.label } : c
+        c.id === categoryModal.modal.id ? { ...c, label: saved.label } : c,
       );
     } else {
       // Add
@@ -310,7 +304,7 @@ export default function AdminSkills() {
     }
     const ok = await syncToDatabase(
       updated,
-      `Category "${saved.label}" saved to database!`
+      `Category "${saved.label}" saved to database!`,
     );
     if (ok) categoryModal.close();
   };
@@ -337,7 +331,7 @@ export default function AdminSkills() {
     if (existingIdx !== undefined && existingIdx !== null) {
       // Edit skill
       updatedSkills = activeCategory.skills.map((s, i) =>
-        i === existingIdx ? saved : s
+        i === existingIdx ? saved : s,
       );
     } else {
       // Add skill
@@ -345,12 +339,12 @@ export default function AdminSkills() {
     }
 
     const updatedCategories = categories.map((c) =>
-      c.id === activeCategory.id ? { ...c, skills: updatedSkills } : c
+      c.id === activeCategory.id ? { ...c, skills: updatedSkills } : c,
     );
 
     const ok = await syncToDatabase(
       updatedCategories,
-      `Skill "${saved.name}" saved to database!`
+      `Skill "${saved.name}" saved to database!`,
     );
     if (ok) skillModal.close();
   };
@@ -361,12 +355,12 @@ export default function AdminSkills() {
 
     const updatedSkills = activeCategory.skills.filter((_, i) => i !== idx);
     const updatedCategories = categories.map((c) =>
-      c.id === activeCategory.id ? { ...c, skills: updatedSkills } : c
+      c.id === activeCategory.id ? { ...c, skills: updatedSkills } : c,
     );
 
     const ok = await syncToDatabase(
       updatedCategories,
-      "Skill removed from database."
+      "Skill removed from database.",
     );
     if (ok) deleteSkillModal.close();
   };
@@ -447,7 +441,12 @@ export default function AdminSkills() {
                 <button
                   type="button"
                   onClick={() =>
-                    skillModal.open({ name: "", description: "", level: 85, icon: "Code2" })
+                    skillModal.open({
+                      name: "",
+                      description: "",
+                      level: 85,
+                      icon: "Code2",
+                    })
                   }
                   className={`${btnPrimary} !px-2.5 !py-1 !text-xs ml-1`}
                 >
@@ -457,9 +456,10 @@ export default function AdminSkills() {
               </div>
             }
           >
-            {(!activeCategory.skills || activeCategory.skills.length === 0) ? (
+            {!activeCategory.skills || activeCategory.skills.length === 0 ? (
               <div className="py-8 text-center text-sm text-gray-400 italic">
-                No skills in this category yet. Click &quot;Add Skill&quot; to add technologies.
+                No skills in this category yet. Click &quot;Add Skill&quot; to
+                add technologies.
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -512,7 +512,8 @@ export default function AdminSkills() {
           </AdminCard>
         ) : (
           <div className="p-12 text-center text-gray-400 text-sm">
-            No skill categories found. Click &quot;Add Category&quot; to create one.
+            No skill categories found. Click &quot;Add Category&quot; to create
+            one.
           </div>
         )}
       </div>

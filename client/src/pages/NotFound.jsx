@@ -9,16 +9,18 @@ export default function NotFound() {
   useLayoutEffect(() => {
     const media = gsap.matchMedia();
     media.add("(prefers-reduced-motion: no-preference)", () => {
-      gsap.fromTo(contentRef.current, { autoAlpha: 0, y: 20 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" });
+      gsap.fromTo(
+        contentRef.current,
+        { autoAlpha: 0, y: 20 },
+        { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" },
+      );
     });
     return () => media.revert();
   }, []);
 
   return (
     <div className="relative flex min-h-svh flex-col items-center justify-center overflow-hidden bg-canvas p-6 text-primary">
-      <div
-        className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,color-mix(in_srgb,var(--color-accent)_15%,transparent)_0%,transparent_60%)] opacity-40"
-      />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(circle_at_50%_50%,color-mix(in_srgb,var(--color-accent)_15%,transparent)_0%,transparent_60%)] opacity-40" />
 
       <div ref={contentRef} className="relative z-10 max-w-md text-center">
         <div className="mb-4 select-none bg-gradient-to-br from-action/35 to-action/15 bg-clip-text font-mono text-[clamp(6rem,20vw,16rem)] font-black leading-none text-transparent">

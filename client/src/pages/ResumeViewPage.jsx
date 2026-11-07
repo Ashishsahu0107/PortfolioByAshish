@@ -1,19 +1,25 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft, Download, Printer, ZoomIn, ZoomOut } from "lucide-react";
 import {
-  ArrowLeft,
-  Download,
-  Printer,
-  ZoomIn,
-  ZoomOut,
-} from "lucide-react";
-import { ResumeProvider, useResume } from "../resume-builder/context/ResumeContext";
+  ResumeProvider,
+  useResume,
+} from "../resume-builder/context/ResumeContext";
 import { exportResumeToPdf } from "../resume-builder/utils/pdfExport";
-import { RESUME_TEMPLATES, renderResumeTemplate } from "../resume-builder/templatesRegistry";
+import {
+  RESUME_TEMPLATES,
+  renderResumeTemplate,
+} from "../resume-builder/templatesRegistry";
 import { toast } from "../utils/toast";
 
 function ResumeViewContent() {
-  const { resumeData, activeTemplate, setActiveTemplate, isExporting, setIsExporting } = useResume();
+  const {
+    resumeData,
+    activeTemplate,
+    setActiveTemplate,
+    isExporting,
+    setIsExporting,
+  } = useResume();
   const [zoom, setZoom] = useState(100);
   const navigate = useNavigate();
 
@@ -28,9 +34,13 @@ function ResumeViewContent() {
     toast.loading("Exporting resume PDF...", { id: "view-page-export" });
     try {
       await exportResumeToPdf(el, resumeData.personalInfo.fullName);
-      toast.success("Resume PDF downloaded successfully!", { id: "view-page-export" });
+      toast.success("Resume PDF downloaded successfully!", {
+        id: "view-page-export",
+      });
     } catch (err) {
-      toast.error("Download failed: " + (err.message || "Unknown error"), { id: "view-page-export" });
+      toast.error("Download failed: " + (err.message || "Unknown error"), {
+        id: "view-page-export",
+      });
     } finally {
       setIsExporting(false);
     }
@@ -73,7 +83,9 @@ function ResumeViewContent() {
 
           {/* Template Switcher */}
           <div className="flex items-center gap-2">
-            <span className="hidden md:inline text-xs text-zinc-500 font-medium">Template:</span>
+            <span className="hidden md:inline text-xs text-zinc-500 font-medium">
+              Template:
+            </span>
             <div className="inline-flex rounded-lg border border-zinc-200 bg-zinc-50 p-0.5">
               {templates.map((t) => (
                 <button
@@ -134,7 +146,10 @@ function ResumeViewContent() {
               disabled={isExporting}
               className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-blue-700 disabled:opacity-50 cursor-pointer transition"
             >
-              <Download size={14} className={isExporting ? "animate-spin" : ""} />
+              <Download
+                size={14}
+                className={isExporting ? "animate-spin" : ""}
+              />
               <span>{isExporting ? "Generating PDF..." : "Download PDF"}</span>
             </button>
           </div>

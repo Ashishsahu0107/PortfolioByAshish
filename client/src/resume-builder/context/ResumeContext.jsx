@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect, useMemo, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import { sampleResumeData, emptyResumeData } from "../sampleData";
 import { resumeApi } from "../../services/api";
 import { showToast, toast } from "../../utils/toast";
@@ -43,7 +50,10 @@ export function ResumeProvider({ children }) {
         if (approved.templateId) {
           setActiveTemplate(approved.templateId);
         }
-        if (approved.resumeData && Object.keys(approved.resumeData).length > 0) {
+        if (
+          approved.resumeData &&
+          Object.keys(approved.resumeData).length > 0
+        ) {
           setResumeData(approved.resumeData);
         }
       }
@@ -128,7 +138,7 @@ export function ResumeProvider({ children }) {
     setResumeData((prev) => ({
       ...prev,
       workExperience: prev.workExperience.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   };
@@ -162,7 +172,7 @@ export function ResumeProvider({ children }) {
     setResumeData((prev) => ({
       ...prev,
       projects: prev.projects.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   };
@@ -197,7 +207,7 @@ export function ResumeProvider({ children }) {
     setResumeData((prev) => ({
       ...prev,
       education: prev.education.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   };
@@ -230,7 +240,7 @@ export function ResumeProvider({ children }) {
     setResumeData((prev) => ({
       ...prev,
       certifications: prev.certifications.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   };
@@ -263,7 +273,7 @@ export function ResumeProvider({ children }) {
     setResumeData((prev) => ({
       ...prev,
       achievements: prev.achievements.map((item) =>
-        item.id === id ? { ...item, [field]: value } : item
+        item.id === id ? { ...item, [field]: value } : item,
       ),
     }));
   };
@@ -288,18 +298,25 @@ export function ResumeProvider({ children }) {
   };
 
   // Save resume data to database
-  const saveResume = async (templateIdToSave = activeTemplate, dataToSave = resumeData) => {
+  const saveResume = async (
+    templateIdToSave = activeTemplate,
+    dataToSave = resumeData,
+  ) => {
     setIsSaving(true);
     const toastId = toast.loading("Saving resume data to database...");
     try {
       const res = await resumeApi.update(templateIdToSave, {
         resumeData: dataToSave,
       });
-      toast.success(res?.message || "Resume saved successfully!", { id: toastId });
+      toast.success(res?.message || "Resume saved successfully!", {
+        id: toastId,
+      });
       return res;
     } catch (err) {
       console.error("[ResumeContext] Save error:", err);
-      toast.error(err?.message || "Failed to save resume data.", { id: toastId });
+      toast.error(err?.message || "Failed to save resume data.", {
+        id: toastId,
+      });
       throw err;
     } finally {
       setIsSaving(false);
@@ -307,7 +324,10 @@ export function ResumeProvider({ children }) {
   };
 
   // Approve resume template on database
-  const approveResume = async (templateIdToApprove = activeTemplate, dataToApprove = resumeData) => {
+  const approveResume = async (
+    templateIdToApprove = activeTemplate,
+    dataToApprove = resumeData,
+  ) => {
     setIsSaving(true);
     const toastId = toast.loading("Approving resume template on server...");
     try {
@@ -317,13 +337,16 @@ export function ResumeProvider({ children }) {
         setActiveTemplate(templateIdToApprove);
       }
       toast.success(
-        res?.message || `Template approved! Visitors can now download this resume.`,
-        { id: toastId }
+        res?.message ||
+          `Template approved! Visitors can now download this resume.`,
+        { id: toastId },
       );
       return res;
     } catch (err) {
       console.error("[ResumeContext] Approve error:", err);
-      toast.error(err?.message || "Failed to approve resume template.", { id: toastId });
+      toast.error(err?.message || "Failed to approve resume template.", {
+        id: toastId,
+      });
       throw err;
     } finally {
       setIsSaving(false);
@@ -333,7 +356,14 @@ export function ResumeProvider({ children }) {
   // Calculate dynamic completion score (0 to 100%)
   const completionPercentage = useMemo(() => {
     let score = 0;
-    const { personalInfo = {}, summary = "", skills = {}, workExperience = [], projects = [], education = [] } = resumeData;
+    const {
+      personalInfo = {},
+      summary = "",
+      skills = {},
+      workExperience = [],
+      projects = [],
+      education = [],
+    } = resumeData;
 
     // Contact info (25 pts)
     if (personalInfo.fullName?.trim()) score += 7;
@@ -341,7 +371,8 @@ export function ResumeProvider({ children }) {
     if (personalInfo.email?.trim()) score += 5;
     if (personalInfo.phone?.trim()) score += 3;
     if (personalInfo.location?.trim()) score += 2;
-    if (personalInfo.github?.trim() || personalInfo.linkedin?.trim()) score += 4;
+    if (personalInfo.github?.trim() || personalInfo.linkedin?.trim())
+      score += 4;
 
     // Summary (15 pts)
     if (summary && summary.trim().length > 30) score += 15;
@@ -411,7 +442,9 @@ export function ResumeProvider({ children }) {
     refreshResume: () => fetchBackendApproved(false),
   };
 
-  return <ResumeContext.Provider value={value}>{children}</ResumeContext.Provider>;
+  return (
+    <ResumeContext.Provider value={value}>{children}</ResumeContext.Provider>
+  );
 }
 
 // eslint-disable-next-line react-refresh/only-export-components

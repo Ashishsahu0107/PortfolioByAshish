@@ -11,10 +11,7 @@ export const MessageModel = {
     if (!id) return null;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Message.findOne({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return cleanDoc(doc);
   },
@@ -24,12 +21,16 @@ export const MessageModel = {
     delete payload._id;
     delete payload.__v;
 
-    const id = payload.id || `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const id =
+      payload.id ||
+      `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Message.create({
       id,
       name: payload.name ? payload.name.trim() : "",
       email: payload.email ? payload.email.trim().toLowerCase() : "",
-      subject: payload.subject ? payload.subject.trim() : "Portfolio Contact Inquiry",
+      subject: payload.subject
+        ? payload.subject.trim()
+        : "Portfolio Contact Inquiry",
       message: payload.message ? payload.message.trim() : "",
       read: false,
       ip: String(payload.ip || "127.0.0.1"),
@@ -43,13 +44,10 @@ export const MessageModel = {
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Message.findOneAndUpdate(
       {
-        $or: [
-          { id },
-          ...(isObjectId ? [{ _id: id }] : []),
-        ],
+        $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
       },
       { read: readStatus },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },
@@ -58,10 +56,7 @@ export const MessageModel = {
     if (!id) return false;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Message.findOneAndDelete({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return !!doc;
   },

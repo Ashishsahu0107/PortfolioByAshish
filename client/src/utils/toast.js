@@ -58,7 +58,9 @@ export const showToast = {
       },
       error: (err) => {
         if (typeof error === "function") return error(err);
-        return err?.data?.message || err?.message || error || "Operation failed.";
+        return (
+          err?.data?.message || err?.message || error || "Operation failed."
+        );
       },
     });
   },

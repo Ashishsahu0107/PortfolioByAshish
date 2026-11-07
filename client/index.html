@@ -55,17 +55,31 @@
     />
 
     <!-- Early API Preconnect & High-Speed Data Prefetch -->
-    <link rel="preconnect" href="https://portfoliobyashish.onrender.com" crossorigin />
+    <link
+      rel="preconnect"
+      href="https://portfoliobyashish.onrender.com"
+      crossorigin
+    />
     <link rel="dns-prefetch" href="https://portfoliobyashish.onrender.com" />
     <script>
-      (function() {
+      (function () {
         try {
-          var isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-          var apiUrl = isLocal ? "http://localhost:5000/api/portfolio-bundle" : "https://portfoliobyashish.onrender.com/api/portfolio-bundle";
+          var isLocal =
+            window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1";
+          var apiUrl = isLocal
+            ? "http://localhost:5000/api/portfolio-bundle"
+            : "https://portfoliobyashish.onrender.com/api/portfolio-bundle";
           window.__PORTFOLIO_BUNDLE_PROMISE__ = fetch(apiUrl, {
-            headers: { "Accept": "application/json" }
-          }).then(function(r) { return r.json(); }).catch(function() { return null; });
-        } catch(e) {}
+            headers: { Accept: "application/json" },
+          })
+            .then(function (r) {
+              return r.json();
+            })
+            .catch(function () {
+              return null;
+            });
+        } catch (e) {}
       })();
     </script>
 

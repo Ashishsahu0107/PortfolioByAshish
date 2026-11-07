@@ -1,11 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import {
-  ZoomIn,
-  ZoomOut,
-  Maximize2,
-  Download,
-  FileCheck2,
-} from "lucide-react";
+import { ZoomIn, ZoomOut, Maximize2, Download, FileCheck2 } from "lucide-react";
 import { useResume } from "../context/ResumeContext";
 import { exportResumeToPdf } from "../utils/pdfExport";
 import { renderResumeTemplate } from "../templatesRegistry";
@@ -13,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "../../utils/toast";
 
 export default function ResumePreview() {
-  const { resumeData, activeTemplate, isExporting, setIsExporting } = useResume();
+  const { resumeData, activeTemplate, isExporting, setIsExporting } =
+    useResume();
   const [zoom, setZoom] = useState(85); // Default comfortable preview scale
   const containerRef = useRef(null);
   const navigate = useNavigate();
@@ -24,7 +19,10 @@ export default function ResumePreview() {
       if (containerRef.current) {
         const availableWidth = containerRef.current.clientWidth - 48; // padding
         if (availableWidth < 794) {
-          const fitScale = Math.max(45, Math.floor((availableWidth / 794) * 100));
+          const fitScale = Math.max(
+            45,
+            Math.floor((availableWidth / 794) * 100),
+          );
           setZoom(fitScale);
         }
       }
@@ -50,9 +48,14 @@ export default function ResumePreview() {
     toast.loading("Exporting resume PDF...", { id: "resume-preview-export" });
     try {
       await exportResumeToPdf(el, resumeData.personalInfo.fullName);
-      toast.success("Resume PDF downloaded successfully!", { id: "resume-preview-export" });
+      toast.success("Resume PDF downloaded successfully!", {
+        id: "resume-preview-export",
+      });
     } catch (err) {
-      toast.error("PDF generation failed: " + (err.message || "Unknown error"), { id: "resume-preview-export" });
+      toast.error(
+        "PDF generation failed: " + (err.message || "Unknown error"),
+        { id: "resume-preview-export" },
+      );
     } finally {
       setIsExporting(false);
     }
@@ -72,7 +75,9 @@ export default function ResumePreview() {
             <FileCheck2 size={15} className="text-blue-600" />
             <span>Live A4 Preview</span>
           </span>
-          <span className="hidden sm:inline-block text-[11px] text-zinc-400">|</span>
+          <span className="hidden sm:inline-block text-[11px] text-zinc-400">
+            |
+          </span>
           <span className="hidden sm:inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-medium text-blue-700 border border-blue-200/50 capitalize">
             {activeTemplate} Template
           </span>

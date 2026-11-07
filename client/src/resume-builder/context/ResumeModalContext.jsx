@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import ResumeDownloadConfirmModal from "../components/ResumeDownloadConfirmModal";
 import { resumeApi } from "../../services/api";
 import { usePortfolioSync } from "../../hooks/usePortfolioSync";
@@ -26,7 +32,7 @@ export function ResumeModalProvider({ children }) {
     } catch (err) {
       console.warn(
         "[ResumeModalContext] Failed to load approved resume:",
-        err.message
+        err.message,
       );
       setError(err.message || "Failed to load approved resume from server.");
       setApprovedResume(null);
@@ -85,4 +91,3 @@ export function useResumeModal() {
   }
   return context;
 }
-

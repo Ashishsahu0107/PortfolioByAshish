@@ -21,7 +21,9 @@ export const UserModel = {
       $or: [
         { id },
         ...(isObjectId ? [{ _id: id }] : []),
-        ...(typeof id === "string" && id.includes("@") ? [{ email: id.toLowerCase().trim() }] : []),
+        ...(typeof id === "string" && id.includes("@")
+          ? [{ email: id.toLowerCase().trim() }]
+          : []),
       ],
     }).lean();
     return cleanDoc(user);
@@ -35,11 +37,13 @@ export const UserModel = {
         $or: [
           { id },
           ...(isObjectId ? [{ _id: id }] : []),
-          ...(typeof id === "string" && id.includes("@") ? [{ email: id.toLowerCase().trim() }] : []),
+          ...(typeof id === "string" && id.includes("@")
+            ? [{ email: id.toLowerCase().trim() }]
+            : []),
         ],
       },
       { password: newHashedPassword, updatedAt: new Date() },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },

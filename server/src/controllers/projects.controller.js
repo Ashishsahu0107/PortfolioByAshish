@@ -20,7 +20,9 @@ export async function getProjectById(req, res, next) {
   try {
     const project = await ProjectModel.findById(req.params.id);
     if (!project) {
-      return res.status(404).json({ success: false, message: "Project not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found." });
     }
     return res.json({ success: true, data: project });
   } catch (err) {
@@ -32,7 +34,9 @@ export async function createProject(req, res, next) {
   try {
     const { title } = req.body;
     if (!title || !title.trim()) {
-      return res.status(400).json({ success: false, message: "Project title is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Project title is required." });
     }
 
     const newProject = await ProjectModel.create(req.body);
@@ -51,7 +55,9 @@ export async function updateProject(req, res, next) {
   try {
     const updated = await ProjectModel.update(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Project not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found." });
     }
     invalidatePortfolioCache();
     return res.json({
@@ -89,7 +95,9 @@ export async function deleteProject(req, res, next) {
   try {
     const wasRemoved = await ProjectModel.delete(req.params.id);
     if (!wasRemoved) {
-      return res.status(404).json({ success: false, message: "Project not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Project not found." });
     }
     invalidatePortfolioCache();
     return res.json({

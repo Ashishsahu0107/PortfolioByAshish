@@ -93,7 +93,12 @@ const EMPTY_FORM = {
       type: "dropdown",
       placeholder: "-- Choose Service --",
       required: false,
-      options: ["Full Stack Development", "UI/UX Architecture", "API Integration", "Technical Consulting"],
+      options: [
+        "Full Stack Development",
+        "UI/UX Architecture",
+        "API Integration",
+        "Technical Consulting",
+      ],
       helpText: "Select the primary scope of your project.",
     },
     {
@@ -121,8 +126,11 @@ function FormModal({ form, onSave, onClose }) {
           options: Array.isArray(f.options)
             ? f.options
             : typeof f.options === "string"
-            ? f.options.split(",").map((o) => o.trim()).filter(Boolean)
-            : [],
+              ? f.options
+                  .split(",")
+                  .map((o) => o.trim())
+                  .filter(Boolean)
+              : [],
         }))
       : [],
   });
@@ -134,8 +142,15 @@ function FormModal({ form, onSave, onClose }) {
     setFormData((p) => {
       const next = { ...p, [name]: type === "checkbox" ? checked : value };
       // Auto-generate slug from name if creating new form and user hasn't manually customized slug
-      if (name === "name" && !form.id && (!p.slug || p.slug === p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"))) {
-        next.slug = value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      if (
+        name === "name" &&
+        !form.id &&
+        (!p.slug || p.slug === p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"))
+      ) {
+        next.slug = value
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
       }
       return next;
     });
@@ -158,20 +173,28 @@ function FormModal({ form, onSave, onClose }) {
 
   const addField = (type = "text") => {
     const newField = {
-      id: "f_" + Date.now().toString(36) + "_" + Math.random().toString(36).substring(2, 6),
+      id:
+        "f_" +
+        Date.now().toString(36) +
+        "_" +
+        Math.random().toString(36).substring(2, 6),
       name: "field_" + (formData.fields.length + 1),
       label: "New Field",
       type: type,
       placeholder: "",
       required: false,
-      options: type === "dropdown" || type === "radio" ? ["Option 1", "Option 2"] : [],
+      options:
+        type === "dropdown" || type === "radio" ? ["Option 1", "Option 2"] : [],
       helpText: "",
     };
     setFormData((p) => ({ ...p, fields: [...p.fields, newField] }));
   };
 
   const removeField = (idx) => {
-    setFormData((p) => ({ ...p, fields: p.fields.filter((_, i) => i !== idx) }));
+    setFormData((p) => ({
+      ...p,
+      fields: p.fields.filter((_, i) => i !== idx),
+    }));
   };
 
   const moveField = (idx, direction) => {
@@ -206,7 +229,10 @@ function FormModal({ form, onSave, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs"
+      onClick={onClose}
+    >
       <div
         className="bg-white rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
         onClick={(e) => e.stopPropagation()}
@@ -222,7 +248,8 @@ function FormModal({ form, onSave, onClose }) {
                 {form.id ? `Edit: ${form.name}` : "Create Custom Form"}
               </h3>
               <p className="text-xs text-gray-500 m-0 mt-0.5">
-                Configure field types, validation constraints, and public URL slug.
+                Configure field types, validation constraints, and public URL
+                slug.
               </p>
             </div>
           </div>
@@ -236,7 +263,10 @@ function FormModal({ form, onSave, onClose }) {
         </div>
 
         {/* Modal Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto p-6 space-y-6"
+        >
           {/* Section 1: Form Identity */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <FormGroup label="Form Name *">
@@ -252,7 +282,9 @@ function FormModal({ form, onSave, onClose }) {
 
             <FormGroup label="URL Slug * (Unique Identifier)">
               <div className="relative">
-                <span className="absolute left-3 top-2.5 text-xs text-gray-400 font-mono">/form/</span>
+                <span className="absolute left-3 top-2.5 text-xs text-gray-400 font-mono">
+                  /form/
+                </span>
                 <input
                   className={`${inputCls} pl-16 font-mono text-xs`}
                   name="slug"
@@ -319,7 +351,8 @@ function FormModal({ form, onSave, onClose }) {
                   Fields Schema ({formData.fields.length})
                 </h4>
                 <p className="text-[11px] text-gray-500 m-0">
-                  Supports text, email, phone, textarea, dropdown, radio, checkbox, date, and file uploads.
+                  Supports text, email, phone, textarea, dropdown, radio,
+                  checkbox, date, and file uploads.
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -336,7 +369,8 @@ function FormModal({ form, onSave, onClose }) {
 
             {formData.fields.length === 0 ? (
               <div className="p-8 text-center border-2 border-dashed border-gray-200 rounded-xl text-gray-400 text-xs">
-                No fields added yet. Click &quot;Add Field&quot; above to add your first input.
+                No fields added yet. Click &quot;Add Field&quot; above to add
+                your first input.
               </div>
             ) : (
               <div className="flex flex-col gap-3">
@@ -356,7 +390,9 @@ function FormModal({ form, onSave, onClose }) {
                       >
                         <ArrowUp size={12} />
                       </button>
-                      <span className="text-[10px] font-mono font-bold text-gray-400">{idx + 1}</span>
+                      <span className="text-[10px] font-mono font-bold text-gray-400">
+                        {idx + 1}
+                      </span>
                       <button
                         type="button"
                         onClick={() => moveField(idx, 1)}
@@ -379,7 +415,11 @@ function FormModal({ form, onSave, onClose }) {
                           className={`${inputCls} font-mono text-xs`}
                           value={f.name || ""}
                           onChange={(e) =>
-                            handleFieldChange(idx, "name", e.target.value.replace(/[^a-zA-Z0-9_]/g, "_"))
+                            handleFieldChange(
+                              idx,
+                              "name",
+                              e.target.value.replace(/[^a-zA-Z0-9_]/g, "_"),
+                            )
                           }
                           placeholder="e.g. fullName"
                           required
@@ -394,7 +434,9 @@ function FormModal({ form, onSave, onClose }) {
                         <input
                           className={inputCls}
                           value={f.label || ""}
-                          onChange={(e) => handleFieldChange(idx, "label", e.target.value)}
+                          onChange={(e) =>
+                            handleFieldChange(idx, "label", e.target.value)
+                          }
                           placeholder="e.g. Full Name"
                           required
                         />
@@ -408,7 +450,9 @@ function FormModal({ form, onSave, onClose }) {
                         <select
                           className={selectCls}
                           value={f.type || "text"}
-                          onChange={(e) => handleFieldChange(idx, "type", e.target.value)}
+                          onChange={(e) =>
+                            handleFieldChange(idx, "type", e.target.value)
+                          }
                         >
                           {FIELD_TYPES.map((t) => (
                             <option key={t.value} value={t.value}>
@@ -424,10 +468,18 @@ function FormModal({ form, onSave, onClose }) {
                           <input
                             type="checkbox"
                             checked={Boolean(f.required)}
-                            onChange={(e) => handleFieldChange(idx, "required", e.target.checked)}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                idx,
+                                "required",
+                                e.target.checked,
+                              )
+                            }
                             className="w-3.5 h-3.5 accent-indigo-600 rounded"
                           />
-                          <span className="font-semibold text-indigo-700">Required</span>
+                          <span className="font-semibold text-indigo-700">
+                            Required
+                          </span>
                         </label>
                       </div>
 
@@ -440,7 +492,13 @@ function FormModal({ form, onSave, onClose }) {
                           <input
                             className={inputCls}
                             value={f.placeholder || ""}
-                            onChange={(e) => handleFieldChange(idx, "placeholder", e.target.value)}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                idx,
+                                "placeholder",
+                                e.target.value,
+                              )
+                            }
                             placeholder="e.g. Select an option or enter value..."
                           />
                         </div>
@@ -454,22 +512,36 @@ function FormModal({ form, onSave, onClose }) {
                           </label>
                           <input
                             className={inputCls}
-                            value={Array.isArray(f.options) ? f.options.join(", ") : f.options || ""}
-                            onChange={(e) => handleOptionsChange(idx, e.target.value)}
+                            value={
+                              Array.isArray(f.options)
+                                ? f.options.join(", ")
+                                : f.options || ""
+                            }
+                            onChange={(e) =>
+                              handleOptionsChange(idx, e.target.value)
+                            }
                             placeholder="Option 1, Option 2, Option 3"
                           />
                         </div>
                       )}
 
                       {/* Help Text Hint */}
-                      <div className={f.type === "dropdown" || f.type === "radio" ? "sm:col-span-12" : "sm:col-span-6"}>
+                      <div
+                        className={
+                          f.type === "dropdown" || f.type === "radio"
+                            ? "sm:col-span-12"
+                            : "sm:col-span-6"
+                        }
+                      >
                         <label className="text-[10px] font-semibold text-gray-500 block mb-1">
                           Help Hint (Optional text below input)
                         </label>
                         <input
                           className={inputCls}
                           value={f.helpText || ""}
-                          onChange={(e) => handleFieldChange(idx, "helpText", e.target.value)}
+                          onChange={(e) =>
+                            handleFieldChange(idx, "helpText", e.target.value)
+                          }
                           placeholder="e.g. Maximum file size 10MB."
                         />
                       </div>
@@ -515,7 +587,11 @@ function FormModal({ form, onSave, onClose }) {
                 className={btnPrimary}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                {isSubmitting ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Save size={14} />
+                )}
                 <span>{isSubmitting ? "Saving…" : "Save Form"}</span>
               </button>
             </div>
@@ -534,19 +610,31 @@ function FormModal({ form, onSave, onClose }) {
               </div>
               <div className="bg-white p-5 rounded-lg border border-gray-200 space-y-4">
                 <div>
-                  <h4 className="text-base font-bold text-gray-900 m-0">{formData.name}</h4>
-                  <p className="text-xs text-gray-500 m-0 mt-0.5">{formData.description}</p>
+                  <h4 className="text-base font-bold text-gray-900 m-0">
+                    {formData.name}
+                  </h4>
+                  <p className="text-xs text-gray-500 m-0 mt-0.5">
+                    {formData.description}
+                  </p>
                 </div>
                 {formData.fields.map((f, i) => (
                   <div key={i} className="space-y-1">
                     <label className="text-xs font-semibold text-gray-700 block">
-                      {f.label} {f.required && <span className="text-indigo-600">*</span>}
+                      {f.label}{" "}
+                      {f.required && <span className="text-indigo-600">*</span>}
                     </label>
                     {f.type === "textarea" ? (
-                      <textarea className={textareaCls} placeholder={f.placeholder} rows={2} readOnly />
+                      <textarea
+                        className={textareaCls}
+                        placeholder={f.placeholder}
+                        rows={2}
+                        readOnly
+                      />
                     ) : f.type === "dropdown" ? (
                       <select className={selectCls} disabled>
-                        <option>{f.placeholder || "-- Select an option --"}</option>
+                        <option>
+                          {f.placeholder || "-- Select an option --"}
+                        </option>
                         {(f.options || []).map((o, oi) => (
                           <option key={oi}>{o}</option>
                         ))}
@@ -559,7 +647,10 @@ function FormModal({ form, onSave, onClose }) {
                     ) : f.type === "radio" ? (
                       <div className="flex gap-3">
                         {(f.options || []).map((o, oi) => (
-                          <label key={oi} className="flex items-center gap-1.5 text-xs text-gray-700">
+                          <label
+                            key={oi}
+                            className="flex items-center gap-1.5 text-xs text-gray-700"
+                          >
                             <input type="radio" name="preview_radio" disabled />
                             <span>{o}</span>
                           </label>
@@ -570,12 +661,25 @@ function FormModal({ form, onSave, onClose }) {
                         Click or drag file here (Max 10MB)
                       </div>
                     ) : (
-                      <input className={inputCls} placeholder={f.placeholder} type={f.type} readOnly />
+                      <input
+                        className={inputCls}
+                        placeholder={f.placeholder}
+                        type={f.type}
+                        readOnly
+                      />
                     )}
-                    {f.helpText && <span className="text-[10px] text-gray-400">{f.helpText}</span>}
+                    {f.helpText && (
+                      <span className="text-[10px] text-gray-400">
+                        {f.helpText}
+                      </span>
+                    )}
                   </div>
                 ))}
-                <button type="button" className={`${btnPrimary} w-full`} disabled>
+                <button
+                  type="button"
+                  className={`${btnPrimary} w-full`}
+                  disabled
+                >
                   <span>{formData.submitButtonText || "Submit"}</span>
                 </button>
               </div>
@@ -600,7 +704,10 @@ function FormPreviewModal({ form, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-[500] flex items-center justify-center p-4 backdrop-blur-xs" onClick={onClose}>
+    <div
+      className="fixed inset-0 bg-black/70 z-[500] flex items-center justify-center p-4 backdrop-blur-xs"
+      onClick={onClose}
+    >
       <div
         className="bg-zinc-950 border border-zinc-800 rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
         onClick={(e) => e.stopPropagation()}
@@ -612,7 +719,9 @@ function FormPreviewModal({ form, onClose }) {
               Form Live Preview
             </span>
             <span className="text-zinc-600">|</span>
-            <span className="text-xs text-zinc-300 font-semibold">{form.name}</span>
+            <span className="text-xs text-zinc-300 font-semibold">
+              {form.name}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -622,7 +731,9 @@ function FormPreviewModal({ form, onClose }) {
                 type="button"
                 onClick={() => setDevice("desktop")}
                 className={`p-1.5 rounded-md text-xs transition-colors cursor-pointer ${
-                  device === "desktop" ? "bg-zinc-700 text-[#00f0ff]" : "text-zinc-400 hover:text-zinc-200"
+                  device === "desktop"
+                    ? "bg-zinc-700 text-[#00f0ff]"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
                 title="Desktop View"
               >
@@ -632,7 +743,9 @@ function FormPreviewModal({ form, onClose }) {
                 type="button"
                 onClick={() => setDevice("mobile")}
                 className={`p-1.5 rounded-md text-xs transition-colors cursor-pointer ${
-                  device === "mobile" ? "bg-zinc-700 text-[#00f0ff]" : "text-zinc-400 hover:text-zinc-200"
+                  device === "mobile"
+                    ? "bg-zinc-700 text-[#00f0ff]"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
                 title="Mobile View"
               >
@@ -673,7 +786,9 @@ function FormPreviewModal({ form, onClose }) {
         <div className="flex-1 overflow-y-auto p-6 flex justify-center bg-[#09090b]">
           <div
             className={`w-full transition-all duration-300 ${
-              device === "mobile" ? "max-w-sm rounded-3xl border-4 border-zinc-800 shadow-2xl p-2 bg-zinc-900" : "max-w-2xl"
+              device === "mobile"
+                ? "max-w-sm rounded-3xl border-4 border-zinc-800 shadow-2xl p-2 bg-zinc-900"
+                : "max-w-2xl"
             }`}
           >
             <iframe
@@ -718,7 +833,9 @@ export default function AdminFormBuilder() {
       setForms(formsList || []);
       setSubmissions(subsList || []);
     } catch (err) {
-      showToast.error("Error loading forms: " + (err.message || "Failed to fetch"));
+      showToast.error(
+        "Error loading forms: " + (err.message || "Failed to fetch"),
+      );
     } finally {
       setLoading(false);
     }
@@ -751,10 +868,14 @@ export default function AdminFormBuilder() {
     try {
       await formsApi.update(formItem.id, { ...formItem, enabled: nextStatus });
       setForms((prev) =>
-        prev.map((f) => (f.id === formItem.id ? { ...f, enabled: nextStatus } : f))
+        prev.map((f) =>
+          f.id === formItem.id ? { ...f, enabled: nextStatus } : f,
+        ),
       );
       if (nextStatus) {
-        showToast.success(`Form "${formItem.name}" is now live and accepting submissions!`);
+        showToast.success(
+          `Form "${formItem.name}" is now live and accepting submissions!`,
+        );
       } else {
         showToast.info(`Form "${formItem.name}" is now paused.`);
       }
@@ -815,7 +936,13 @@ export default function AdminFormBuilder() {
     }
 
     // Collect all unique field keys across submissions
-    const allKeys = new Set(["id", "formName", "formSlug", "submittedAt", "ip"]);
+    const allKeys = new Set([
+      "id",
+      "formName",
+      "formSlug",
+      "submittedAt",
+      "ip",
+    ]);
     filteredSubmissions.forEach((s) => {
       if (s.data) {
         Object.keys(s.data).forEach((k) => allKeys.add(k));
@@ -840,7 +967,9 @@ export default function AdminFormBuilder() {
       csvRows.push(row.join(","));
     });
 
-    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const blob = new Blob([csvRows.join("\n")], {
+      type: "text/csv;charset=utf-8;",
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -888,9 +1017,11 @@ export default function AdminFormBuilder() {
             (s.formSlug && s.formSlug.toLowerCase().includes(q)) ||
             (s.ip && s.ip.includes(q));
 
-          const matchesData = s.data && Object.values(s.data).some((val) =>
-            String(val).toLowerCase().includes(q)
-          );
+          const matchesData =
+            s.data &&
+            Object.values(s.data).some((val) =>
+              String(val).toLowerCase().includes(q),
+            );
 
           if (!matchesForm && !matchesData) return false;
         }
@@ -906,7 +1037,10 @@ export default function AdminFormBuilder() {
 
   if (loading) {
     return (
-      <AdminSection title="Form Builder & Submissions" desc="Loading forms and user responses...">
+      <AdminSection
+        title="Form Builder & Submissions"
+        desc="Loading forms and user responses..."
+      >
         <div className="flex items-center justify-center p-12 text-gray-500 gap-2">
           <Loader2 size={20} className="animate-spin text-indigo-600" />
           <span>Connecting to database...</span>
@@ -968,9 +1102,12 @@ export default function AdminFormBuilder() {
         <div className="flex flex-col gap-4">
           {forms.length === 0 ? (
             <div className="p-12 text-center border-2 border-dashed border-gray-200 rounded-2xl bg-white">
-              <h3 className="text-base font-bold text-gray-800 mb-1">No Custom Forms Yet</h3>
+              <h3 className="text-base font-bold text-gray-800 mb-1">
+                No Custom Forms Yet
+              </h3>
               <p className="text-xs text-gray-500 max-w-sm mx-auto mb-5">
-                Create custom forms with text, email, phone, dropdowns, and file upload fields to share with visitors.
+                Create custom forms with text, email, phone, dropdowns, and file
+                upload fields to share with visitors.
               </p>
               <button
                 type="button"
@@ -984,7 +1121,7 @@ export default function AdminFormBuilder() {
           ) : (
             forms.map((f) => {
               const formSubmissionsCount = submissions.filter(
-                (s) => s.formId === f.id || s.formSlug === f.slug
+                (s) => s.formId === f.id || s.formSlug === f.slug,
               ).length;
 
               return (
@@ -993,7 +1130,9 @@ export default function AdminFormBuilder() {
                     <div className="flex-1 min-w-0">
                       {/* Title & Status Badges */}
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <h3 className="text-base font-bold text-gray-900 m-0">{f.name}</h3>
+                        <h3 className="text-base font-bold text-gray-900 m-0">
+                          {f.name}
+                        </h3>
                         <span className="font-mono text-xs text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                           slug: #{f.slug}
                         </span>
@@ -1020,10 +1159,13 @@ export default function AdminFormBuilder() {
 
                       {/* Fields Chips */}
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-xs font-semibold text-gray-400">Fields ({f.fields?.length || 0}):</span>
+                        <span className="text-xs font-semibold text-gray-400">
+                          Fields ({f.fields?.length || 0}):
+                        </span>
                         {(f.fields || []).map((field, i) => (
                           <span key={i} className={badgeBlue}>
-                            {field.label} ({field.type}){field.required ? " *" : ""}
+                            {field.label} ({field.type})
+                            {field.required ? " *" : ""}
                           </span>
                         ))}
                       </div>
@@ -1123,7 +1265,10 @@ export default function AdminFormBuilder() {
 
               {/* Search Bar */}
               <div className="relative flex-1 min-w-[160px]">
-                <Search size={13} className="absolute left-2.5 top-2.5 text-gray-400" />
+                <Search
+                  size={13}
+                  className="absolute left-2.5 top-2.5 text-gray-400"
+                />
                 <input
                   type="text"
                   placeholder="Search submissions by text, email, IP..."
@@ -1170,8 +1315,12 @@ export default function AdminFormBuilder() {
           {filteredSubmissions.length === 0 ? (
             <div className="py-12 text-center text-gray-400 text-sm">
               <Inbox size={32} className="mx-auto mb-2 text-gray-300" />
-              <p className="m-0">No submissions matching current filter criteria.</p>
-              <span className="text-xs text-gray-400">Visitor responses will be listed here automatically.</span>
+              <p className="m-0">
+                No submissions matching current filter criteria.
+              </p>
+              <span className="text-xs text-gray-400">
+                Visitor responses will be listed here automatically.
+              </span>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -1182,11 +1331,17 @@ export default function AdminFormBuilder() {
                 >
                   <div className="flex items-start justify-between gap-4 mb-2 flex-wrap">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className={badgePurple}>{sub.formName || sub.formSlug}</span>
-                      <span className="text-xs font-mono text-gray-500">
-                        {new Date(sub.submittedAt || sub.createdAt).toLocaleString()}
+                      <span className={badgePurple}>
+                        {sub.formName || sub.formSlug}
                       </span>
-                      <span className="text-[10px] text-gray-400 font-mono">IP: {sub.ip}</span>
+                      <span className="text-xs font-mono text-gray-500">
+                        {new Date(
+                          sub.submittedAt || sub.createdAt,
+                        ).toLocaleString()}
+                      </span>
+                      <span className="text-[10px] text-gray-400 font-mono">
+                        IP: {sub.ip}
+                      </span>
                     </div>
 
                     <div className="flex items-center gap-2">
@@ -1215,8 +1370,12 @@ export default function AdminFormBuilder() {
                   <div className="bg-gray-50/80 rounded-lg p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {Object.entries(sub.data || {}).map(([key, val]) => (
                       <div key={key} className="flex gap-2 min-w-0">
-                        <strong className="text-gray-500 capitalize w-28 shrink-0">{key}:</strong>
-                        <span className="text-gray-800 break-all">{String(val)}</span>
+                        <strong className="text-gray-500 capitalize w-28 shrink-0">
+                          {key}:
+                        </strong>
+                        <span className="text-gray-800 break-all">
+                          {String(val)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -1291,15 +1450,22 @@ export default function AdminFormBuilder() {
 
       {/* View Full Submission Modal */}
       {viewSubModal.modal && (
-        <div className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs" onClick={viewSubModal.close}>
+        <div
+          className="fixed inset-0 bg-black/60 z-[500] flex items-center justify-center p-4 backdrop-blur-xs"
+          onClick={viewSubModal.close}
+        >
           <div
             className="bg-white rounded-2xl w-full max-w-xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-[scaleIn_0.2s_ease]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50">
               <div>
-                <h3 className="text-base font-bold text-gray-900 m-0">Submission Record</h3>
-                <span className="text-xs font-mono text-gray-500">ID: {viewSubModal.modal.id}</span>
+                <h3 className="text-base font-bold text-gray-900 m-0">
+                  Submission Record
+                </h3>
+                <span className="text-xs font-mono text-gray-500">
+                  ID: {viewSubModal.modal.id}
+                </span>
               </div>
               <button
                 onClick={viewSubModal.close}
@@ -1311,17 +1477,23 @@ export default function AdminFormBuilder() {
             <div className="p-6 overflow-y-auto space-y-4">
               <div className="grid grid-cols-2 gap-2 text-xs bg-gray-50 p-3 rounded-lg border border-gray-200">
                 <div>
-                  <strong className="text-gray-500">Form:</strong> {viewSubModal.modal.formName}
+                  <strong className="text-gray-500">Form:</strong>{" "}
+                  {viewSubModal.modal.formName}
                 </div>
                 <div>
-                  <strong className="text-gray-500">Slug:</strong> #{viewSubModal.modal.formSlug}
+                  <strong className="text-gray-500">Slug:</strong> #
+                  {viewSubModal.modal.formSlug}
                 </div>
                 <div>
                   <strong className="text-gray-500">Date:</strong>{" "}
-                  {new Date(viewSubModal.modal.submittedAt || viewSubModal.modal.createdAt).toLocaleString()}
+                  {new Date(
+                    viewSubModal.modal.submittedAt ||
+                      viewSubModal.modal.createdAt,
+                  ).toLocaleString()}
                 </div>
                 <div>
-                  <strong className="text-gray-500">IP Address:</strong> {viewSubModal.modal.ip}
+                  <strong className="text-gray-500">IP Address:</strong>{" "}
+                  {viewSubModal.modal.ip}
                 </div>
               </div>
 
@@ -1330,41 +1502,57 @@ export default function AdminFormBuilder() {
                   Response Payload:
                 </h4>
                 <div className="space-y-2">
-                  {Object.entries(viewSubModal.modal.data || {}).map(([k, v]) => (
-                    <div key={k} className="p-2.5 rounded bg-white border border-gray-200 text-xs">
-                      <div className="font-semibold text-indigo-700 capitalize mb-0.5">{k}:</div>
-                      <div className="text-gray-800 whitespace-pre-wrap">{String(v)}</div>
-                    </div>
-                  ))}
+                  {Object.entries(viewSubModal.modal.data || {}).map(
+                    ([k, v]) => (
+                      <div
+                        key={k}
+                        className="p-2.5 rounded bg-white border border-gray-200 text-xs"
+                      >
+                        <div className="font-semibold text-indigo-700 capitalize mb-0.5">
+                          {k}:
+                        </div>
+                        <div className="text-gray-800 whitespace-pre-wrap">
+                          {String(v)}
+                        </div>
+                      </div>
+                    ),
+                  )}
                 </div>
               </div>
 
-              {Array.isArray(viewSubModal.modal.files) && viewSubModal.modal.files.length > 0 && (
-                <div>
-                  <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                    Uploaded Files:
-                  </h4>
-                  <div className="space-y-2">
-                    {viewSubModal.modal.files.map((file, fi) => (
-                      <a
-                        key={fi}
-                        href={file.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="flex items-center justify-between p-2.5 rounded bg-indigo-50/60 border border-indigo-200 text-xs text-indigo-800 hover:bg-indigo-100 transition-colors no-underline"
-                      >
-                        <span className="font-mono font-medium truncate">{file.originalName || file.filename}</span>
-                        <span className="shrink-0 font-mono text-[10px] text-indigo-500 flex items-center gap-1">
-                          <Download size={11} /> Download
-                        </span>
-                      </a>
-                    ))}
+              {Array.isArray(viewSubModal.modal.files) &&
+                viewSubModal.modal.files.length > 0 && (
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                      Uploaded Files:
+                    </h4>
+                    <div className="space-y-2">
+                      {viewSubModal.modal.files.map((file, fi) => (
+                        <a
+                          key={fi}
+                          href={file.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="flex items-center justify-between p-2.5 rounded bg-indigo-50/60 border border-indigo-200 text-xs text-indigo-800 hover:bg-indigo-100 transition-colors no-underline"
+                        >
+                          <span className="font-mono font-medium truncate">
+                            {file.originalName || file.filename}
+                          </span>
+                          <span className="shrink-0 font-mono text-[10px] text-indigo-500 flex items-center gap-1">
+                            <Download size={11} /> Download
+                          </span>
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
             <div className="px-6 py-3 border-t border-gray-100 flex justify-end bg-gray-50">
-              <button type="button" className={btnSecondary} onClick={viewSubModal.close}>
+              <button
+                type="button"
+                className={btnSecondary}
+                onClick={viewSubModal.close}
+              >
                 Close
               </button>
             </div>

@@ -78,7 +78,7 @@ export default function ResumeDownloadConfirmModal({
         await resumeApi.validateDownload(approvedResume.templateId);
       } catch (authErr) {
         throw new Error(
-          authErr.message || "Failed to verify approved resume on server."
+          authErr.message || "Failed to verify approved resume on server.",
         );
       }
 
@@ -87,7 +87,9 @@ export default function ResumeDownloadConfirmModal({
 
       const targetEl = document.getElementById("approved-resume-export-node");
       if (!targetEl) {
-        throw new Error("Unable to locate approved resume document for export.");
+        throw new Error(
+          "Unable to locate approved resume document for export.",
+        );
       }
 
       // 3. Export to high-DPI A4 PDF
@@ -102,7 +104,8 @@ export default function ResumeDownloadConfirmModal({
       }, 1500);
     } catch (err) {
       console.error("[ResumeDownloadConfirmModal] Export failed:", err);
-      const msg = err.message || "Failed to generate resume PDF. Please try again.";
+      const msg =
+        err.message || "Failed to generate resume PDF. Please try again.";
       setExportError(msg);
       toast.error(msg, { id: "resume-pdf-dl" });
     } finally {
@@ -225,7 +228,8 @@ export default function ResumeDownloadConfirmModal({
               <li className="flex items-center gap-2">
                 <span className="size-1.5 rounded-full bg-blue-500" />
                 <span>
-                  Validated <strong>MERN Stack & DSA</strong> engineering qualifications
+                  Validated <strong>MERN Stack & DSA</strong> engineering
+                  qualifications
                 </span>
               </li>
               <li className="flex items-center gap-2">
@@ -315,7 +319,7 @@ export default function ResumeDownloadConfirmModal({
           <div id="approved-resume-export-node" className="bg-white">
             {renderResumeTemplate(
               approvedResume.templateId,
-              approvedResume.resumeData || {}
+              approvedResume.resumeData || {},
             )}
           </div>
         </div>

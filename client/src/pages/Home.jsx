@@ -6,7 +6,12 @@ import PortfolioProcess from "../components/PortfolioProcess";
 import PortfolioExperience from "../components/PortfolioExperience";
 import PortfolioContact from "../components/PortfolioContact";
 import PortfolioFooter from "../components/PortfolioFooter";
-import { contentWidth, sectionSurface, eyebrow, sectionLede } from "../components/portfolioStyles";
+import {
+  contentWidth,
+  sectionSurface,
+  eyebrow,
+  sectionLede,
+} from "../components/portfolioStyles";
 import { usePortfolioSync } from "../hooks/usePortfolioSync";
 import { usePortfolioSections } from "../context/PortfolioDataContext";
 
@@ -26,16 +31,22 @@ const SECTION_COMPONENTS = {
 function DynamicCustomSection({ section }) {
   const content = section.content || {};
   return (
-    <section id={section.slug} className={`${sectionSurface} border-t border-border`}>
+    <section
+      id={section.slug}
+      className={`${sectionSurface} border-t border-border`}
+    >
       <div className={contentWidth}>
         <p className={eyebrow}>
-          <span className="text-action font-mono">0{section.order || 8}</span> {section.name}
+          <span className="text-action font-mono">0{section.order || 8}</span>{" "}
+          {section.name}
         </p>
         <h2 className="mb-4 mt-6 font-serif text-[clamp(36px,4.5vw,56px)] font-bold text-primary">
           {content.heading || section.name}
         </h2>
         {content.subheading && (
-          <p className={`${sectionLede} max-w-2xl mb-6`}>{content.subheading}</p>
+          <p className={`${sectionLede} max-w-2xl mb-6`}>
+            {content.subheading}
+          </p>
         )}
         {content.body && (
           <div className="prose prose-zinc dark:prose-invert max-w-3xl text-sm leading-relaxed text-secondary whitespace-pre-wrap">
@@ -64,11 +75,17 @@ export default function Home() {
 
   if (!sections || sections.length === 0) {
     return (
-      <main id="main-content" className="min-h-screen bg-canvas flex items-center justify-center p-8">
+      <main
+        id="main-content"
+        className="min-h-screen bg-canvas flex items-center justify-center p-8"
+      >
         <div className="text-center max-w-md p-8 rounded-xl border border-border bg-surface">
-          <h2 className="text-lg font-bold text-primary mb-2">No Active Sections Found</h2>
+          <h2 className="text-lg font-bold text-primary mb-2">
+            No Active Sections Found
+          </h2>
           <p className="text-sm text-secondary">
-            Sections have not been enabled yet in the database. Enable or create sections in the Admin Dashboard to display them.
+            Sections have not been enabled yet in the database. Enable or create
+            sections in the Admin Dashboard to display them.
           </p>
         </div>
       </main>

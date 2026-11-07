@@ -39,7 +39,9 @@ export const FormModel = {
       cleanSlug = `${cleanSlug}-${Math.random().toString(36).substring(2, 6)}`;
     }
 
-    const id = payload.id || `form_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
+    const id =
+      payload.id ||
+      `form_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 6)}`;
     const created = await Form.create({
       id,
       name: (payload.name || "Untitled Form").trim(),
@@ -73,7 +75,9 @@ export const FormModel = {
       description: original.description || "",
       enabled: false, // Default duplicated forms to draft
       submitButtonText: original.submitButtonText || "Submit",
-      successMessage: original.successMessage || "Your submission has been received successfully.",
+      successMessage:
+        original.successMessage ||
+        "Your submission has been received successfully.",
       fields: clonedFields,
     });
   },
@@ -95,13 +99,10 @@ export const FormModel = {
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Form.findOneAndUpdate(
       {
-        $or: [
-          { id },
-          ...(isObjectId ? [{ _id: id }] : []),
-        ],
+        $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
       },
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },
@@ -110,12 +111,8 @@ export const FormModel = {
     if (!id) return false;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Form.findOneAndDelete({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return !!doc;
   },
 };
-

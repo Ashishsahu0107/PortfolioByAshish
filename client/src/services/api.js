@@ -5,7 +5,8 @@ const isLocalHost =
 
 const API_BASE = isLocalHost
   ? "http://localhost:5000/api"
-  : (import.meta.env.VITE_API_URL || "https://portfoliobyashish.onrender.com/api");
+  : import.meta.env.VITE_API_URL ||
+    "https://portfoliobyashish.onrender.com/api";
 const AUTH_STORAGE_KEY = "portfolio_admin_session_v1";
 
 /**
@@ -13,7 +14,9 @@ const AUTH_STORAGE_KEY = "portfolio_admin_session_v1";
  */
 export function getStoredToken() {
   try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
+    const raw =
+      localStorage.getItem(AUTH_STORAGE_KEY) ||
+      sessionStorage.getItem(AUTH_STORAGE_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     return parsed?.token || null;
@@ -29,7 +32,8 @@ async function request(endpoint, options = {}) {
   const url = `${API_BASE}${endpoint.startsWith("/") ? endpoint : `/${endpoint}`}`;
   const token = getStoredToken();
 
-  const isFormData = typeof FormData !== "undefined" && options.body instanceof FormData;
+  const isFormData =
+    typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers = {
     ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -46,7 +50,10 @@ async function request(endpoint, options = {}) {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      const errorMsg = data?.message || data?.errors?.join(", ") || `HTTP ${response.status}: Request failed`;
+      const errorMsg =
+        data?.message ||
+        data?.errors?.join(", ") ||
+        `HTTP ${response.status}: Request failed`;
       const error = new Error(errorMsg);
       error.status = response.status;
       error.data = data;
@@ -57,7 +64,9 @@ async function request(endpoint, options = {}) {
     const method = (options.method || "GET").toUpperCase();
     if (method !== "GET" && typeof window !== "undefined") {
       const eventDetail = { endpoint, method, timestamp: Date.now() };
-      window.dispatchEvent(new CustomEvent("portfolio_updated", { detail: eventDetail }));
+      window.dispatchEvent(
+        new CustomEvent("portfolio_updated", { detail: eventDetail }),
+      );
       try {
         localStorage.setItem("portfolio_sync_timestamp", String(Date.now()));
       } catch {}
@@ -66,8 +75,12 @@ async function request(endpoint, options = {}) {
     return data;
   } catch (err) {
     if (err.name === "TypeError" && err.message.includes("fetch")) {
-      console.warn(`[API] Unable to reach backend server at ${url}. Is it running on port 5000?`);
-      const networkErr = new Error("Unable to connect to backend server. Please verify your network connection or server status.");
+      console.warn(
+        `[API] Unable to reach backend server at ${url}. Is it running on port 5000?`,
+      );
+      const networkErr = new Error(
+        "Unable to connect to backend server. Please verify your network connection or server status.",
+      );
       networkErr.status = 0;
       throw networkErr;
     }
@@ -95,11 +108,14 @@ export const authApi = {
       name = typeof arg1 === "string" ? arg1 : "";
       email = arg2;
     } else {
-      email = typeof arg1 === "string" ? arg1 : (typeof arg2 === "string" ? arg2 : "");
+      email =
+        typeof arg1 === "string" ? arg1 : typeof arg2 === "string" ? arg2 : "";
       name = typeof arg2 === "string" ? arg2 : "";
     }
 
-    const cleanEmail = String(email || "").trim().toLowerCase();
+    const cleanEmail = String(email || "")
+      .trim()
+      .toLowerCase();
     const cleanName = String(name || "").trim();
 
     return request("/auth/send-otp", {
@@ -252,7 +268,9 @@ export const projectsApi = {
 // -------------------------------------------------------------
 export const experienceApi = {
   getAll: async (type) => {
-    const endpoint = type ? `/experience?type=${encodeURIComponent(type)}` : "/experience";
+    const endpoint = type
+      ? `/experience?type=${encodeURIComponent(type)}`
+      : "/experience";
     const res = await request(endpoint);
     return res.data;
   },
@@ -369,7 +387,8 @@ export const formsApi = {
     return res;
   },
   submit: async (idOrSlug, formData) => {
-    const isFormData = typeof FormData !== "undefined" && formData instanceof FormData;
+    const isFormData =
+      typeof FormData !== "undefined" && formData instanceof FormData;
     const res = await request(`/forms/${idOrSlug}/submit`, {
       method: "POST",
       body: isFormData ? formData : JSON.stringify(formData),
@@ -475,7 +494,7 @@ export const resumeApi = {
   },
   validateDownload: async (templateId) => {
     const res = await request(
-      `/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`
+      `/resumes/download${templateId ? `?templateId=${encodeURIComponent(templateId)}` : ""}`,
     );
     return res.data;
   },
@@ -492,5 +511,3 @@ export const portfolioApi = {
     return request("/portfolio-bundle");
   },
 };
-
-

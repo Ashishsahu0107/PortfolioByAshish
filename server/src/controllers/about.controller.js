@@ -21,8 +21,10 @@ export async function updateAbout(req, res, next) {
     // Keep developer bio/philosophy in sync
     const devUpdates = {};
     if (req.body.bio !== undefined) devUpdates.bio = req.body.bio;
-    if (req.body.philosophy !== undefined) devUpdates.philosophy = req.body.philosophy;
-    if (req.body.focusAreas !== undefined) devUpdates.focusAreas = req.body.focusAreas;
+    if (req.body.philosophy !== undefined)
+      devUpdates.philosophy = req.body.philosophy;
+    if (req.body.focusAreas !== undefined)
+      devUpdates.focusAreas = req.body.focusAreas;
     if (req.body.stats !== undefined) devUpdates.stats = req.body.stats;
 
     if (Object.keys(devUpdates).length > 0) {

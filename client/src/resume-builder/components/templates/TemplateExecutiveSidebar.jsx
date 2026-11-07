@@ -1,9 +1,4 @@
-import {
-  ExternalLink,
-  Mail,
-  MapPin,
-  Phone,
-} from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../../components/icons";
 
 export default function TemplateExecutiveSidebar({ data }) {
@@ -44,7 +39,10 @@ export default function TemplateExecutiveSidebar({ data }) {
           {personalInfo.email && (
             <p className="flex items-center gap-2 truncate">
               <Mail size={12} className="text-sky-400 shrink-0" />
-              <a href={`mailto:${personalInfo.email}`} className="hover:text-white truncate">
+              <a
+                href={`mailto:${personalInfo.email}`}
+                className="hover:text-white truncate"
+              >
                 {personalInfo.email}
               </a>
             </p>
@@ -64,7 +62,12 @@ export default function TemplateExecutiveSidebar({ data }) {
           {personalInfo.linkedin && (
             <p className="flex items-center gap-2 truncate">
               <LinkedinIcon size={12} className="text-sky-400 shrink-0" />
-              <a href={personalInfo.linkedin} target="_blank" rel="noreferrer" className="hover:text-white truncate">
+              <a
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white truncate"
+              >
                 LinkedIn Profile
               </a>
             </p>
@@ -72,7 +75,12 @@ export default function TemplateExecutiveSidebar({ data }) {
           {personalInfo.github && (
             <p className="flex items-center gap-2 truncate">
               <GithubIcon size={12} className="text-sky-400 shrink-0" />
-              <a href={personalInfo.github} target="_blank" rel="noreferrer" className="hover:text-white truncate">
+              <a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white truncate"
+              >
                 GitHub Repositories
               </a>
             </p>
@@ -80,7 +88,12 @@ export default function TemplateExecutiveSidebar({ data }) {
           {personalInfo.portfolioUrl && (
             <p className="flex items-center gap-2 truncate">
               <ExternalLink size={12} className="text-sky-400 shrink-0" />
-              <a href={personalInfo.portfolioUrl} target="_blank" rel="noreferrer" className="hover:text-white truncate">
+              <a
+                href={personalInfo.portfolioUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-white truncate"
+              >
                 Live Portfolio
               </a>
             </p>
@@ -100,7 +113,10 @@ export default function TemplateExecutiveSidebar({ data }) {
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {skills.languages.map((s) => (
-                    <span key={s} className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200">
+                    <span
+                      key={s}
+                      className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -114,7 +130,10 @@ export default function TemplateExecutiveSidebar({ data }) {
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {skills.frontend.map((s) => (
-                    <span key={s} className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200">
+                    <span
+                      key={s}
+                      className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -128,7 +147,10 @@ export default function TemplateExecutiveSidebar({ data }) {
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {skills.backend.map((s) => (
-                    <span key={s} className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200">
+                    <span
+                      key={s}
+                      className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -142,7 +164,10 @@ export default function TemplateExecutiveSidebar({ data }) {
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {skills.databases.map((s) => (
-                    <span key={s} className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200">
+                    <span
+                      key={s}
+                      className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -156,7 +181,10 @@ export default function TemplateExecutiveSidebar({ data }) {
                 </span>
                 <div className="flex flex-wrap gap-1">
                   {skills.toolsDevOps.map((s) => (
-                    <span key={s} className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200">
+                    <span
+                      key={s}
+                      className="bg-slate-800 text-[10px] px-2 py-0.5 rounded text-slate-200"
+                    >
                       {s}
                     </span>
                   ))}
@@ -219,12 +247,19 @@ export default function TemplateExecutiveSidebar({ data }) {
         {/* Professional Experience */}
         {workExperience && workExperience.length > 0 && (
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h3
+              className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Professional Experience
             </h3>
             <div className="space-y-4">
               {workExperience.map((exp) => (
-                <div key={exp.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <div
+                  key={exp.id}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div className="flex justify-between items-baseline">
                     <h4 className="font-bold text-[13px] text-slate-900">
                       {exp.title}
@@ -250,24 +285,41 @@ export default function TemplateExecutiveSidebar({ data }) {
         {/* Featured Projects */}
         {projects && projects.length > 0 && (
           <section>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h3
+              className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-3"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Technical Project Deliverables
             </h3>
             <div className="space-y-3.5">
               {projects.map((proj) => (
-                <div key={proj.id} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <div
+                  key={proj.id}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div className="flex justify-between items-baseline">
                     <h4 className="font-bold text-[13px] text-slate-900">
                       {proj.name}
                     </h4>
                     <div className="space-x-2 text-[10.5px]">
                       {proj.githubUrl && (
-                        <a href={proj.githubUrl} target="_blank" rel="noreferrer" className="text-sky-700 hover:underline">
+                        <a
+                          href={proj.githubUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sky-700 hover:underline"
+                        >
                           GitHub
                         </a>
                       )}
                       {proj.liveUrl && (
-                        <a href={proj.liveUrl} target="_blank" rel="noreferrer" className="text-sky-700 hover:underline">
+                        <a
+                          href={proj.liveUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-sky-700 hover:underline"
+                        >
                           Live Demo
                         </a>
                       )}
@@ -291,13 +343,23 @@ export default function TemplateExecutiveSidebar({ data }) {
 
         {/* Achievements */}
         {achievements && achievements.length > 0 && (
-          <section className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+          <section
+            className="break-inside-avoid"
+            style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+          >
+            <h3
+              className="text-xs font-bold uppercase tracking-wider text-slate-900 border-b-2 border-slate-200 pb-1 mb-2"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               Recognitions & Milestones
             </h3>
             <div className="space-y-1.5 text-[11.5px]">
               {achievements.map((ach) => (
-                <div key={ach.id} className="flex justify-between items-baseline break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <div
+                  key={ach.id}
+                  className="flex justify-between items-baseline break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div>
                     <strong className="text-slate-900">{ach.title}</strong>
                     <span className="text-slate-600 block text-[11px]">

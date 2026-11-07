@@ -20,7 +20,9 @@ export async function getSectionById(req, res, next) {
   try {
     const section = await SectionModel.findById(req.params.id);
     if (!section) {
-      return res.status(404).json({ success: false, message: "Section not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Section not found." });
     }
     return res.json({ success: true, data: section });
   } catch (err) {
@@ -32,7 +34,9 @@ export async function createSection(req, res, next) {
   try {
     const { name, slug } = req.body;
     if (!name || !name.trim()) {
-      return res.status(400).json({ success: false, message: "Section name is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Section name is required." });
     }
 
     const cleanSlug = (slug || name)
@@ -64,7 +68,9 @@ export async function updateSection(req, res, next) {
   try {
     const updated = await SectionModel.update(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Section not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Section not found." });
     }
     invalidatePortfolioCache();
     return res.json({
@@ -102,13 +108,16 @@ export async function deleteSection(req, res, next) {
   try {
     const section = await SectionModel.findById(req.params.id);
     if (!section) {
-      return res.status(404).json({ success: false, message: "Section not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Section not found." });
     }
 
     if (section.type === "builtin") {
       return res.status(400).json({
         success: false,
-        message: "Core built-in sections cannot be permanently deleted. You can toggle them 'off' instead.",
+        message:
+          "Core built-in sections cannot be permanently deleted. You can toggle them 'off' instead.",
       });
     }
 

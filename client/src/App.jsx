@@ -81,9 +81,15 @@ function AnimatedRoutes() {
         <Route path="/form/:slug" element={<PublicFormPage />} />
         <Route path="/forms/:slug" element={<PublicFormPage />} />
         <Route path="/login" element={<AuthPage initialMode="login" />} />
-        <Route path="/secret-login" element={<AuthPage initialMode="login" />} />
+        <Route
+          path="/secret-login"
+          element={<AuthPage initialMode="login" />}
+        />
         <Route path="/register" element={<AuthPage initialMode="register" />} />
-        <Route path="/secret-register" element={<AuthPage initialMode="register" />} />
+        <Route
+          path="/secret-register"
+          element={<AuthPage initialMode="register" />}
+        />
         <Route
           path="/admin/*"
           element={
@@ -143,7 +149,6 @@ function AppContent({ theme, toggleTheme }) {
     </>
   );
 }
-
 
 export default function App() {
   const [theme, setTheme] = useState(() => {

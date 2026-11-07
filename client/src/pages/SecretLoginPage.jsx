@@ -53,15 +53,8 @@ export default function Login() {
   const [validationErrors, setValidationErrors] = useState({});
   const from = location.state?.from?.pathname || "/admin";
 
-  const {
-    user,
-    isAuthenticated,
-    isLoading,
-    error,
-    setError,
-    login,
-    logout,
-  } = useAuth();
+  const { user, isAuthenticated, isLoading, error, setError, login, logout } =
+    useAuth();
 
   const currentTheme =
     LOGIN_THEMES.find((t) => t.id === selectedThemeId) || LOGIN_THEMES[0];
@@ -101,10 +94,15 @@ export default function Login() {
     toast.loading("Signing in...", { id: "secret-login" });
     const res = await login(email, password, rememberMe);
     if (res.success) {
-      toast.success("Welcome back! Signed in successfully.", { id: "secret-login" });
+      toast.success("Welcome back! Signed in successfully.", {
+        id: "secret-login",
+      });
       navigate(from, { replace: true });
     } else {
-      toast.error(res.error || "Authentication failed. Please check your credentials.", { id: "secret-login" });
+      toast.error(
+        res.error || "Authentication failed. Please check your credentials.",
+        { id: "secret-login" },
+      );
     }
   };
 
@@ -141,7 +139,9 @@ export default function Login() {
         {/* 5-Color Theme Switcher */}
         <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/85 px-3.5 py-1.5 backdrop-blur-md shadow-xl">
           <Palette size={13} className="text-zinc-400 mr-1" />
-          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">Theme:</span>
+          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">
+            Theme:
+          </span>
           <div className="flex items-center gap-2">
             {LOGIN_THEMES.map((t) => {
               const isSelected = t.id === selectedThemeId;
@@ -250,7 +250,10 @@ export default function Login() {
                 {/* Registration Success Banner */}
                 {location.state?.message && (
                   <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-center gap-2">
-                    <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                    <CheckCircle2
+                      size={16}
+                      className="text-emerald-400 shrink-0"
+                    />
                     <span>{location.state.message}</span>
                   </div>
                 )}
@@ -505,7 +508,8 @@ export default function Login() {
       {/* Bottom Footer Info */}
       <footer className="relative z-30 p-4 text-center text-xs font-mono text-zinc-600">
         <span>
-          Hidden Admin Terminal • Drag unlit lamp anywhere • Pull cord to illuminate
+          Hidden Admin Terminal • Drag unlit lamp anywhere • Pull cord to
+          illuminate
         </span>
       </footer>
     </div>

@@ -101,10 +101,17 @@ export default function ResumeBuilderNav() {
     setIsExporting(true);
     toast.loading("Exporting resume PDF...", { id: "nav-pdf-export" });
     try {
-      await exportResumeToPdf(previewEl, resumeData.personalInfo?.fullName || "Resume");
-      toast.success("Resume PDF downloaded successfully!", { id: "nav-pdf-export" });
+      await exportResumeToPdf(
+        previewEl,
+        resumeData.personalInfo?.fullName || "Resume",
+      );
+      toast.success("Resume PDF downloaded successfully!", {
+        id: "nav-pdf-export",
+      });
     } catch (err) {
-      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), { id: "nav-pdf-export" });
+      toast.error("Failed to export PDF: " + (err.message || "Unknown error"), {
+        id: "nav-pdf-export",
+      });
     } finally {
       setIsExporting(false);
     }
@@ -209,8 +216,8 @@ export default function ResumeBuilderNav() {
                   completionPercentage >= 80
                     ? "bg-emerald-500"
                     : completionPercentage >= 50
-                    ? "bg-amber-500"
-                    : "bg-blue-600"
+                      ? "bg-amber-500"
+                      : "bg-blue-600"
                 }`}
                 style={{ width: `${completionPercentage}%` }}
               />
@@ -244,7 +251,9 @@ export default function ResumeBuilderNav() {
               ) : (
                 <Save size={13} className="text-amber-600" />
               )}
-              <span className="hidden sm:inline">{isSaving ? "Saving..." : "Save Resume"}</span>
+              <span className="hidden sm:inline">
+                {isSaving ? "Saving..." : "Save Resume"}
+              </span>
             </button>
           )}
 
@@ -285,7 +294,10 @@ export default function ResumeBuilderNav() {
             className="inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-blue-700 disabled:opacity-50 cursor-pointer transition"
             title="Generate & Download A4 PDF"
           >
-            <Download size={14} className={isExporting ? "animate-bounce" : ""} />
+            <Download
+              size={14}
+              className={isExporting ? "animate-bounce" : ""}
+            />
             <span>{isExporting ? "Generating PDF..." : "Download PDF"}</span>
           </button>
         </div>
@@ -307,7 +319,8 @@ export default function ResumeBuilderNav() {
               Clear Resume Form?
             </h3>
             <p className="mt-2 text-xs text-zinc-600 leading-relaxed">
-              This will clear all entries from the editor. You can reload the sample data anytime or enter your own details.
+              This will clear all entries from the editor. You can reload the
+              sample data anytime or enter your own details.
             </p>
             <div className="mt-5 flex justify-end gap-2">
               <button

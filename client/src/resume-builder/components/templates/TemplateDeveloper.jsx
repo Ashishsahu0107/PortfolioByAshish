@@ -1,10 +1,4 @@
-import {
-  ExternalLink,
-  Mail,
-  MapPin,
-  Phone,
-  Terminal,
-} from "lucide-react";
+import { ExternalLink, Mail, MapPin, Phone, Terminal } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "../../../components/icons";
 
 export default function TemplateDeveloper({ data }) {
@@ -92,7 +86,11 @@ export default function TemplateDeveloper({ data }) {
           {personalInfo.portfolioUrl && (
             <span className="flex items-center gap-1.5 hover:text-white">
               <ExternalLink size={12} className="text-purple-400" />
-              <a href={personalInfo.portfolioUrl} target="_blank" rel="noreferrer">
+              <a
+                href={personalInfo.portfolioUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
                 {personalInfo.portfolioUrl.replace("https://", "")}
               </a>
             </span>
@@ -116,7 +114,8 @@ export default function TemplateDeveloper({ data }) {
       {hasSkills && (
         <section className="mb-5">
           <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5">
-            <span className="text-emerald-600">//</span> Technical Skills & Stack
+            <span className="text-emerald-600">//</span> Technical Skills &
+            Stack
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[12px]">
             {skills.languages && skills.languages.length > 0 && (
@@ -220,7 +219,11 @@ export default function TemplateDeveloper({ data }) {
           </h2>
           <div className="space-y-4">
             {workExperience.map((exp, i) => (
-              <div key={exp.id || i} className="border-l-2 border-emerald-500 pl-3.5 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={exp.id || i}
+                className="border-l-2 border-emerald-500 pl-3.5 break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
                   <h3 className="font-bold text-zinc-900 text-[13px] font-mono">
                     {exp.title}
@@ -230,7 +233,9 @@ export default function TemplateDeveloper({ data }) {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-[11.5px] text-zinc-600 font-medium">
-                  <span className="text-emerald-700 font-semibold">{exp.company}</span>
+                  <span className="text-emerald-700 font-semibold">
+                    {exp.company}
+                  </span>
                   {exp.location && <span>• {exp.location}</span>}
                 </div>
                 {exp.description && (
@@ -247,8 +252,12 @@ export default function TemplateDeveloper({ data }) {
       {/* Featured Projects */}
       {projects && projects.length > 0 && (
         <section className="mb-5">
-          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-3" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
-            <span className="text-emerald-600">//</span> Featured Engineering Projects
+          <h2
+            className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-3"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
+            <span className="text-emerald-600">//</span> Featured Engineering
+            Projects
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {projects.map((proj, i) => (
@@ -297,8 +306,11 @@ export default function TemplateDeveloper({ data }) {
                   const techList = Array.isArray(proj.technologies)
                     ? proj.technologies
                     : typeof proj.technologies === "string"
-                    ? proj.technologies.split(/[,|•]/).map((t) => t.trim()).filter(Boolean)
-                    : [];
+                      ? proj.technologies
+                          .split(/[,|•]/)
+                          .map((t) => t.trim())
+                          .filter(Boolean)
+                      : [];
 
                   if (techList.length === 0) return null;
 
@@ -322,27 +334,43 @@ export default function TemplateDeveloper({ data }) {
       )}
 
       {/* Education & Certifications Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4 break-inside-avoid"
+        style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+      >
         {/* Education */}
         {education && education.length > 0 && (
           <section>
-            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               <span className="text-emerald-600">//</span> Education
             </h2>
             <div className="space-y-2.5">
               {education.map((edu, i) => (
-                <div key={edu.id || i} className="break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <div
+                  key={edu.id || i}
+                  className="break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div className="flex justify-between items-baseline">
                     <h3 className="font-bold text-zinc-900 text-[12px]">
                       {edu.degree}
                     </h3>
                     <span className="font-mono text-[10.5px] text-zinc-500">
-                      {edu.startYear ? `${edu.startYear} - ${edu.graduationYear}` : edu.graduationYear}
+                      {edu.startYear
+                        ? `${edu.startYear} - ${edu.graduationYear}`
+                        : edu.graduationYear}
                     </span>
                   </div>
-                  <p className="text-zinc-600 text-[11.5px]">{edu.institution}</p>
+                  <p className="text-zinc-600 text-[11.5px]">
+                    {edu.institution}
+                  </p>
                   {edu.details && (
-                    <p className="text-zinc-500 text-[11px] mt-0.5">{edu.details}</p>
+                    <p className="text-zinc-500 text-[11px] mt-0.5">
+                      {edu.details}
+                    </p>
                   )}
                 </div>
               ))}
@@ -353,15 +381,26 @@ export default function TemplateDeveloper({ data }) {
         {/* Certifications */}
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+            <h2
+              className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1.5 mb-2.5"
+              style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+            >
               <span className="text-emerald-600">//</span> Certifications
             </h2>
             <div className="space-y-2">
               {certifications.map((cert, i) => (
-                <div key={cert.id || i} className="text-[11.5px] break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+                <div
+                  key={cert.id || i}
+                  className="text-[11.5px] break-inside-avoid"
+                  style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+                >
                   <div className="flex justify-between">
-                    <span className="font-semibold text-zinc-800">{cert.name}</span>
-                    <span className="font-mono text-[10.5px] text-zinc-500">{cert.date}</span>
+                    <span className="font-semibold text-zinc-800">
+                      {cert.name}
+                    </span>
+                    <span className="font-mono text-[10.5px] text-zinc-500">
+                      {cert.date}
+                    </span>
                   </div>
                   <p className="text-zinc-500 text-[11px]">{cert.issuer}</p>
                 </div>
@@ -373,15 +412,29 @@ export default function TemplateDeveloper({ data }) {
 
       {/* Honors & Key Achievements */}
       {achievements && achievements.length > 0 && (
-        <section className="mt-4 pt-3 border-t border-zinc-200/80 break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
-          <h2 className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1 mb-2" style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}>
+        <section
+          className="mt-4 pt-3 border-t border-zinc-200/80 break-inside-avoid"
+          style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+        >
+          <h2
+            className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-zinc-900 border-b border-zinc-200 pb-1 mb-2"
+            style={{ breakAfter: "avoid", pageBreakAfter: "avoid" }}
+          >
             <span className="text-emerald-600">//</span> Achievements & Awards
           </h2>
           <div className="space-y-1.5">
             {achievements.map((ach, i) => (
-              <div key={ach.id || i} className="flex justify-between items-baseline text-[11.5px] break-inside-avoid" style={{ breakInside: "avoid", pageBreakInside: "avoid" }}>
+              <div
+                key={ach.id || i}
+                className="flex justify-between items-baseline text-[11.5px] break-inside-avoid"
+                style={{ breakInside: "avoid", pageBreakInside: "avoid" }}
+              >
                 <span className="font-semibold text-zinc-900">{ach.title}</span>
-                {ach.description && <span className="text-zinc-500 text-[11px]">{ach.description}</span>}
+                {ach.description && (
+                  <span className="text-zinc-500 text-[11px]">
+                    {ach.description}
+                  </span>
+                )}
               </div>
             ))}
           </div>

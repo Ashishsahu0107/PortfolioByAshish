@@ -40,7 +40,9 @@ export default function AuthPage({ initialMode = "login" }) {
     location.pathname === "/secret-register" ||
     initialMode === "register";
 
-  const [activeTab, setActiveTab] = useState(isRegisterRoute ? "register" : "login");
+  const [activeTab, setActiveTab] = useState(
+    isRegisterRoute ? "register" : "login",
+  );
 
   // Keep activeTab synchronized with pathname
   useEffect(() => {
@@ -97,7 +99,9 @@ export default function AuthPage({ initialMode = "login" }) {
   // -------------------------------------------------------------
   // LOGIN STATE & HANDLERS
   // -------------------------------------------------------------
-  const [loginEmail, setLoginEmail] = useState(location.state?.registeredEmail || "");
+  const [loginEmail, setLoginEmail] = useState(
+    location.state?.registeredEmail || "",
+  );
   const [loginPassword, setLoginPassword] = useState("");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -144,10 +148,15 @@ export default function AuthPage({ initialMode = "login" }) {
     toast.loading("Signing in...", { id: "auth-login" });
     const res = await login(loginEmail, loginPassword, rememberMe);
     if (res.success) {
-      toast.success("Welcome back! Signed in successfully.", { id: "auth-login" });
+      toast.success("Welcome back! Signed in successfully.", {
+        id: "auth-login",
+      });
       navigate(from, { replace: true });
     } else {
-      toast.error(res.error || "Authentication failed. Please verify your credentials.", { id: "auth-login" });
+      toast.error(
+        res.error || "Authentication failed. Please verify your credentials.",
+        { id: "auth-login" },
+      );
     }
   };
 
@@ -170,7 +179,9 @@ export default function AuthPage({ initialMode = "login" }) {
   const [regValidationErrors, setRegValidationErrors] = useState({});
 
   const [expirySeconds, setExpirySeconds] = useState(DEFAULT_EXPIRY_SECONDS);
-  const [cooldownSeconds, setCooldownSeconds] = useState(DEFAULT_COOLDOWN_SECONDS);
+  const [cooldownSeconds, setCooldownSeconds] = useState(
+    DEFAULT_COOLDOWN_SECONDS,
+  );
 
   const otpInputRefs = [
     useRef(null),
@@ -249,7 +260,10 @@ export default function AuthPage({ initialMode = "login" }) {
 
   const handleOtpPaste = (e) => {
     e.preventDefault();
-    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    const pasted = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, 6);
     if (!pasted) return;
 
     const digits = pasted.split("");
@@ -282,37 +296,53 @@ export default function AuthPage({ initialMode = "login" }) {
 
     if (Object.keys(errors).length > 0) {
       setRegValidationErrors(errors);
-      showToast.error(errors.email || errors.name || "Please provide valid information.");
+      showToast.error(
+        errors.email || errors.name || "Please provide valid information.",
+      );
       return;
     }
 
     setRegValidationErrors({});
     setRegLoading(true);
     const targetEmail = regEmail.trim().toLowerCase();
-    toast.loading(`Sending verification code to ${targetEmail}...`, { id: "otp-send" });
+    toast.loading(`Sending verification code to ${targetEmail}...`, {
+      id: "otp-send",
+    });
 
     try {
-      const res = await authApi.sendOtp({ email: targetEmail, name: regName.trim() });
+      const res = await authApi.sendOtp({
+        email: targetEmail,
+        name: regName.trim(),
+      });
       if (res.success) {
         setRegisterStep(2);
         setExpirySeconds((res.expiryMinutes || 10) * 60);
         setCooldownSeconds(res.cooldownSeconds || 60);
         setOtpDigits(["", "", "", "", "", ""]);
-        const notice = res.message || `A 6-digit verification code has been dispatched via Resend to ${targetEmail}.`;
+        const notice =
+          res.message ||
+          `A 6-digit verification code has been dispatched via Resend to ${targetEmail}.`;
         setRegSuccessNotice(notice);
         if (res.devOtp) {
-          toast.success(`Verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`, { id: "otp-send", duration: 8000 });
+          toast.success(
+            `Verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`,
+            { id: "otp-send", duration: 8000 },
+          );
         } else {
           toast.success(notice, { id: "otp-send" });
         }
       } else {
-        throw new Error(res.message || "Failed to dispatch verification code via Resend.");
+        throw new Error(
+          res.message || "Failed to dispatch verification code via Resend.",
+        );
       }
     } catch (err) {
       if (err.status === 429 && err.data?.retryAfter) {
         setCooldownSeconds(err.data.retryAfter);
       }
-      const errMsg = err.message || "Failed to dispatch verification code via Resend. Please try again.";
+      const errMsg =
+        err.message ||
+        "Failed to dispatch verification code via Resend. Please try again.";
       setRegError(errMsg);
       toast.error(errMsg, { id: "otp-send" });
     } finally {
@@ -326,18 +356,28 @@ export default function AuthPage({ initialMode = "login" }) {
     setRegError("");
     setRegSuccessNotice("");
     const targetEmail = regEmail.trim().toLowerCase();
-    toast.loading(`Resending verification code to ${targetEmail}...`, { id: "otp-resend" });
+    toast.loading(`Resending verification code to ${targetEmail}...`, {
+      id: "otp-resend",
+    });
 
     try {
-      const res = await authApi.sendOtp({ email: targetEmail, name: regName.trim() });
+      const res = await authApi.sendOtp({
+        email: targetEmail,
+        name: regName.trim(),
+      });
       if (res.success) {
         setExpirySeconds((res.expiryMinutes || 10) * 60);
         setCooldownSeconds(res.cooldownSeconds || 60);
         setOtpDigits(["", "", "", "", "", ""]);
-        const notice = res.message || `A new 6-digit verification code has been dispatched to ${targetEmail}.`;
+        const notice =
+          res.message ||
+          `A new 6-digit verification code has been dispatched to ${targetEmail}.`;
         setRegSuccessNotice(notice);
         if (res.devOtp) {
-          toast.success(`New verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`, { id: "otp-resend", duration: 8000 });
+          toast.success(
+            `New verification code generated for ${targetEmail} (Dev Code: ${res.devOtp})`,
+            { id: "otp-resend", duration: 8000 },
+          );
         } else {
           toast.success(notice, { id: "otp-resend" });
         }
@@ -347,7 +387,8 @@ export default function AuthPage({ initialMode = "login" }) {
       if (err.status === 429 && err.data?.retryAfter) {
         setCooldownSeconds(err.data.retryAfter);
       }
-      const errMsg = err.message || "Failed to resend verification code via Resend.";
+      const errMsg =
+        err.message || "Failed to resend verification code via Resend.";
       setRegError(errMsg);
       toast.error(errMsg, { id: "otp-resend" });
     } finally {
@@ -373,18 +414,24 @@ export default function AuthPage({ initialMode = "login" }) {
     toast.loading("Verifying security code...", { id: "otp-verify" });
 
     try {
-      const res = await authApi.verifyOtp(regEmail.trim().toLowerCase(), fullOtp);
+      const res = await authApi.verifyOtp(
+        regEmail.trim().toLowerCase(),
+        fullOtp,
+      );
       if (res.success && res.verificationToken) {
         setVerificationToken(res.verificationToken);
         setRegisterStep(3);
-        const notice = "Identity verified successfully! Please set your admin password.";
+        const notice =
+          "Identity verified successfully! Please set your admin password.";
         setRegSuccessNotice(notice);
         toast.success(notice, { id: "otp-verify" });
       } else {
         throw new Error(res.message || "Invalid verification code.");
       }
     } catch (err) {
-      const errMsg = err.message || "Incorrect verification code. Please check and try again.";
+      const errMsg =
+        err.message ||
+        "Incorrect verification code. Please check and try again.";
       setRegError(errMsg);
       toast.error(errMsg, { id: "otp-verify" });
     } finally {
@@ -413,7 +460,11 @@ export default function AuthPage({ initialMode = "login" }) {
 
     if (Object.keys(errors).length > 0) {
       setRegValidationErrors(errors);
-      showToast.error(errors.password || errors.confirmPassword || "Please correct password fields.");
+      showToast.error(
+        errors.password ||
+          errors.confirmPassword ||
+          "Please correct password fields.",
+      );
       return;
     }
 
@@ -434,7 +485,8 @@ export default function AuthPage({ initialMode = "login" }) {
       if (res.success) {
         // Smoothly switch to login tab with prefilled credentials
         setLoginEmail(regEmail.trim().toLowerCase());
-        const notice = "Registration completed successfully! Please sign in with your password.";
+        const notice =
+          "Registration completed successfully! Please sign in with your password.";
         setLoginNotice(notice);
         setRegSuccessNotice("");
         toast.success(notice, { id: "reg-complete" });
@@ -443,7 +495,8 @@ export default function AuthPage({ initialMode = "login" }) {
         throw new Error(res.message || "Registration failed.");
       }
     } catch (err) {
-      const errMsg = err.message || "Unable to complete registration. Please try again.";
+      const errMsg =
+        err.message || "Unable to complete registration. Please try again.";
       setRegError(errMsg);
       toast.error(errMsg, { id: "reg-complete" });
     } finally {
@@ -478,7 +531,9 @@ export default function AuthPage({ initialMode = "login" }) {
           <button
             type="button"
             id="header-switch-tab-btn"
-            onClick={() => switchTab(activeTab === "login" ? "register" : "login")}
+            onClick={() =>
+              switchTab(activeTab === "login" ? "register" : "login")
+            }
             className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-1.5 text-xs font-mono font-medium text-zinc-400 backdrop-blur-md transition hover:border-zinc-700 hover:text-zinc-200 cursor-pointer"
           >
             {activeTab === "login" ? (
@@ -498,7 +553,9 @@ export default function AuthPage({ initialMode = "login" }) {
         {/* 5-Color Theme Switcher */}
         <div className="flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/85 px-3.5 py-1.5 backdrop-blur-md shadow-xl">
           <Palette size={13} className="text-zinc-400 mr-1" />
-          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">Theme:</span>
+          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">
+            Theme:
+          </span>
           <div className="flex items-center gap-2">
             {LOGIN_THEMES.map((t) => {
               const isSelected = t.id === selectedThemeId;
@@ -596,7 +653,14 @@ export default function AuthPage({ initialMode = "login" }) {
                     : undefined
                 }
               >
-                <LogIn size={13} style={activeTab === "login" ? { color: currentTheme.glow } : undefined} />
+                <LogIn
+                  size={13}
+                  style={
+                    activeTab === "login"
+                      ? { color: currentTheme.glow }
+                      : undefined
+                  }
+                />
                 <span>Sign In</span>
               </button>
 
@@ -615,7 +679,14 @@ export default function AuthPage({ initialMode = "login" }) {
                     : undefined
                 }
               >
-                <UserPlus size={13} style={activeTab === "register" ? { color: currentTheme.glow } : undefined} />
+                <UserPlus
+                  size={13}
+                  style={
+                    activeTab === "register"
+                      ? { color: currentTheme.glow }
+                      : undefined
+                  }
+                />
                 <span>Register (OTP)</span>
               </button>
             </div>
@@ -677,14 +748,20 @@ export default function AuthPage({ initialMode = "login" }) {
                     {/* Feedback Messages */}
                     {loginNotice && (
                       <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-start gap-2">
-                        <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+                        <CheckCircle2
+                          size={16}
+                          className="text-emerald-400 shrink-0 mt-0.5"
+                        />
                         <span>{loginNotice}</span>
                       </div>
                     )}
 
                     {authError && (
                       <div className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex items-start gap-2">
-                        <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+                        <AlertCircle
+                          size={16}
+                          className="text-red-400 shrink-0 mt-0.5"
+                        />
                         <span>{authError}</span>
                       </div>
                     )}
@@ -706,7 +783,10 @@ export default function AuthPage({ initialMode = "login" }) {
                             onChange={(e) => {
                               setLoginEmail(e.target.value);
                               if (loginValidationErrors.email) {
-                                setLoginValidationErrors((prev) => ({ ...prev, email: "" }));
+                                setLoginValidationErrors((prev) => ({
+                                  ...prev,
+                                  email: "",
+                                }));
                               }
                               if (authError) setAuthError("");
                             }}
@@ -741,7 +821,10 @@ export default function AuthPage({ initialMode = "login" }) {
                             onChange={(e) => {
                               setLoginPassword(e.target.value);
                               if (loginValidationErrors.password) {
-                                setLoginValidationErrors((prev) => ({ ...prev, password: "" }));
+                                setLoginValidationErrors((prev) => ({
+                                  ...prev,
+                                  password: "",
+                                }));
                               }
                               if (authError) setAuthError("");
                             }}
@@ -754,10 +837,16 @@ export default function AuthPage({ initialMode = "login" }) {
                           />
                           <button
                             type="button"
-                            onClick={() => setShowLoginPassword((prev) => !prev)}
+                            onClick={() =>
+                              setShowLoginPassword((prev) => !prev)
+                            }
                             className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300 cursor-pointer"
                           >
-                            {showLoginPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                            {showLoginPassword ? (
+                              <EyeOff size={15} />
+                            ) : (
+                              <Eye size={15} />
+                            )}
                           </button>
                         </div>
                         {loginValidationErrors.password && (
@@ -776,7 +865,9 @@ export default function AuthPage({ initialMode = "login" }) {
                             onChange={(e) => setRememberMe(e.target.checked)}
                             className="rounded border-zinc-800 bg-zinc-950 text-amber-500 focus:ring-amber-500/30"
                           />
-                          <span className="text-zinc-400 text-[11px]">Remember session</span>
+                          <span className="text-zinc-400 text-[11px]">
+                            Remember session
+                          </span>
                         </label>
                       </div>
 
@@ -829,7 +920,10 @@ export default function AuthPage({ initialMode = "login" }) {
                     <div
                       className={`inline-flex items-center gap-1.5 rounded-full border ${currentTheme.badge} px-2.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shadow-2xs`}
                     >
-                      <ShieldCheck size={12} className={currentTheme.badgeIcon} />
+                      <ShieldCheck
+                        size={12}
+                        className={currentTheme.badgeIcon}
+                      />
                       <span>Enrollment • Step {registerStep} of 3</span>
                     </div>
                     <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/25">
@@ -848,19 +942,22 @@ export default function AuthPage({ initialMode = "login" }) {
                     <div
                       className="h-1 rounded-full transition-all duration-500"
                       style={{
-                        backgroundColor: registerStep >= 1 ? currentTheme.accent : "#27272a",
+                        backgroundColor:
+                          registerStep >= 1 ? currentTheme.accent : "#27272a",
                       }}
                     />
                     <div
                       className="h-1 rounded-full transition-all duration-500"
                       style={{
-                        backgroundColor: registerStep >= 2 ? currentTheme.accent : "#27272a",
+                        backgroundColor:
+                          registerStep >= 2 ? currentTheme.accent : "#27272a",
                       }}
                     />
                     <div
                       className="h-1 rounded-full transition-all duration-500"
                       style={{
-                        backgroundColor: registerStep >= 3 ? currentTheme.accent : "#27272a",
+                        backgroundColor:
+                          registerStep >= 3 ? currentTheme.accent : "#27272a",
                       }}
                     />
                   </div>
@@ -872,7 +969,10 @@ export default function AuthPage({ initialMode = "login" }) {
                     id="registration-success-banner"
                     className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-950/40 p-3 text-xs text-emerald-300 flex items-start gap-2"
                   >
-                    <CheckCircle2 size={16} className="text-emerald-400 shrink-0 mt-0.5" />
+                    <CheckCircle2
+                      size={16}
+                      className="text-emerald-400 shrink-0 mt-0.5"
+                    />
                     <span className="leading-snug">{regSuccessNotice}</span>
                   </div>
                 )}
@@ -883,7 +983,10 @@ export default function AuthPage({ initialMode = "login" }) {
                     className="mb-4 rounded-lg border border-red-500/40 bg-red-950/40 p-3 text-xs text-red-300 flex flex-col gap-2"
                   >
                     <div className="flex items-start gap-2">
-                      <AlertCircle size={16} className="text-red-400 shrink-0 mt-0.5" />
+                      <AlertCircle
+                        size={16}
+                        className="text-red-400 shrink-0 mt-0.5"
+                      />
                       <span className="leading-snug">{regError}</span>
                     </div>
                     {regError.toLowerCase().includes("already exists") && (
@@ -911,7 +1014,8 @@ export default function AuthPage({ initialMode = "login" }) {
                 {registerStep === 1 && (
                   <form onSubmit={handleSendOtp} className="space-y-4">
                     <p className="text-xs text-zinc-400 leading-relaxed -mt-1">
-                      Enter your administrative name and email address. A 6-digit OTP will be dispatched to your inbox via Resend.
+                      Enter your administrative name and email address. A
+                      6-digit OTP will be dispatched to your inbox via Resend.
                     </p>
 
                     <div>
@@ -929,7 +1033,10 @@ export default function AuthPage({ initialMode = "login" }) {
                           onChange={(e) => {
                             setRegName(e.target.value);
                             if (regValidationErrors.name) {
-                              setRegValidationErrors((prev) => ({ ...prev, name: "" }));
+                              setRegValidationErrors((prev) => ({
+                                ...prev,
+                                name: "",
+                              }));
                             }
                             if (regError) setRegError("");
                           }}
@@ -963,7 +1070,10 @@ export default function AuthPage({ initialMode = "login" }) {
                           onChange={(e) => {
                             setRegEmail(e.target.value);
                             if (regValidationErrors.email) {
-                              setRegValidationErrors((prev) => ({ ...prev, email: "" }));
+                              setRegValidationErrors((prev) => ({
+                                ...prev,
+                                email: "",
+                              }));
                             }
                             if (regError) setRegError("");
                           }}
@@ -1011,7 +1121,9 @@ export default function AuthPage({ initialMode = "login" }) {
                         <span className="text-zinc-500 block text-[10px] uppercase font-mono">
                           Dispatched via Resend to
                         </span>
-                        <span className="font-mono text-zinc-200 truncate">{regEmail}</span>
+                        <span className="font-mono text-zinc-200 truncate">
+                          {regEmail}
+                        </span>
                       </div>
                       <button
                         type="button"
@@ -1045,7 +1157,9 @@ export default function AuthPage({ initialMode = "login" }) {
                             inputMode="numeric"
                             maxLength={1}
                             value={digit}
-                            onChange={(e) => handleOtpDigitChange(idx, e.target.value)}
+                            onChange={(e) =>
+                              handleOtpDigitChange(idx, e.target.value)
+                            }
                             onKeyDown={(e) => handleOtpKeyDown(idx, e)}
                             className={`h-12 w-full text-center font-mono text-xl sm:text-2xl font-bold rounded-xl border bg-zinc-950/90 text-white focus:outline-hidden transition shadow-inner ${
                               digit
@@ -1053,7 +1167,9 @@ export default function AuthPage({ initialMode = "login" }) {
                                 : "border-zinc-800"
                             } ${currentTheme.inputFocus}`}
                             style={{
-                              borderColor: digit ? currentTheme.accent : undefined,
+                              borderColor: digit
+                                ? currentTheme.accent
+                                : undefined,
                             }}
                           />
                         ))}
@@ -1064,7 +1180,9 @@ export default function AuthPage({ initialMode = "login" }) {
                           <span>Expires in:</span>
                           <span
                             className={`font-semibold ${
-                              expirySeconds < 60 ? "text-red-400" : "text-zinc-200"
+                              expirySeconds < 60
+                                ? "text-red-400"
+                                : "text-zinc-200"
                             }`}
                           >
                             {formatTime(expirySeconds)}
@@ -1077,9 +1195,17 @@ export default function AuthPage({ initialMode = "login" }) {
                           onClick={handleResendOtp}
                           disabled={cooldownSeconds > 0 || regLoading}
                           className="inline-flex items-center gap-1.5 text-[11px] font-mono px-2.5 py-1 rounded-md border border-zinc-800/80 bg-zinc-900/60 hover:bg-zinc-800/80 disabled:opacity-40 disabled:hover:bg-zinc-900/60 cursor-pointer transition"
-                          style={{ color: cooldownSeconds === 0 ? currentTheme.glow : "#71717a" }}
+                          style={{
+                            color:
+                              cooldownSeconds === 0
+                                ? currentTheme.glow
+                                : "#71717a",
+                          }}
                         >
-                          <RotateCcw size={12} className={regLoading ? "animate-spin" : ""} />
+                          <RotateCcw
+                            size={12}
+                            className={regLoading ? "animate-spin" : ""}
+                          />
                           <span>
                             {cooldownSeconds > 0
                               ? `Resend in ${cooldownSeconds}s`
@@ -1112,9 +1238,14 @@ export default function AuthPage({ initialMode = "login" }) {
 
                 {/* STEP 3: PASSWORD CREATION */}
                 {registerStep === 3 && (
-                  <form onSubmit={handleCompleteRegistration} className="space-y-4">
+                  <form
+                    onSubmit={handleCompleteRegistration}
+                    className="space-y-4"
+                  >
                     <p className="text-xs text-zinc-400 leading-relaxed -mt-1">
-                      Create a strong password for your administrator profile. Your verified account will be persisted in MongoDB upon confirmation.
+                      Create a strong password for your administrator profile.
+                      Your verified account will be persisted in MongoDB upon
+                      confirmation.
                     </p>
 
                     <div>
@@ -1132,7 +1263,10 @@ export default function AuthPage({ initialMode = "login" }) {
                           onChange={(e) => {
                             setRegPassword(e.target.value);
                             if (regValidationErrors.password) {
-                              setRegValidationErrors((prev) => ({ ...prev, password: "" }));
+                              setRegValidationErrors((prev) => ({
+                                ...prev,
+                                password: "",
+                              }));
                             }
                             if (regError) setRegError("");
                           }}
@@ -1148,7 +1282,11 @@ export default function AuthPage({ initialMode = "login" }) {
                           onClick={() => setShowRegPassword((prev) => !prev)}
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300 cursor-pointer"
                         >
-                          {showRegPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                          {showRegPassword ? (
+                            <EyeOff size={15} />
+                          ) : (
+                            <Eye size={15} />
+                          )}
                         </button>
                       </div>
                       {regValidationErrors.password && (
@@ -1189,10 +1327,16 @@ export default function AuthPage({ initialMode = "login" }) {
                         />
                         <button
                           type="button"
-                          onClick={() => setShowRegConfirmPassword((prev) => !prev)}
+                          onClick={() =>
+                            setShowRegConfirmPassword((prev) => !prev)
+                          }
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 hover:text-zinc-300 cursor-pointer"
                         >
-                          {showRegConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                          {showRegConfirmPassword ? (
+                            <EyeOff size={15} />
+                          ) : (
+                            <Eye size={15} />
+                          )}
                         </button>
                       </div>
                       {regValidationErrors.confirmPassword && (
@@ -1206,12 +1350,16 @@ export default function AuthPage({ initialMode = "login" }) {
                       <div className="flex items-center gap-1.5">
                         <span
                           className={`size-1.5 rounded-full ${
-                            regPassword.length >= 8 ? "bg-emerald-400" : "bg-zinc-600"
+                            regPassword.length >= 8
+                              ? "bg-emerald-400"
+                              : "bg-zinc-600"
                           }`}
                         />
                         <span
                           className={
-                            regPassword.length >= 8 ? "text-emerald-300" : "text-zinc-400"
+                            regPassword.length >= 8
+                              ? "text-emerald-300"
+                              : "text-zinc-400"
                           }
                         >
                           Minimum 8 characters length

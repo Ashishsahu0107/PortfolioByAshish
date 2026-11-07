@@ -13,7 +13,8 @@ export const RESUME_TEMPLATES = [
     tagline: "Modern Blue & Balanced",
     badge: "Recommended",
     badgeColor: "bg-blue-100 text-blue-700 border-blue-200",
-    description: "Vibrant blue accents, modern typography, badge skills, and clear timeline hierarchy.",
+    description:
+      "Vibrant blue accents, modern typography, badge skills, and clear timeline hierarchy.",
     accent: "#2563eb",
     Component: TemplateModern,
   },
@@ -24,7 +25,8 @@ export const RESUME_TEMPLATES = [
     tagline: "Ultra-Clean ATS Standard",
     badge: "ATS 99%",
     badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    description: "Monochrome high-contrast serif/sans layout designed for zero ATS parsing errors.",
+    description:
+      "Monochrome high-contrast serif/sans layout designed for zero ATS parsing errors.",
     accent: "#18181b",
     Component: TemplateClassicATS,
   },
@@ -35,7 +37,8 @@ export const RESUME_TEMPLATES = [
     tagline: "Executive Sidebar",
     badge: "Corporate",
     badgeColor: "bg-indigo-100 text-indigo-800 border-indigo-200",
-    description: "Navy blue left sidebar with quick contact & skill pills, structured experience right pane.",
+    description:
+      "Navy blue left sidebar with quick contact & skill pills, structured experience right pane.",
     accent: "#1e3a8a",
     Component: TemplateExecutiveSidebar,
   },
@@ -45,7 +48,8 @@ export const RESUME_TEMPLATES = [
     tagline: "Terminal & Code Centric",
     badge: "Tech Focus",
     badgeColor: "bg-emerald-100 text-emerald-900 border-emerald-300",
-    description: "Dark terminal header with git branch styling, monospace tech tags, and code accents.",
+    description:
+      "Dark terminal header with git branch styling, monospace tech tags, and code accents.",
     accent: "#059669",
     Component: TemplateDeveloper,
   },
@@ -56,7 +60,8 @@ export const RESUME_TEMPLATES = [
     tagline: "Editorial Warm Serif",
     badge: "Refined",
     badgeColor: "bg-amber-100 text-amber-900 border-amber-200",
-    description: "Editorial typography with warm cream tones, tailored for creative engineering portfolios.",
+    description:
+      "Editorial typography with warm cream tones, tailored for creative engineering portfolios.",
     accent: "#b45309",
     Component: TemplateEditorial,
   },
@@ -66,7 +71,8 @@ export const RESUME_TEMPLATES = [
     tagline: "High-Density Single Page",
     badge: "1-Page Ready",
     badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
-    description: "Dense 2-column layout engineered to fit maximum technical depth into minimal vertical space.",
+    description:
+      "Dense 2-column layout engineered to fit maximum technical depth into minimal vertical space.",
     accent: "#7c3aed",
     Component: TemplateCompact,
   },
@@ -74,7 +80,7 @@ export const RESUME_TEMPLATES = [
 
 export function getTemplateById(id) {
   const found = RESUME_TEMPLATES.find(
-    (t) => t.id === id || (t.altId && t.altId === id)
+    (t) => t.id === id || (t.altId && t.altId === id),
   );
   return found || RESUME_TEMPLATES[0];
 }

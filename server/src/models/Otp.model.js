@@ -30,9 +30,12 @@ export const OtpService = {
     const now = Date.now();
 
     // 1. Resend Cooldown Check (60 seconds)
-    if (existing.cooldownUntil && new Date(existing.cooldownUntil).getTime() > now) {
+    if (
+      existing.cooldownUntil &&
+      new Date(existing.cooldownUntil).getTime() > now
+    ) {
       const remainingSeconds = Math.ceil(
-        (new Date(existing.cooldownUntil).getTime() - now) / 1000
+        (new Date(existing.cooldownUntil).getTime() - now) / 1000,
       );
       return {
         allowed: false,
@@ -45,10 +48,14 @@ export const OtpService = {
     }
 
     // 2. Hourly Rate Limit Check (5 requests per hour)
-    const windowStart = new Date(existing.firstRequestAt || existing.createdAt || now).getTime();
+    const windowStart = new Date(
+      existing.firstRequestAt || existing.createdAt || now,
+    ).getTime();
     if (now - windowStart < RATE_LIMIT_WINDOW_MS) {
       if ((existing.requestCount || 1) >= MAX_REQUESTS_PER_WINDOW) {
-        const resetMinutes = Math.ceil((windowStart + RATE_LIMIT_WINDOW_MS - now) / 60000);
+        const resetMinutes = Math.ceil(
+          (windowStart + RATE_LIMIT_WINDOW_MS - now) / 60000,
+        );
         return {
           allowed: false,
           code: "RATE_LIMIT_EXCEEDED",
@@ -86,7 +93,9 @@ export const OtpService = {
     let firstRequestAt = now;
 
     if (existing) {
-      const windowStart = new Date(existing.firstRequestAt || existing.createdAt || now).getTime();
+      const windowStart = new Date(
+        existing.firstRequestAt || existing.createdAt || now,
+      ).getTime();
       if (now.getTime() - windowStart < RATE_LIMIT_WINDOW_MS) {
         requestCount = (existing.requestCount || 1) + 1;
         firstRequestAt = existing.firstRequestAt || now;
@@ -150,7 +159,8 @@ export const OtpService = {
       return {
         success: false,
         code: "NO_ACTIVE_OTP",
-        message: "No pending verification code found. Please request a new code.",
+        message:
+          "No pending verification code found. Please request a new code.",
       };
     }
 
@@ -170,7 +180,8 @@ export const OtpService = {
       return {
         success: false,
         code: "MAX_ATTEMPTS",
-        message: "Maximum verification attempts exceeded. For security, please request a new code.",
+        message:
+          "Maximum verification attempts exceeded. For security, please request a new code.",
       };
     }
 
@@ -179,7 +190,10 @@ export const OtpService = {
 
     if (!isMatch) {
       const updatedAttempts = otpDoc.attempts + 1;
-      await Otp.updateOne({ id: otpDoc.id }, { $set: { attempts: updatedAttempts } });
+      await Otp.updateOne(
+        { id: otpDoc.id },
+        { $set: { attempts: updatedAttempts } },
+      );
 
       const remaining = MAX_VERIFICATION_ATTEMPTS - updatedAttempts;
       if (remaining <= 0) {
@@ -187,7 +201,8 @@ export const OtpService = {
         return {
           success: false,
           code: "MAX_ATTEMPTS",
-          message: "Incorrect code. Maximum verification attempts reached. Please request a new code.",
+          message:
+            "Incorrect code. Maximum verification attempts reached. Please request a new code.",
         };
       }
 
@@ -211,7 +226,7 @@ export const OtpService = {
           // Give 10 additional minutes to complete password setup / registration
           expiresAt: new Date(Date.now() + OTP_EXPIRY_MS),
         },
-      }
+      },
     );
 
     return {
@@ -219,7 +234,8 @@ export const OtpService = {
       verificationToken,
       name: otpDoc.name,
       email: cleanEmail,
-      message: "Identity verified successfully. You can now complete your authentication.",
+      message:
+        "Identity verified successfully. You can now complete your authentication.",
     };
   },
 

@@ -26,7 +26,9 @@ export const DeveloperModel = {
       payload.firstName = parts[0] || "";
       payload.lastName = parts.slice(1).join(" ") || "";
     } else if (payload.firstName || payload.lastName) {
-      payload.name = [payload.firstName, payload.lastName].filter(Boolean).join(" ");
+      payload.name = [payload.firstName, payload.lastName]
+        .filter(Boolean)
+        .join(" ");
     }
     if (payload.location) {
       payload.locationShort = payload.location.split(",")[0].trim();
@@ -35,9 +37,8 @@ export const DeveloperModel = {
     const updated = await Developer.findOneAndUpdate(
       {},
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after", upsert: true }
+      { returnDocument: "after", upsert: true },
     ).lean();
     return cleanDoc(updated);
   },
 };
-

@@ -36,7 +36,7 @@ export async function getOverviewStats(req, res, next) {
       ? skills.reduce(
           (sum, cat) =>
             sum + (Array.isArray(cat.skills) ? cat.skills.length : 0),
-          0
+          0,
         )
       : 0;
 

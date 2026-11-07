@@ -14,7 +14,7 @@ export const AboutModel = {
     const updated = await About.findOneAndUpdate(
       {},
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after", upsert: true }
+      { returnDocument: "after", upsert: true },
     ).lean();
     return cleanDoc(updated);
   },

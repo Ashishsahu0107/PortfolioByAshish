@@ -59,7 +59,7 @@ export default function AdminContact() {
     } catch (err) {
       showToast(
         "Error loading contact info: " + (err.message || "Failed to fetch"),
-        "error"
+        "error",
       );
     } finally {
       setLoading(false);
@@ -122,7 +122,7 @@ export default function AdminContact() {
     try {
       await contactApi.markRead(msgId, !currentStatus);
       setMessages((prev) =>
-        prev.map((m) => (m.id === msgId ? { ...m, read: !currentStatus } : m))
+        prev.map((m) => (m.id === msgId ? { ...m, read: !currentStatus } : m)),
       );
       showToast("Message status updated.", "info");
     } catch (err) {
@@ -203,7 +203,9 @@ export default function AdminContact() {
                   ) : (
                     <Save size={13} />
                   )}
-                  <span>{savingSection === "contact" ? "Saving…" : "Save"}</span>
+                  <span>
+                    {savingSection === "contact" ? "Saving…" : "Save"}
+                  </span>
                 </button>
               </div>
             )
@@ -295,7 +297,9 @@ export default function AdminContact() {
                   ) : (
                     <Save size={13} />
                   )}
-                  <span>{savingSection === "emailjs" ? "Saving…" : "Save"}</span>
+                  <span>
+                    {savingSection === "emailjs" ? "Saving…" : "Save"}
+                  </span>
                 </button>
               </div>
             )
@@ -347,12 +351,16 @@ export default function AdminContact() {
         >
           {loadingMessages ? (
             <div className="py-8 text-center text-gray-400 text-sm">
-              <Loader2 size={16} className="animate-spin inline mr-2 text-indigo-600" />
+              <Loader2
+                size={16}
+                className="animate-spin inline mr-2 text-indigo-600"
+              />
               Loading messages...
             </div>
           ) : messages.length === 0 ? (
             <div className="py-8 text-center text-gray-400 text-sm italic">
-              No inquiries received yet. Visitor form submissions will appear here.
+              No inquiries received yet. Visitor form submissions will appear
+              here.
             </div>
           ) : (
             <div className="space-y-3">
@@ -360,7 +368,9 @@ export default function AdminContact() {
                 <div
                   key={msg.id}
                   className={`p-4 rounded-xl border transition-all ${
-                    msg.read ? "bg-white border-gray-200" : "bg-indigo-50/40 border-indigo-200 shadow-2xs"
+                    msg.read
+                      ? "bg-white border-gray-200"
+                      : "bg-indigo-50/40 border-indigo-200 shadow-2xs"
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -405,7 +415,9 @@ export default function AdminContact() {
                     {msg.message}
                   </p>
                   <span className="mt-2 block text-[10px] text-gray-400 font-mono">
-                    {new Date(msg.receivedAt || msg.createdAt || Date.now()).toLocaleString()}
+                    {new Date(
+                      msg.receivedAt || msg.createdAt || Date.now(),
+                    ).toLocaleString()}
                   </span>
                 </div>
               ))}

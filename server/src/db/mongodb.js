@@ -28,17 +28,23 @@ async function autoSeedIfEmpty() {
   const resumeCount = await ResumeModel.countDocuments();
   if (resumeCount === 0 && Array.isArray(initialResumeTemplates)) {
     await ResumeModel.insertMany(initialResumeTemplates);
-    console.log(`[MongoDB Seed] Initialized ${initialResumeTemplates.length} resume templates into MongoDB.`);
+    console.log(
+      `[MongoDB Seed] Initialized ${initialResumeTemplates.length} resume templates into MongoDB.`,
+    );
   }
 
   const devCount = await DeveloperModel.countDocuments();
   if (devCount > 0) {
-    console.log("[MongoDB] Collections already populated. Skipping initial seed.");
+    console.log(
+      "[MongoDB] Collections already populated. Skipping initial seed.",
+    );
     return;
   }
 
   console.log("==========================================");
-  console.log("[MongoDB] Empty database detected. Seeding initial data into MongoDB...");
+  console.log(
+    "[MongoDB] Empty database detected. Seeding initial data into MongoDB...",
+  );
   console.log("==========================================");
 
   // 1. Ensure root admin exists
@@ -52,7 +58,9 @@ async function autoSeedIfEmpty() {
       password: defaultPasswordHash,
       role: "admin",
     });
-    console.log("[MongoDB Seed] Created default admin account (ashishsahu01072005@gmail.com).");
+    console.log(
+      "[MongoDB Seed] Created default admin account (ashishsahu01072005@gmail.com).",
+    );
   }
 
   // 2. Developer
@@ -66,9 +74,14 @@ async function autoSeedIfEmpty() {
   // 4. Skills
   if (Array.isArray(initialSkills) && initialSkills.length > 0) {
     await SkillCategoryModel.insertMany(
-      initialSkills.map((c, idx) => ({ ...c, order: c.order !== undefined ? c.order : idx }))
+      initialSkills.map((c, idx) => ({
+        ...c,
+        order: c.order !== undefined ? c.order : idx,
+      })),
     );
-    console.log(`[MongoDB Seed] Inserted ${initialSkills.length} skill categories.`);
+    console.log(
+      `[MongoDB Seed] Inserted ${initialSkills.length} skill categories.`,
+    );
   }
 
   // 5. Projects
@@ -80,7 +93,9 @@ async function autoSeedIfEmpty() {
   // 6. Experience
   if (Array.isArray(initialExperience) && initialExperience.length > 0) {
     await ExperienceModel.insertMany(initialExperience);
-    console.log(`[MongoDB Seed] Inserted ${initialExperience.length} experience entries.`);
+    console.log(
+      `[MongoDB Seed] Inserted ${initialExperience.length} experience entries.`,
+    );
   }
 
   // 7. Sections
@@ -104,7 +119,7 @@ export function getResolvedMongoUri() {
   const uri = config.mongodbUri;
   if (!uri || uri.includes("<db_username>") || uri.includes("<password>")) {
     console.warn(
-      "[MongoDB Notice] MONGODB_URI in .env contains placeholder '<db_username>'. Falling back to local MongoDB: mongodb://127.0.0.1:27017/portfolio"
+      "[MongoDB Notice] MONGODB_URI in .env contains placeholder '<db_username>'. Falling back to local MongoDB: mongodb://127.0.0.1:27017/portfolio",
     );
     return "mongodb://127.0.0.1:27017/portfolio";
   }
@@ -132,7 +147,10 @@ export async function connectDB() {
       serverSelectionTimeoutMS: 5000,
     });
 
-    console.log("Connected to MongoDB Database: " + (mongoose.connection.name || "portfolio"));
+    console.log(
+      "Connected to MongoDB Database: " +
+        (mongoose.connection.name || "portfolio"),
+    );
 
     // Run one-time auto-seeding if database is fresh
     await autoSeedIfEmpty();

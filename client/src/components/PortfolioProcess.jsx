@@ -158,8 +158,14 @@ export default function PortfolioProcess() {
                       className="relative group cursor-pointer"
                       onClick={() => {
                         setActiveStep(idx);
-                        const el = document.getElementById(`process-step-${idx + 1}`);
-                        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+                        const el = document.getElementById(
+                          `process-step-${idx + 1}`,
+                        );
+                        if (el)
+                          el.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                          });
                       }}
                     >
                       <div
@@ -171,12 +177,15 @@ export default function PortfolioProcess() {
                       >
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="font-mono text-[10px] font-bold text-action">
-                            PHASE {item.step || String(idx + 1).padStart(2, "0")}
+                            PHASE{" "}
+                            {item.step || String(idx + 1).padStart(2, "0")}
                           </span>
                           <StepIcon
                             size={14}
                             className={`transition-colors ${
-                              isCurrent ? "text-action" : "text-secondary group-hover:text-action"
+                              isCurrent
+                                ? "text-action"
+                                : "text-secondary group-hover:text-action"
                             }`}
                           />
                         </div>
@@ -242,7 +251,10 @@ export default function PortfolioProcess() {
                             {/* Phase Badge */}
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-action/30 bg-action/10 px-3 py-1 font-mono text-[10px] sm:text-[11px] font-bold text-action">
                               <span className="size-1.5 rounded-full bg-action animate-pulse" />
-                              <span>STAGE {stepNum} OF {String(steps.length).padStart(2, "0")}</span>
+                              <span>
+                                STAGE {stepNum} OF{" "}
+                                {String(steps.length).padStart(2, "0")}
+                              </span>
                             </span>
 
                             {/* Stage Category */}
@@ -257,7 +269,8 @@ export default function PortfolioProcess() {
                             <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-canvas/80 px-2.5 py-1 font-mono text-[10px] sm:text-[11px] font-semibold text-secondary shadow-2xs">
                               <span>Progress:</span>
                               <span className="text-action font-bold">
-                                {Math.round(((index + 1) / steps.length) * 100)}%
+                                {Math.round(((index + 1) / steps.length) * 100)}
+                                %
                               </span>
                             </span>
 
@@ -266,7 +279,9 @@ export default function PortfolioProcess() {
                               <div className="grid size-7 place-items-center rounded-lg border border-border bg-canvas text-action transition-transform duration-300 group-hover/card:scale-110">
                                 <StepIcon size={14} />
                               </div>
-                              <span className="font-medium text-primary hidden sm:inline">{item.phase}</span>
+                              <span className="font-medium text-primary hidden sm:inline">
+                                {item.phase}
+                              </span>
                             </div>
                           </div>
                         </div>
@@ -294,10 +309,16 @@ export default function PortfolioProcess() {
                             <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-mono">
                               <span className="inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-canvas/80 px-2.5 py-1 text-secondary">
                                 <span className="size-1.5 rounded-full bg-action" />
-                                <span>Artifact: {stageArtifacts[index] || "Specification"}</span>
+                                <span>
+                                  Artifact:{" "}
+                                  {stageArtifacts[index] || "Specification"}
+                                </span>
                               </span>
                               <span className="inline-flex items-center gap-1.5 rounded-md border border-border/80 bg-canvas/80 px-2.5 py-1 text-secondary">
-                                <CheckCircle2 size={12} className="text-action" />
+                                <CheckCircle2
+                                  size={12}
+                                  className="text-action"
+                                />
                                 <span>Verified &amp; Approved</span>
                               </span>
                             </div>
@@ -317,15 +338,21 @@ export default function PortfolioProcess() {
                                   </span>
                                 </div>
                                 <span className="font-mono text-[10px] text-action font-semibold">
-                                  {Array.isArray(item.deliverables) ? `${item.deliverables.length} Items` : ""}
+                                  {Array.isArray(item.deliverables)
+                                    ? `${item.deliverables.length} Items`
+                                    : ""}
                                 </span>
                               </div>
 
                               {/* Deliverables List */}
-                              {Array.isArray(item.deliverables) && item.deliverables.length > 0 ? (
+                              {Array.isArray(item.deliverables) &&
+                              item.deliverables.length > 0 ? (
                                 <ul className="space-y-2 text-xs text-primary">
                                   {item.deliverables.map((deliv, dIdx) => (
-                                    <li key={dIdx} className="flex items-start gap-2.5">
+                                    <li
+                                      key={dIdx}
+                                      className="flex items-start gap-2.5"
+                                    >
                                       <span className="grid size-4 place-items-center rounded-sm bg-action/15 text-action shrink-0 mt-0.5">
                                         <Check size={11} />
                                       </span>

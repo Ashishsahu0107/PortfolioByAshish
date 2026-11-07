@@ -9,7 +9,10 @@ import html2canvas from "html2canvas";
  * @param {string} candidateName - Candidate's name for meaningful filename
  * @returns {Promise<boolean>}
  */
-export async function exportResumeToPdf(element, candidateName = "Full-Stack-Developer") {
+export async function exportResumeToPdf(
+  element,
+  candidateName = "Full-Stack-Developer",
+) {
   if (!element) {
     throw new Error("Resume document element not found for export");
   }
@@ -51,7 +54,9 @@ export async function exportResumeToPdf(element, candidateName = "Full-Stack-Dev
     });
 
     // Calculate canvas page dimensions based on A4 ratio (297 / 210 = 1.4142857)
-    const canvasPageHeight = Math.round((canvas.width * a4HeightMm) / a4WidthMm);
+    const canvasPageHeight = Math.round(
+      (canvas.width * a4HeightMm) / a4WidthMm,
+    );
     const totalHeight = canvas.height;
 
     const pdf = new jsPDF({
@@ -72,7 +77,16 @@ export async function exportResumeToPdf(element, candidateName = "Full-Stack-Dev
       ctx.drawImage(canvas, 0, 0);
 
       const imgData = pageCanvas.toDataURL("image/jpeg", 0.98);
-      pdf.addImage(imgData, "JPEG", 0, 0, a4WidthMm, a4HeightMm, undefined, "FAST");
+      pdf.addImage(
+        imgData,
+        "JPEG",
+        0,
+        0,
+        a4WidthMm,
+        a4HeightMm,
+        undefined,
+        "FAST",
+      );
     } else {
       // Multi-page slicing using dedicated canvas slices to prevent coordinate clipping
       const totalPages = Math.ceil(totalHeight / canvasPageHeight);
@@ -104,11 +118,20 @@ export async function exportResumeToPdf(element, candidateName = "Full-Stack-Dev
           0,
           0,
           canvas.width,
-          sourceHeight
+          sourceHeight,
         );
 
         const imgData = pageCanvas.toDataURL("image/jpeg", 0.98);
-        pdf.addImage(imgData, "JPEG", 0, 0, a4WidthMm, a4HeightMm, undefined, "FAST");
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          0,
+          0,
+          a4WidthMm,
+          a4HeightMm,
+          undefined,
+          "FAST",
+        );
       }
     }
 

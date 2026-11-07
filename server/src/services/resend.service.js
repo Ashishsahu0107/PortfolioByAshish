@@ -8,7 +8,7 @@ function getResendClient() {
   const apiKey = config.resend.apiKey?.trim();
   if (!apiKey) {
     throw new Error(
-      "Resend API key is missing. Please set RESEND_API_KEY in your server/.env file."
+      "Resend API key is missing. Please set RESEND_API_KEY in your server/.env file.",
     );
   }
 
@@ -194,7 +194,12 @@ function buildOtpEmailHtml({ name, otp, expiryMinutes }) {
  * @param {number} [options.expiryMinutes=10] - Validity duration in minutes
  * @returns {Promise<{ success: boolean, messageId: string }>}
  */
-export async function sendOtpEmailViaResend({ to, name, otp, expiryMinutes = 10 }) {
+export async function sendOtpEmailViaResend({
+  to,
+  name,
+  otp,
+  expiryMinutes = 10,
+}) {
   if (!to || !to.trim()) {
     throw new Error("Recipient email address is required.");
   }
@@ -203,8 +208,9 @@ export async function sendOtpEmailViaResend({ to, name, otp, expiryMinutes = 10 
   }
 
   const resend = getResendClient();
-  let fromEmail = config.resend.fromEmail || "Portfolio Security <onboarding@resend.dev>";
-  
+  let fromEmail =
+    config.resend.fromEmail || "Portfolio Security <onboarding@resend.dev>";
+
   // Resend restriction: public free email domains (@gmail.com, @yahoo.com, etc.) cannot be used as sender without domain DNS verification.
   // Fall back automatically to Resend's default verified testing sender if an unverified public domain is passed.
   if (/@(gmail|yahoo|hotmail|outlook|icloud)\.com/i.test(fromEmail)) {
@@ -234,14 +240,20 @@ export async function sendOtpEmailViaResend({ to, name, otp, expiryMinutes = 10 
 
     let friendlyMessage = error.message;
     if (error.statusCode === 403) {
-      if (error.message?.includes("only send testing emails to your own email address")) {
+      if (
+        error.message?.includes(
+          "only send testing emails to your own email address",
+        )
+      ) {
         friendlyMessage = `Resend Notice: ${error.message}. To send OTPs to external addresses, please add and verify your custom domain in the Resend dashboard.`;
       } else if (error.message?.includes("domain")) {
         friendlyMessage = `Resend Domain Error: ${error.message}. Please verify your sender domain on Resend.`;
       }
     }
 
-    const err = new Error(friendlyMessage || "Failed to deliver OTP via Resend.");
+    const err = new Error(
+      friendlyMessage || "Failed to deliver OTP via Resend.",
+    );
     err.resendError = error;
     err.statusCode = error.statusCode || 502;
     throw err;
@@ -273,20 +285,27 @@ export async function sendContactNotificationEmail({
 }) {
   const apiKey = config.resend.apiKey?.trim();
   if (!apiKey) {
-    console.warn("[Resend] Notification skipped: RESEND_API_KEY is not configured.");
+    console.warn(
+      "[Resend] Notification skipped: RESEND_API_KEY is not configured.",
+    );
     return { success: false, reason: "Missing API Key" };
   }
 
   try {
     const resend = getResendClient();
-    let fromEmail = config.resend.fromEmail || "Portfolio Inquiries <onboarding@resend.dev>";
+    let fromEmail =
+      config.resend.fromEmail || "Portfolio Inquiries <onboarding@resend.dev>";
     if (/@(gmail|yahoo|hotmail|outlook|icloud)\.com/i.test(fromEmail)) {
       fromEmail = "Portfolio Inquiries <onboarding@resend.dev>";
     }
 
-    const recipient = (to || process.env.OWNER_EMAIL || "").trim().toLowerCase();
+    const recipient = (to || process.env.OWNER_EMAIL || "")
+      .trim()
+      .toLowerCase();
     if (!recipient) {
-      console.warn("[Resend] Notification skipped: No recipient email specified.");
+      console.warn(
+        "[Resend] Notification skipped: No recipient email specified.",
+      );
       return { success: false, reason: "Missing Recipient Email" };
     }
     const safeName = (visitorName || "Portfolio Visitor").trim();
@@ -453,4 +472,3 @@ export async function sendContactNotificationEmail({
     return { success: false, error: err };
   }
 }
-

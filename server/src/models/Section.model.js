@@ -12,10 +12,7 @@ export const SectionModel = {
     if (!id) return null;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const section = await Section.findOne({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return cleanDoc(section);
   },
@@ -69,13 +66,10 @@ export const SectionModel = {
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const updated = await Section.findOneAndUpdate(
       {
-        $or: [
-          { id },
-          ...(isObjectId ? [{ _id: id }] : []),
-        ],
+        $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
       },
       { ...payload, updatedAt: new Date() },
-      { returnDocument: "after" }
+      { returnDocument: "after" },
     ).lean();
     return cleanDoc(updated);
   },
@@ -102,10 +96,7 @@ export const SectionModel = {
     if (!id) return false;
     const isObjectId = mongoose.Types.ObjectId.isValid(id);
     const doc = await Section.findOneAndDelete({
-      $or: [
-        { id },
-        ...(isObjectId ? [{ _id: id }] : []),
-      ],
+      $or: [{ id }, ...(isObjectId ? [{ _id: id }] : [])],
     }).lean();
     return !!doc;
   },

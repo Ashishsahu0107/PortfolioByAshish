@@ -19,7 +19,10 @@ import { authMiddleware } from "../middleware/auth.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const submissionsUploadDir = path.resolve(__dirname, "../../uploads/form_submissions");
+const submissionsUploadDir = path.resolve(
+  __dirname,
+  "../../uploads/form_submissions",
+);
 
 if (!fs.existsSync(submissionsUploadDir)) {
   fs.mkdirSync(submissionsUploadDir, { recursive: true });
@@ -31,7 +34,9 @@ const storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const safeExt = path.extname(file.originalname).toLowerCase();
-    const cleanBase = path.basename(file.originalname, safeExt).replace(/[^a-zA-Z0-9_-]/g, "_");
+    const cleanBase = path
+      .basename(file.originalname, safeExt)
+      .replace(/[^a-zA-Z0-9_-]/g, "_");
     const uniqueName = `${cleanBase}_${Date.now()}_${Math.random().toString(36).substring(2, 7)}${safeExt}`;
     cb(null, uniqueName);
   },
@@ -42,10 +47,22 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
   fileFilter: (req, file, cb) => {
     // Security check: reject executable and script files
-    const disallowedExts = [".exe", ".bat", ".cmd", ".sh", ".php", ".js", ".vbs", ".msi", ".jar"];
+    const disallowedExts = [
+      ".exe",
+      ".bat",
+      ".cmd",
+      ".sh",
+      ".php",
+      ".js",
+      ".vbs",
+      ".msi",
+      ".jar",
+    ];
     const ext = path.extname(file.originalname).toLowerCase();
     if (disallowedExts.includes(ext)) {
-      return cb(new Error(`File type ${ext} is not allowed for security reasons.`));
+      return cb(
+        new Error(`File type ${ext} is not allowed for security reasons.`),
+      );
     }
     cb(null, true);
   },
@@ -72,4 +89,3 @@ router.post("/:id/submit", upload.any(), submitForm);
 router.get("/:id/submissions", authMiddleware, getFormSubmissions);
 
 export default router;
-

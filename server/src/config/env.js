@@ -18,8 +18,9 @@ export const config = {
     dotenv.config({ path: path.resolve(__dirname, "../../.env") });
     return {
       apiKey: (process.env.RESEND_API_KEY || "").trim(),
-      fromEmail: process.env.RESEND_FROM_EMAIL || "Portfolio Security <onboarding@resend.dev>",
+      fromEmail:
+        process.env.RESEND_FROM_EMAIL ||
+        "Portfolio Security <onboarding@resend.dev>",
     };
   },
 };
-

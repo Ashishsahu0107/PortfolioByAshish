@@ -20,7 +20,9 @@ export async function getExperienceById(req, res, next) {
   try {
     const item = await ExperienceModel.findById(req.params.id);
     if (!item) {
-      return res.status(404).json({ success: false, message: "Experience entry not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Experience entry not found." });
     }
     return res.json({ success: true, data: item });
   } catch (err) {
@@ -32,7 +34,9 @@ export async function createExperience(req, res, next) {
   try {
     const { title } = req.body;
     if (!title || !title.trim()) {
-      return res.status(400).json({ success: false, message: "Title is required." });
+      return res
+        .status(400)
+        .json({ success: false, message: "Title is required." });
     }
 
     const newItem = await ExperienceModel.create(req.body);
@@ -51,7 +55,9 @@ export async function updateExperience(req, res, next) {
   try {
     const updated = await ExperienceModel.update(req.params.id, req.body);
     if (!updated) {
-      return res.status(404).json({ success: false, message: "Experience entry not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Experience entry not found." });
     }
     invalidatePortfolioCache();
     return res.json({
@@ -89,7 +95,9 @@ export async function deleteExperience(req, res, next) {
   try {
     const wasRemoved = await ExperienceModel.delete(req.params.id);
     if (!wasRemoved) {
-      return res.status(404).json({ success: false, message: "Experience entry not found." });
+      return res
+        .status(404)
+        .json({ success: false, message: "Experience entry not found." });
     }
     invalidatePortfolioCache();
     return res.json({
